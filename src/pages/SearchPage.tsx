@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { useSearch } from "../hooks/useSearch";
 
 interface SearchPageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -12,101 +13,13 @@ interface SearchPageProps {
 
 export function SearchPage({ onNavigate }: SearchPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<any>(null);
+  const { data: searchResults, loading: isLoading, error, search } = useSearch();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-    
-    setIsLoading(true);
-    
-    // 시뮬레이션된 검색
-    setTimeout(() => {
-      setSearchResults({
-        albums: [
-          {
-            id: '1',
-            title: 'Thriller',
-            artist: 'Michael Jackson',
-            releaseDate: '1982',
-            genre: 'Pop',
-            rating: 4.8,
-            imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          },
-          {
-            id: '2',
-            title: 'Abbey Road',
-            artist: 'The Beatles',
-            releaseDate: '1969',
-            genre: 'Rock',
-            rating: 4.9,
-            imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          },
-          {
-            id: '3',
-            title: 'Kind of Blue',
-            artist: 'Miles Davis',
-            releaseDate: '1959',
-            genre: 'Jazz',
-            rating: 4.9,
-            imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          }
-        ],
-        tracks: [
-          {
-            id: '1',
-            title: 'Bohemian Rhapsody',
-            artist: 'Queen',
-            album: 'A Night at the Opera',
-            duration: '5:55',
-            rating: 4.9,
-            imageUrl: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          },
-          {
-            id: '2',
-            title: 'Hotel California',
-            artist: 'Eagles',
-            album: 'Hotel California',
-            duration: '6:30',
-            rating: 4.8,
-            imageUrl: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          },
-          {
-            id: '3',
-            title: 'So What',
-            artist: 'Miles Davis',
-            album: 'Kind of Blue',
-            duration: '9:22',
-            rating: 4.7,
-            imageUrl: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          }
-        ],
-        artists: [
-          {
-            id: '1',
-            name: 'Michael Jackson',
-            followers: '2.3M',
-            isLiked: false,
-            imageUrl: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          },
-          {
-            id: '2',
-            name: 'Queen',
-            followers: '1.8M',
-            isLiked: true,
-            imageUrl: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          },
-          {
-            id: '3',
-            name: 'Miles Davis',
-            followers: '890K',
-            isLiked: false,
-            imageUrl: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-          }
-        ]
-      });
-      setIsLoading(false);
-    }, 1000);
+
+    // 실제 API 검색 호출
+    await search(searchQuery, 'all');
   };
 
   return (
@@ -233,9 +146,13 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                       <p className="text-sm font-medium text-muted-foreground line-clamp-1 mb-1">{album.artist}</p>
                       {/* 기타 정보 - 가장 덜 중요한 정보 */}
                       <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-                        <span>{album.releaseDate}</span>
-                        <span>•</span>
-                        <span>{album.genre}</span>
+                        {album.releaseYear && <span>{album.releaseYear}</span>}
+                        {album.popularity !== undefined && (
+                          <>
+                            {album.releaseYear && <span>•</span>}
+                            <span>인기도 {album.popularity}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                     {/* Quick Action */}
@@ -286,9 +203,13 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                       <p className="text-sm font-medium text-muted-foreground line-clamp-1 mb-1">{track.artist}</p>
                       {/* 기타 정보 - 가장 덜 중요한 정보 */}
                       <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-                        <span className="line-clamp-1">{track.album}</span>
-                        <span>•</span>
-                        <span>{track.duration}</span>
+                        {track.releaseYear && <span>{track.releaseYear}</span>}
+                        {track.popularity !== undefined && (
+                          <>
+                            {track.releaseYear && <span>•</span>}
+                            <span>인기도 {track.popularity}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                     {/* Quick Action */}
@@ -320,32 +241,36 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                     onClick={() => onNavigate('artist-detail', artist.id)}
                   >
                     <Avatar className="w-16 h-16 flex-shrink-0">
-                      <AvatarImage src={artist.imageUrl} alt={artist.name} />
-                      <AvatarFallback className="text-lg font-semibold">{artist.name.charAt(0)}</AvatarFallback>
+                      <AvatarImage src={artist.imageUrl} alt={artist.title} />
+                      <AvatarFallback className="text-lg font-semibold">{artist.title?.charAt(0) || 'A'}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       {/* 이름 - 가장 중요한 정보 */}
-                      <h3 className="font-semibold text-base line-clamp-1 mb-1.5 leading-tight">{artist.name}</h3>
-                      {/* 타입 및 팔로워 정보 */}
+                      <h3 className="font-semibold text-base line-clamp-1 mb-1.5 leading-tight">{artist.title}</h3>
+                      {/* 타입 및 인기도 정보 */}
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>아티스트</span>
-                        <span>•</span>
-                        <span>{artist.followers} 팔로워</span>
+                        {artist.popularity !== undefined && (
+                          <>
+                            <span>•</span>
+                            <span>인기도 {artist.popularity}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                     {/* Quick Action */}
                     <div className="flex items-center gap-2">
                       <Button
-                        variant={artist.isLiked ? "default" : "outline"}
+                        variant={artist.isRated ? "default" : "outline"}
                         size="sm"
                         className="h-10 px-4"
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Quick like action for artists
+                          // Quick rate action for artists
                         }}
                       >
-                        <Heart className={`w-4 h-4 mr-2 ${artist.isLiked ? 'fill-current' : ''}`} />
-                        {artist.isLiked ? '좋아요됨' : '좋아요'}
+                        <Star className={`w-4 h-4 mr-2 ${artist.isRated ? 'fill-current' : ''}`} />
+                        {artist.isRated ? '평가됨' : '평가'}
                       </Button>
                     </div>
                   </div>
