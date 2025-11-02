@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 import { Textarea } from "../components/ui/textarea";
 import { useState } from "react";
+import { useAlbumDetail } from "../hooks/useAlbumDetail";
+import { Loader2 } from "lucide-react";
 
 interface AlbumDetailPageProps {
   albumId: string;
@@ -15,63 +17,12 @@ interface AlbumDetailPageProps {
 }
 
 export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
-  const [album] = useState({
-    id: albumId,
-    title: 'Thriller',
-    artist: 'Michael Jackson',
-    artistId: 'artist-1', // 아티스트 ID 추가
-    releaseDate: '1982-11-30',
-    genre: 'Pop, Rock',
-    imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    averageRating: 4.8,
-    totalReviews: 1234,
-    ratingDistribution: [2, 5, 12, 35, 46] // 1-5성 비율 (%)
-  });
-
-  const [tracks] = useState([
-    { id: '1', title: 'Wanna Be Startin\' Somethin\'', duration: '6:02' },
-    { id: '2', title: 'Baby Be Mine', duration: '4:20' },
-    { id: '3', title: 'The Girl Is Mine', duration: '3:42' },
-    { id: '4', title: 'Thriller', duration: '5:57' },
-    { id: '5', title: 'Beat It', duration: '4:18' },
-    { id: '6', title: 'Billie Jean', duration: '4:54' },
-    { id: '7', title: 'Human Nature', duration: '4:06' },
-    { id: '8', title: 'P.Y.T. (Pretty Young Thing)', duration: '3:58' },
-    { id: '9', title: 'The Lady in My Life', duration: '4:59' }
-  ]);
+  // API 데이터 가져오기
+  const { data: album, loading, error } = useAlbumDetail(albumId);
 
   const [userRating, setUserRating] = useState(0);
   const [commentText, setCommentText] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
-
-  const [reviews] = useState([
-    {
-      id: '1',
-      user: {
-        name: '음악애호가',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      rating: 5,
-      comment: '역사상 최고의 팝 앨범 중 하나입니다. 마이클 잭슨의 보컬과 프로덕션이 완벽하게 조화를 이룹니다.',
-      date: '2024-01-15',
-      likes: 23,
-      replies: 5,
-      isLiked: false
-    },
-    {
-      id: '2',
-      user: {
-        name: '팝러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      rating: 4,
-      comment: '빌리 진과 스릴러는 정말 명곡입니다. 80년대 팝의 정수를 보여주는 앨범이에요.',
-      date: '2024-01-10',
-      likes: 12,
-      replies: 2,
-      isLiked: true
-    }
-  ]);
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
@@ -117,6 +68,49 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
     }
   };
 
+  // Loading 상태
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground">앨범 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error 상태
+  if (error || !album) {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="text-center space-y-4">
+          <p className="text-destructive font-semibold">앨범 정보를 불러올 수 없습니다</p>
+          <p className="text-sm text-muted-foreground">{error?.message || '알 수 없는 오류가 발생했습니다'}</p>
+          <Button onClick={() => window.location.reload()}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            다시 시도
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // 아티스트 정보 변환
+  const artistNames = album.artists?.map(a => a.name).join(', ') || '알 수 없는 아티스트';
+  const primaryArtistId = album.artists?.[0]?.id;
+
+  // 평점 분포 배열 변환 (5성 → 1성 순서)
+  const ratingDistributionArray = album.ratingDistribution
+    ? [
+        album.ratingDistribution.star5 || 0,
+        album.ratingDistribution.star4 || 0,
+        album.ratingDistribution.star3 || 0,
+        album.ratingDistribution.star2 || 0,
+        album.ratingDistribution.star1 || 0
+      ]
+    : [0, 0, 0, 0, 0];
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
@@ -138,14 +132,16 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
             />
             <div className="flex-1 space-y-2">
               <h1 className="text-2xl font-bold">{album.title}</h1>
-              <p 
+              <p
                 className="text-lg text-muted-foreground hover:text-primary cursor-pointer transition-colors"
-                onClick={() => onNavigate('artist-detail', album.artistId)}
+                onClick={() => primaryArtistId && onNavigate('artist-detail', primaryArtistId)}
               >
-                {album.artist}
+                {artistNames}
               </p>
               <p className="text-sm text-muted-foreground">{album.releaseDate}</p>
-              <p className="text-sm text-muted-foreground">{album.genre}</p>
+              {album.description && (
+                <p className="text-sm text-muted-foreground line-clamp-2">{album.description}</p>
+              )}
             </div>
           </div>
 
@@ -212,14 +208,14 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
                 <span className="text-2xl font-bold">{album.averageRating}</span>
               </div>
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">총 {album.totalReviews}개 리뷰</p>
+                <p className="text-sm text-muted-foreground">총 {album.ratingCount}개 리뷰</p>
               </div>
             </div>
 
             {/* Rating Distribution */}
             <div className="space-y-2">
               <h3 className="font-semibold">별점 분��</h3>
-              {album.ratingDistribution.map((percentage, index) => (
+              {ratingDistributionArray.map((percentage, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <span className="text-sm w-2">{5 - index}</span>
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -236,7 +232,7 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">수록곡</h3>
             <div className="space-y-2">
-              {tracks.map((track, index) => (
+              {album.tracks?.map((track, index) => (
                 <div
                   key={track.id}
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent cursor-pointer"
