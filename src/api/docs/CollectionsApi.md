@@ -1,0 +1,1183 @@
+# CollectionsApi
+
+All URIs are relative to *http://localhost*
+
+|Method | HTTP request | Description|
+|------------- | ------------- | -------------|
+|[**collectionsByItemItemIdGet**](#collectionsbyitemitemidget) | **GET** /collections/by-item/{itemId} | 컬렉션 내용을 like순으로 제공|
+|[**createCollection**](#createcollection) | **POST** /collections | 컬렉션 생성|
+|[**createCollection_0**](#createcollection_0) | **POST** /collections | 컬렉션 생성|
+|[**deleteCollection**](#deletecollection) | **DELETE** /collections/{collectionId} | 컬렉션 삭제|
+|[**deleteCollection_0**](#deletecollection_0) | **DELETE** /collections/{collectionId} | 컬렉션 삭제|
+|[**getCollectionDetail**](#getcollectiondetail) | **GET** /collections/{collectionId} | 컬렉션 상세 조회|
+|[**getCollectionDetail_0**](#getcollectiondetail_0) | **GET** /collections/{collectionId} | 컬렉션 상세 조회|
+|[**getMyCollections**](#getmycollections) | **GET** /users/me/collections | 내 컬렉션 목록 조회|
+|[**getMyCollections_0**](#getmycollections_0) | **GET** /users/{userId}/collections/liked | 좋아요한 컬렉션 목록|
+|[**getUserCollections**](#getusercollections) | **GET** /collections/all | 컬렉션 전체 조회|
+|[**getUserCollections_0**](#getusercollections_0) | **GET** /collections/all | 컬렉션 전체 조회|
+|[**getUserCollections_1**](#getusercollections_1) | **GET** /users/me/badges | 내 칭호 목록 조회|
+|[**getUserCollections_2**](#getusercollections_2) | **GET** /users/me/active-badge | 활성화된 칭호 확인|
+|[**getUserCollections_3**](#getusercollections_3) | **PATCH** /users/me/active-badge | 칭호 설정|
+|[**getUserCollections_4**](#getusercollections_4) | **GET** /users/{userId}/badges | 타인의 칭호 목록 조회|
+|[**getUserCollections_5**](#getusercollections_5) | **GET** /users/{userId}/collections | 타인의 컬렉션 목록 조회|
+|[**getUserCollections_6**](#getusercollections_6) | **GET** /home | 홈 화면 조회|
+|[**search**](#search) | **GET** /collections/search | 컬렉션 검색|
+|[**toggleCollectionLike**](#togglecollectionlike) | **POST** /collections/{collectionId}/likes/toggle | 컬렉션 좋아요 토글|
+|[**toggleCollectionLike_0**](#togglecollectionlike_0) | **POST** /collections/{collectionId}/likes/toggle | 컬렉션 좋아요 토글|
+|[**updateCollection**](#updatecollection) | **PATCH** /collections/{collectionId} | 컬렉션 수정|
+|[**updateCollection_0**](#updatecollection_0) | **PATCH** /collections/{collectionId} | 컬렉션 수정|
+
+# **collectionsByItemItemIdGet**
+> object collectionsByItemItemIdGet()
+
+예상 응답:    {     \"success\": true,     \"data\": {       \"collections\": [         {           \"collectionId\": 5,           \"title\": \"인기 플레이리스트\",           \"likeCount\": 500,  // ⭐ 가장 많음           \"...\": \"...\"         },         {           \"collectionId\": 3,           \"title\": \"운동 음악 모음\",           \"likeCount\": 300,  // 두 번째           \"...\": \"...\"         },         {           \"collectionId\": 1,           \"title\": \"내 플레이리스트\",           \"likeCount\": 10,   // 적음           \"...\": \"...\"         }       ]     }   } 
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let itemId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.collectionsByItemItemIdGet(
+    itemId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **itemId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**object**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **createCollection**
+> CreateCollection200Response createCollection()
+
+새로운 음악 컬렉션을 생성합니다. 컬렉션은 사용자가 직접 앨범이나 트랙을 모아 만드는 플레이리스트와 유사한 개념입니다. 제목, 설명, 공개 여부, 커버 이미지, 그리고 초기에 포함될 아이템 목록을 지정할 수 있습니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    CreateCollectionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let createCollectionRequest: CreateCollectionRequest; // (optional)
+
+const { status, data } = await apiInstance.createCollection(
+    createCollectionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createCollectionRequest** | **CreateCollectionRequest**|  | |
+
+
+### Return type
+
+**CreateCollection200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 생성 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **createCollection_0**
+> CreateCollection200Response createCollection_0()
+
+새로운 음악 컬렉션을 생성합니다. 컬렉션은 사용자가 직접 앨범이나 트랙을 모아 만드는 플레이리스트와 유사한 개념입니다. 제목, 설명, 공개 여부, 커버 이미지, 그리고 초기에 포함될 아이템 목록을 지정할 수 있습니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    CreateCollectionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let createCollectionRequest: CreateCollectionRequest; // (optional)
+
+const { status, data } = await apiInstance.createCollection_0(
+    createCollectionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createCollectionRequest** | **CreateCollectionRequest**|  | |
+
+
+### Return type
+
+**CreateCollection200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 생성 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteCollection**
+> SuccessResponse deleteCollection()
+
+자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //삭제할 컬렉션 ID (default to undefined)
+
+const { status, data } = await apiInstance.deleteCollection(
+    collectionId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **collectionId** | [**string**] | 삭제할 컬렉션 ID | defaults to undefined|
+
+
+### Return type
+
+**SuccessResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 삭제 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**403** | 권한 없음 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteCollection_0**
+> SuccessResponse deleteCollection_0()
+
+자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //삭제할 컬렉션 ID (default to undefined)
+
+const { status, data } = await apiInstance.deleteCollection_0(
+    collectionId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **collectionId** | [**string**] | 삭제할 컬렉션 ID | defaults to undefined|
+
+
+### Return type
+
+**SuccessResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 삭제 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**403** | 권한 없음 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getCollectionDetail**
+> GetCollectionDetail200Response getCollectionDetail()
+
+특정 컬렉션의 상세 정보를 조회합니다. 컬렉션의 기본 정보, 포함된 모든 아이템 목록, 그리고 댓글 목록을 포함합니다. 비공개 컬렉션은 생성자 본인만 조회할 수 있습니다. 로그인한 사용자가 요청할 경우, 해당 컬렉션에 대한 \'좋아요\' 여부(`isLiked`)가 추가로 제공됩니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //컬렉션 ID (default to undefined)
+let authorization: string; //선택사항. 로그인 시 좋아요 상태 등 추가 정보 제공 (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getCollectionDetail(
+    collectionId,
+    authorization
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **collectionId** | [**string**] | 컬렉션 ID | defaults to undefined|
+| **authorization** | [**string**] | 선택사항. 로그인 시 좋아요 상태 등 추가 정보 제공 | (optional) defaults to undefined|
+
+
+### Return type
+
+**GetCollectionDetail200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getCollectionDetail_0**
+> GetCollectionDetail200Response getCollectionDetail_0()
+
+특정 컬렉션의 상세 정보를 조회합니다. 컬렉션의 기본 정보, 포함된 모든 아이템 목록, 그리고 댓글 목록을 포함합니다. 비공개 컬렉션은 생성자 본인만 조회할 수 있습니다. 로그인한 사용자가 요청할 경우, 해당 컬렉션에 대한 \'좋아요\' 여부(`isLiked`)가 추가로 제공됩니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //컬렉션 ID (default to undefined)
+let authorization: string; //선택사항. 로그인 시 좋아요 상태 등 추가 정보 제공 (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getCollectionDetail_0(
+    collectionId,
+    authorization
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **collectionId** | [**string**] | 컬렉션 ID | defaults to undefined|
+| **authorization** | [**string**] | 선택사항. 로그인 시 좋아요 상태 등 추가 정보 제공 | (optional) defaults to undefined|
+
+
+### Return type
+
+**GetCollectionDetail200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMyCollections**
+> GetUserCollections200Response getMyCollections()
+
+현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getMyCollections();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMyCollections_0**
+> GetMyCollections200Response getMyCollections_0()
+
+현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let userId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getMyCollections_0(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GetMyCollections200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections**
+> GetUserCollections200Response getUserCollections()
+
+ \'공개(public)\'로 설정된 컬렉션을 조회합니다
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getUserCollections();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_0**
+> GetUserCollections200Response getUserCollections_0()
+
+ \'공개(public)\'로 설정된 컬렉션을 조회합니다
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getUserCollections_0();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_1**
+> GetUserCollections200Response1 getUserCollections_1()
+
+홈 화면에 해당하는 API
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getUserCollections_1();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response1**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_2**
+> GetUserCollections200Response2 getUserCollections_2()
+
+홈 화면에 해당하는 API
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getUserCollections_2();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response2**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_3**
+> GetUserCollections200Response3 getUserCollections_3()
+
+홈 화면에 해당하는 API
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    GetUserCollectionsRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let getUserCollectionsRequest: GetUserCollectionsRequest; // (optional)
+
+const { status, data } = await apiInstance.getUserCollections_3(
+    getUserCollectionsRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **getUserCollectionsRequest** | **GetUserCollectionsRequest**|  | |
+
+
+### Return type
+
+**GetUserCollections200Response3**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_4**
+> GetUserCollections200Response1 getUserCollections_4()
+
+홈 화면에 해당하는 API
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let userId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getUserCollections_4(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GetUserCollections200Response1**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_5**
+> GetUserCollections200Response getUserCollections_5()
+
+특정 사용자가 생성한 컬렉션 중 \'공개(public)\'로 설정된 목록만 조회합니다. 다른 사용자의 비공개 컬렉션은 이 API를 통해 조회할 수 없습니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let userId: string; //조회할 사용자 ID (integer) (default to undefined)
+
+const { status, data } = await apiInstance.getUserCollections_5(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] | 조회할 사용자 ID (integer) | defaults to undefined|
+
+
+### Return type
+
+**GetUserCollections200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_6**
+> GetUserCollections200Response3 getUserCollections_6()
+
+홈 화면에 해당하는 API
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getUserCollections_6();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response3**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **search**
+> Search200Response search()
+
+키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let q: string; //이름  (optional) (default to undefined)
+let sortBy: string; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.search(
+    q,
+    sortBy
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **q** | [**string**] | 이름  | (optional) defaults to undefined|
+| **sortBy** | [**string**] |  | (optional) defaults to undefined|
+
+
+### Return type
+
+**Search200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 검색 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **toggleCollectionLike**
+> ToggleCollectionLike200Response toggleCollectionLike()
+
+특정 컬렉션에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 컬렉션에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //좋아요를 토글할 컬렉션 ID (default to undefined)
+
+const { status, data } = await apiInstance.toggleCollectionLike(
+    collectionId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **collectionId** | [**string**] | 좋아요를 토글할 컬렉션 ID | defaults to undefined|
+
+
+### Return type
+
+**ToggleCollectionLike200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 좋아요 토글 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **toggleCollectionLike_0**
+> ToggleCollectionLike200Response toggleCollectionLike_0()
+
+특정 컬렉션에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 컬렉션에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //좋아요를 토글할 컬렉션 ID (default to undefined)
+
+const { status, data } = await apiInstance.toggleCollectionLike_0(
+    collectionId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **collectionId** | [**string**] | 좋아요를 토글할 컬렉션 ID | defaults to undefined|
+
+
+### Return type
+
+**ToggleCollectionLike200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 좋아요 토글 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateCollection**
+> GetCollectionDetail200Response updateCollection()
+
+자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    UpdateCollectionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //수정할 컬렉션 ID (default to undefined)
+let updateCollectionRequest: UpdateCollectionRequest; // (optional)
+
+const { status, data } = await apiInstance.updateCollection(
+    collectionId,
+    updateCollectionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **updateCollectionRequest** | **UpdateCollectionRequest**|  | |
+| **collectionId** | [**string**] | 수정할 컬렉션 ID | defaults to undefined|
+
+
+### Return type
+
+**GetCollectionDetail200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 수정 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**403** | 권한 없음 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateCollection_0**
+> GetCollectionDetail200Response updateCollection_0()
+
+자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    UpdateCollectionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: string; //수정할 컬렉션 ID (default to undefined)
+let updateCollectionRequest: UpdateCollectionRequest; // (optional)
+
+const { status, data } = await apiInstance.updateCollection_0(
+    collectionId,
+    updateCollectionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **updateCollectionRequest** | **UpdateCollectionRequest**|  | |
+| **collectionId** | [**string**] | 수정할 컬렉션 ID | defaults to undefined|
+
+
+### Return type
+
+**GetCollectionDetail200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 수정 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**403** | 권한 없음 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run dev:*)",
+      "Bash(if [ -d \"node_modules/.vite\" ])",
+      "Bash(then rm -rf node_modules/.vite)",
+      "Bash(else echo \"No Vite cache found\")",
+      "Bash(fi)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
