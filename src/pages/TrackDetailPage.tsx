@@ -1,12 +1,10 @@
 import {
   ArrowLeft,
   Heart,
-  Share,
-  MoreVertical,
   RefreshCw,
   Bug,
-  Edit3,
   Star,
+  Loader2,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -19,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import { useState } from "react";
+import { useTrackDetail } from "../hooks/useTrackDetail";
 
 interface TrackDetailPageProps {
   trackId: string;
@@ -29,24 +28,10 @@ export function TrackDetailPage({
   trackId,
   onNavigate,
 }: TrackDetailPageProps) {
-  const [track] = useState({
-    id: trackId,
-    title: "Bohemian Rhapsody",
-    artist: "Queen",
-    artistId: "artist-2", // 아티스트 ID 추가
-    album: "A Night at the Opera",
-    albumId: "album-1", // 앨범 ID도 추가
-    releaseDate: "1975-10-31",
-    duration: "5:55",
-    imageUrl:
-      "https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    averageRating: 4.9,
-    totalReviews: 856,
-    ratingDistribution: [1, 2, 8, 25, 64], // 1-5성 비율 (%)
-  });
+  // API 데이터 가져오기
+  const { data: track, loading, error } = useTrackDetail(trackId);
 
   const [userRating, setUserRating] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
@@ -67,6 +52,70 @@ export function TrackDetailPage({
   const handleWriteComment = () => {
     console.log("코멘트 작성");
   };
+
+  // Loading 상태
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground">트랙 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error 상태
+  if (error || !track) {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="text-center space-y-4">
+          <p className="text-destructive font-semibold">트랙 정보를 불러올 수 없습니다</p>
+          <p className="text-sm text-muted-foreground">{error?.message || '알 수 없는 오류가 발생했습니다'}</p>
+          <Button onClick={() => window.location.reload()}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            다시 시도
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // 아티스트 정보 변환
+  const artistNames = track.artists?.map(a => a.name).join(', ') || '알 수 없는 아티스트';
+  const primaryArtistId = track.artists?.[0]?.id;
+
+  // 평점 분포 배열 변환 (5성 → 1성 순서, 퍼센트로 변환)
+  const calculateRatingPercentages = () => {
+    if (!track.rating?.distribution) return [0, 0, 0, 0, 0];
+
+    const dist = track.rating.distribution;
+    // 전체 개수 합계
+    const total =
+      (dist['0.5'] || 0) + (dist['1.0'] || 0) + (dist['1.5'] || 0) + (dist['2.0'] || 0) +
+      (dist['2.5'] || 0) + (dist['3.0'] || 0) + (dist['3.5'] || 0) + (dist['4.0'] || 0) +
+      (dist['4.5'] || 0) + (dist['5.0'] || 0);
+
+    if (total === 0) return [0, 0, 0, 0, 0];
+
+    // 각 별점별 개수 합산 (0.5와 정수 합치기)
+    const star1Count = (dist['0.5'] || 0) + (dist['1.0'] || 0);
+    const star2Count = (dist['1.5'] || 0) + (dist['2.0'] || 0);
+    const star3Count = (dist['2.5'] || 0) + (dist['3.0'] || 0);
+    const star4Count = (dist['3.5'] || 0) + (dist['4.0'] || 0);
+    const star5Count = (dist['4.5'] || 0) + (dist['5.0'] || 0);
+
+    // 퍼센트로 변환 (5성 → 1성 순서)
+    return [
+      Math.round((star5Count / total) * 100),
+      Math.round((star4Count / total) * 100),
+      Math.round((star3Count / total) * 100),
+      Math.round((star2Count / total) * 100),
+      Math.round((star1Count / total) * 100)
+    ];
+  };
+
+  const ratingDistribution = calculateRatingPercentages();
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -100,42 +149,25 @@ export function TrackDetailPage({
               <p
                 className="text-lg text-muted-foreground hover:text-primary cursor-pointer transition-colors"
                 onClick={() =>
-                  onNavigate("artist-detail", track.artistId)
+                  primaryArtistId && onNavigate("artist-detail", primaryArtistId)
                 }
               >
-                {track.artist}
+                {artistNames}
               </p>
               <p
                 className="text-sm text-muted-foreground hover:text-primary cursor-pointer transition-colors"
                 onClick={() =>
-                  onNavigate("album-detail", track.albumId)
+                  onNavigate("album-detail", track.album.id)
                 }
               >
-                {track.album}
+                {track.album.title}
               </p>
               <p className="text-sm text-muted-foreground">
-                {track.releaseDate} • {track.duration}
+                {track.releaseDate}
               </p>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center justify-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsLiked(!isLiked)}
-                className={
-                  isLiked ? "text-red-500 border-red-500" : ""
-                }
-              >
-                <Heart
-                  className={`w-4 h-4 ${isLiked ? "fill-red-500" : ""}`}
-                />
-              </Button>
-              <Button variant="outline" size="sm">
-                <Share className="w-4 h-4" />
-              </Button>
-            </div>
+          {/* Action Buttons 제거: 좋아요/공유 삭제 */}
           </div>
 
           {/* User Rating */}
@@ -165,23 +197,23 @@ export function TrackDetailPage({
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <StarRating
-                  rating={track.averageRating}
+                  rating={track.rating.averageRating}
                   readonly
                   size="md"
                 />
                 <span className="text-3xl font-bold">
-                  {track.averageRating}
+                  {track.rating.averageRating.toFixed(1)}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">
-                총 {track.totalReviews}개 평가
+                총 {track.rating.totalParticipants}개 평가
               </p>
             </div>
 
             {/* Rating Distribution */}
             <div className="space-y-2">
               <h3 className="font-semibold">별점 분포</h3>
-              {track.ratingDistribution.map(
+              {ratingDistribution.map(
                 (percentage, index) => (
                   <div
                     key={index}
@@ -208,29 +240,29 @@ export function TrackDetailPage({
           <div
             className="bg-card rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors"
             onClick={() =>
-              onNavigate("album-detail", track.albumId)
+              onNavigate("album-detail", track.album.id)
             }
           >
             <div className="flex items-center gap-3">
               <ImageWithFallback
-                src={track.imageUrl}
-                alt={track.album}
+                src={track.album.imageUrl}
+                alt={track.album.title}
                 className="w-12 h-12 rounded-md object-cover"
               />
               <div className="flex-1">
-                <p className="font-medium">{track.album}</p>
+                <p className="font-medium">{track.album.title}</p>
                 <p className="text-sm text-muted-foreground">
                   <span
                     className="hover:text-primary cursor-pointer transition-colors"
                     onClick={(e) => {
                       e.stopPropagation(); // 부모 div의 클릭 이벤트 중단
-                      onNavigate(
+                      primaryArtistId && onNavigate(
                         "artist-detail",
-                        track.artistId,
+                        primaryArtistId,
                       );
                     }}
                   >
-                    {track.artist}
+                    {artistNames}
                   </span>
                   의 앨범
                 </p>
@@ -246,75 +278,51 @@ export function TrackDetailPage({
             <h3 className="text-lg font-semibold">
               이 트랙이 포함된 컬렉션
             </h3>
-            <div className="space-y-3">
-              <div
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer"
-                onClick={() =>
-                  onNavigate("curation-detail", "3")
-                }
-              >
-                <div className="w-12 h-12 rounded bg-muted flex items-center justify-center overflow-hidden">
-                  <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxqYXp6JTIwbXVzaWMlMjBpbnN0cnVtZW50c3xlbnwxfHx8fDE3NTg3MDE3ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                    alt="컬렉션"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium">록의 명곡들</h4>
-                  <p className="text-sm text-muted-foreground">
-                    록 역사상 가장 위대한 명곡들만 모았습니다
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-muted-foreground">
-                      록마니아
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      •
-                    </span>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Heart className="w-3 h-3" />
-                      567
+            {track.collections && track.collections.length > 0 ? (
+              <div className="space-y-3">
+                {track.collections.map((collection) => (
+                  <div
+                    key={collection.collectionId}
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer"
+                    onClick={() =>
+                      onNavigate("curation-detail", collection.collectionId)
+                    }
+                  >
+                    <div className="w-12 h-12 rounded bg-muted flex items-center justify-center overflow-hidden">
+                      <ImageWithFallback
+                        src={collection.coverImageUrl}
+                        alt={collection.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium">{collection.title}</h4>
+                      <p className="text-sm text-muted-foreground line-clamp-1">
+                        {collection.description}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">
+                          {collection.author.username}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          •
+                        </span>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Heart className="w-3 h-3" />
+                          {collection.likeCount}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-
-              <div
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer"
-                onClick={() =>
-                  onNavigate("curation-detail", "4")
-                }
-              >
-                <div className="w-12 h-12 rounded bg-muted flex items-center justify-center overflow-hidden">
-                  <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaXRuZXNzJTIwbXVzaWMlMjB3b3Jrb3V0fGVufDF8fHx8MTc1ODcwMTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                    alt="컬렉션"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium">
-                    카라오케 필수곡
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    노래방에서 부르면 분위기 최고조
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-muted-foreground">
-                      노래방킹
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      •
-                    </span>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Heart className="w-3 h-3" />
-                      423
-                    </div>
-                  </div>
-                </div>
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  아직 이 트랙이 포함된 컬렉션이 없습니다
+                </p>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </main>

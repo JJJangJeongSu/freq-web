@@ -1,10 +1,11 @@
-import { ArrowLeft, Heart, Music, Disc, Tag, Users, Calendar, ExternalLink } from "lucide-react";
+import { ArrowLeft, Heart, Music, Disc, Tag, Users, Calendar, ExternalLink, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { Separator } from "../components/ui/separator";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useState } from "react";
+import { useArtistDetail } from "../hooks/useArtistDetail";
 
 interface ArtistDetailPageProps {
   artistId: string;
@@ -12,85 +13,43 @@ interface ArtistDetailPageProps {
 }
 
 export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps) {
-  const [isLiked, setIsLiked] = useState(false);
+  // API 데이터 가져오기
+  const { data: artist, loading, error } = useArtistDetail(artistId);
 
-  // 더미 아티스트 데이터
-  const artist = {
-    id: artistId,
-    name: "IU",
-    koreanName: "아이유",
-    profileImage: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrb3JlYW4lMjBzaW5nZXIlMjBwb3AlMjBhcnRpc3R8ZW58MXx8fHwxNzU4NzAzMjEyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    genres: ["K-Pop", "발라드", "포크"],
-    debut: "2008년",
-    agency: "EDAM Entertainment",
-    followers: "2.8M",
-    description: "대한민국의 싱어송라이터이자 배우. 독특하고 깊이 있는 음악 세계관으로 많은 사랑을 받고 있다.",
-    stats: {
-      albums: 12,
-      tracks: 89,
-      likes: 425000
-    }
-  };
-
-  // 발매 앨범들
-  const albums = [
-    {
-      id: "1",
-      title: "Love poem",
-      year: "2019",
-      type: "정규앨범",
-      imageUrl: "https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      rating: 4.8
-    },
-    {
-      id: "2", 
-      title: "LILAC",
-      year: "2021",
-      type: "정규앨범",
-      imageUrl: "https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      rating: 4.9
-    },
-    {
-      id: "3",
-      title: "strawberry moon",
-      year: "2021", 
-      type: "디지털 싱글",
-      imageUrl: "https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      rating: 4.7
-    }
-  ];
-
-  // 인기 트랙들
-  const popularTracks = [
-    {
-      id: "1",
-      title: "Celebrity", 
-      album: "LILAC",
-      year: "2021",
-      imageUrl: "https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      rating: 4.9
-    },
-    {
-      id: "2",
-      title: "Through the Night",
-      album: "palette",
-      year: "2017", 
-      imageUrl: "https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      rating: 4.8
-    },
-    {
-      id: "3",
-      title: "Love poem",
-      album: "Love poem",
-      year: "2019",
-      imageUrl: "https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      rating: 4.7
-    }
-  ];
+  // isLiked 상태는 API의 isLiked 값으로 초기화
+  const [isLiked, setIsLiked] = useState(artist?.isLiked || false);
 
   const handleLikeToggle = () => {
     setIsLiked(!isLiked);
   };
+
+  // Loading 상태
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground">아티스트 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error 상태
+  if (error || !artist) {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="text-center space-y-4">
+          <p className="text-destructive font-semibold">아티스트 정보를 불러올 수 없습니다</p>
+          <p className="text-sm text-muted-foreground">{error?.message || '알 수 없는 오류가 발생했습니다'}</p>
+          <Button onClick={() => window.location.reload()}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            다시 시도
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -115,7 +74,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
               {/* Profile Image */}
               <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
                 <ImageWithFallback
-                  src={artist.profileImage}
+                  src={artist.imageUrl}
                   alt={artist.name}
                   className="w-full h-full object-cover"
                 />
@@ -126,11 +85,8 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h1 className="text-xl font-bold">{artist.name}</h1>
-                    {artist.koreanName && (
-                      <p className="text-sm text-muted-foreground">{artist.koreanName}</p>
-                    )}
                   </div>
-                  
+
                   {/* Like Button */}
                   <Button
                     variant={isLiked ? "default" : "outline"}
@@ -144,13 +100,15 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                 </div>
 
                 {/* Genres */}
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {artist.genres.map((genre) => (
-                    <Badge key={genre} variant="secondary" className="text-xs">
-                      {genre}
-                    </Badge>
-                  ))}
-                </div>
+                {artist.genres && artist.genres.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {artist.genres.map((genre) => (
+                      <Badge key={genre} variant="secondary" className="text-xs">
+                        {genre}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -158,34 +116,17 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
             <div className="flex items-center gap-6 mt-4 text-sm">
               <div className="flex items-center gap-1">
                 <Disc className="w-4 h-4 text-muted-foreground" />
-                <span>{artist.stats.albums}개 앨범</span>
+                <span>{artist.albums.length}개 앨범</span>
               </div>
               <div className="flex items-center gap-1">
                 <Music className="w-4 h-4 text-muted-foreground" />
-                <span>{artist.stats.tracks}개 트랙</span>
+                <span>{artist.popularTracks.length}개 인기 트랙</span>
               </div>
               <div className="flex items-center gap-1">
                 <Heart className="w-4 h-4 text-muted-foreground" />
-                <span>{(artist.stats.likes / 1000).toFixed(1)}K</span>
+                <span>{artist.likes >= 1000 ? `${(artist.likes / 1000).toFixed(1)}K` : artist.likes}</span>
               </div>
             </div>
-
-            {/* Artist Info */}
-            <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>데뷔: {artist.debut}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                <span>소속사: {artist.agency}</span>
-              </div>
-            </div>
-
-            {/* Description */}
-            {artist.description && (
-              <p className="mt-3 text-sm leading-relaxed">{artist.description}</p>
-            )}
           </div>
         </div>
 
@@ -203,7 +144,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
             </div>
             
             <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide">
-              {albums.map((album) => (
+              {artist.albums.map((album) => (
                 <Card
                   key={album.id}
                   className="flex-shrink-0 w-32 cursor-pointer hover:shadow-md transition-shadow"
@@ -219,8 +160,9 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                   <CardContent className="p-2">
                     <h3 className="font-medium text-sm line-clamp-1">{album.title}</h3>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs text-muted-foreground">{album.year}</span>
-                      <Badge variant="outline" className="text-xs">{album.type}</Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {album.releaseDate ? new Date(album.releaseDate).getFullYear() : ''}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -243,7 +185,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
             </div>
             
             <div className="px-4 space-y-2">
-              {popularTracks.map((track, index) => (
+              {artist.popularTracks.map((track, index) => (
                 <Card
                   key={track.id}
                   className="cursor-pointer hover:shadow-sm transition-shadow"
@@ -254,24 +196,23 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                       <div className="flex-shrink-0 text-sm text-muted-foreground w-4 text-center">
                         {index + 1}
                       </div>
-                      
-                      <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0">
-                        <ImageWithFallback
-                          src={track.imageUrl}
-                          alt={track.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      
+
+                      {track.imageUrl && (
+                        <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0">
+                          <ImageWithFallback
+                            src={track.imageUrl}
+                            alt={track.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-sm line-clamp-1">{track.title}</h3>
                         <p className="text-xs text-muted-foreground">
-                          {track.album} • {track.year}
+                          {track.artists.join(', ')}
+                          {track.releaseDate && ` • ${new Date(track.releaseDate).getFullYear()}`}
                         </p>
-                      </div>
-                      
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <span>★ {track.rating}</span>
                       </div>
                     </div>
                   </CardContent>
