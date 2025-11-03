@@ -7,6 +7,8 @@ import { Separator } from "../components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { useState } from "react";
 import { useAlbumDetail } from "../hooks/useAlbumDetail";
+import { useCreateReview } from "../hooks/useCreateReview";
+import { CreateReviewRequestTypeEnum } from "../api/models";
 
 interface AlbumDetailPageProps {
   albumId: string;
@@ -16,11 +18,34 @@ interface AlbumDetailPageProps {
 export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
   // API 데이터 가져오기
   const { data: album, loading, error } = useAlbumDetail(albumId);
+  const { createReview, loading: reviewLoading, error: reviewError } = useCreateReview();
 
   const [userRating, setUserRating] = useState(0);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
+    setSubmitSuccess(false);
+  };
+
+  const handleSubmitRating = async () => {
+    if (!album || userRating === 0) return;
+
+    try {
+      await createReview({
+        rating: userRating,
+        type: CreateReviewRequestTypeEnum.Album,
+        targetId: albumId,
+        artistIds: album.artists.map(a => a.artistId)
+      });
+
+      setSubmitSuccess(true);
+      // 3초 후 성공 메시지 숨기기
+      setTimeout(() => setSubmitSuccess(false), 3000);
+    } catch (err) {
+      // 에러는 useCreateReview에서 처리됨
+      console.error('Review submission failed:', err);
+    }
   };
 
   // Loading 상태
@@ -149,18 +174,37 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
             {/* Action Buttons */}
             {userRating > 0 && (
               <div className="space-y-3 pt-4 border-t border-border/50">
+                {/* 에러 메시지 */}
+                {reviewError && (
+                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-sm text-destructive">{reviewError.message}</p>
+                  </div>
+                )}
+
+                {/* 성공 메시지 */}
+                {submitSuccess && (
+                  <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <p className="text-sm text-green-600">✓ 평가가 등록되었습니다!</p>
+                  </div>
+                )}
+
                 <div className="flex gap-2">
-                  <Button 
-                    onClick={() => {
-                      console.log('별점만 제출:', userRating);
-                      // TODO: 별점만 등록하는 API 호출
-                    }}
+                  <Button
+                    onClick={handleSubmitRating}
                     variant="outline"
                     className="flex-1 h-12"
+                    disabled={reviewLoading || submitSuccess}
                   >
-                    제출하기
+                    {reviewLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        제출 중...
+                      </>
+                    ) : (
+                      '제출하기'
+                    )}
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => {
                       onNavigate('write-review', albumId);
                     }}

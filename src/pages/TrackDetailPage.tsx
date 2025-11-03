@@ -18,6 +18,8 @@ import {
 } from "../components/ui/dropdown-menu";
 import { useState } from "react";
 import { useTrackDetail } from "../hooks/useTrackDetail";
+import { useCreateReview } from "../hooks/useCreateReview";
+import { CreateReviewRequestTypeEnum } from "../api/models";
 
 interface TrackDetailPageProps {
   trackId: string;
@@ -30,11 +32,34 @@ export function TrackDetailPage({
 }: TrackDetailPageProps) {
   // API 데이터 가져오기
   const { data: track, loading, error } = useTrackDetail(trackId);
+  const { createReview, loading: reviewLoading, error: reviewError } = useCreateReview();
 
   const [userRating, setUserRating] = useState(0);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
+    setSubmitSuccess(false);
+  };
+
+  const handleSubmitRating = async () => {
+    if (!track || userRating === 0) return;
+
+    try {
+      await createReview({
+        rating: userRating,
+        type: CreateReviewRequestTypeEnum.Track,
+        targetId: trackId,
+        artistIds: track.artists.map(a => a.id)
+      });
+
+      setSubmitSuccess(true);
+      // 3초 후 성공 메시지 숨기기
+      setTimeout(() => setSubmitSuccess(false), 3000);
+    } catch (err) {
+      // 에러는 useCreateReview에서 처리됨
+      console.error('Review submission failed:', err);
+    }
   };
 
   const handleDummyData = () => {
@@ -187,7 +212,35 @@ export function TrackDetailPage({
                 <p className="text-sm text-muted-foreground">
                   {userRating}점으로 평가하셨습니다
                 </p>
-                <Button className="w-full">제출하기</Button>
+
+                {/* 에러 메시지 */}
+                {reviewError && (
+                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-sm text-destructive">{reviewError.message}</p>
+                  </div>
+                )}
+
+                {/* 성공 메시지 */}
+                {submitSuccess && (
+                  <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <p className="text-sm text-green-600">✓ 평가가 등록되었습니다!</p>
+                  </div>
+                )}
+
+                <Button
+                  className="w-full"
+                  onClick={handleSubmitRating}
+                  disabled={reviewLoading || submitSuccess}
+                >
+                  {reviewLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      제출 중...
+                    </>
+                  ) : (
+                    '제출하기'
+                  )}
+                </Button>
               </div>
             )}
           </div>
