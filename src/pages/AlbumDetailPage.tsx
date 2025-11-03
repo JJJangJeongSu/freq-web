@@ -1,11 +1,12 @@
 import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import React from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
 import { Progress } from "../components/ui/progress";
 import { Separator } from "../components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAlbumDetail } from "../hooks/useAlbumDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
@@ -22,6 +23,16 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // 이미 평가한 경우 서버 제공 사용자 평점으로 초기화
+  useEffect(() => {
+    if (album && (album as any).isRated && typeof (album as any).userRating === 'number') {
+      const initial = (album as any).userRating as number;
+      if (initial > 0) {
+        setUserRating(initial);
+      }
+    }
+  }, [album]);
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
@@ -206,6 +217,15 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
                   </Button>
                   <Button
                     onClick={() => {
+                      try {
+                        const meta = {
+                          id: albumId,
+                          title: album.title,
+                          artist: album.artists?.map(a => a.name).join(', ') || '',
+                          imageUrl: album.imageUrl,
+                        };
+                        sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
+                      } catch {}
                       onNavigate('write-review', albumId);
                     }}
                     className="flex-1 h-12"

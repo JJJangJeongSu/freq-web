@@ -1,4 +1,4 @@
-import { ArrowLeft, Settings, Edit, Camera, Bell, Shield, Palette, Volume2, Download, Info, LogOut, FolderOpen, Plus } from "lucide-react";
+import { ArrowLeft, Settings, Edit, Camera, Shield, Palette, Volume2, Download, Info, LogOut, FolderOpen, Plus, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Switch } from "../components/ui/switch";
@@ -7,13 +7,19 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useUpdateBio } from "../hooks/useUpdateBio";
+import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
 
 interface UserPageProps {
   onNavigate: (page: string, id?: string) => void;
 }
 
 export function UserPage({ onNavigate }: UserPageProps) {
+  // API Hooks
+  const { updateBio, loading: bioLoading, error: bioError } = useUpdateBio();
+  const { updateProfileImage, loading: imageLoading, error: imageError } = useUpdateProfileImage();
+
   // 프로필 상태
   const [profileData, setProfileData] = useState({
     name: '뮤직러버',
@@ -26,13 +32,73 @@ export function UserPage({ onNavigate }: UserPageProps) {
   const [editedName, setEditedName] = useState(profileData.name);
   const [editedBio, setEditedBio] = useState(profileData.bio);
 
-  const handleEditProfile = () => {
-    setProfileData({
-      ...profileData,
-      name: editedName,
-      bio: editedBio
-    });
-    setIsEditDialogOpen(false);
+  // 이미지 업로드 상태
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // 파일 유효성 검사
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드할 수 있습니다.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert('이미지 파일은 5MB 이하여야 합니다.');
+        return;
+      }
+
+      setSelectedFile(file);
+
+      // 미리보기 생성
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditProfile = async () => {
+    try {
+      setSubmitSuccess(false);
+
+      // 이미지 업데이트
+      if (selectedFile) {
+        const result = await updateProfileImage(selectedFile);
+        setProfileData(prev => ({
+          ...prev,
+          avatar: result.imageUrl
+        }));
+      }
+
+      // 소개글 업데이트
+      if (editedBio !== profileData.bio) {
+        await updateBio(editedBio);
+        setProfileData(prev => ({
+          ...prev,
+          bio: editedBio
+        }));
+      }
+
+      // 성공 처리
+      setSubmitSuccess(true);
+      setTimeout(() => {
+        setSubmitSuccess(false);
+        setIsEditDialogOpen(false);
+        setSelectedFile(null);
+        setPreviewUrl(null);
+      }, 2000);
+    } catch (err) {
+      console.error('Profile update failed:', err);
+    }
   };
 
   return (
@@ -51,19 +117,10 @@ export function UserPage({ onNavigate }: UserPageProps) {
         {/* Profile Section */}
         <div className="px-6 py-6">
           <div className="flex items-center gap-5 mb-8">
-            <div className="relative">
-              <Avatar className="w-24 h-24">
-                <AvatarImage src={profileData.avatar} />
-                <AvatarFallback className="text-xl">뮤</AvatarFallback>
-              </Avatar>
-              <Button 
-                size="sm" 
-                className="absolute -bottom-1 -right-1 w-10 h-10 rounded-full"
-                variant="secondary"
-              >
-                <Camera className="w-5 h-5" />
-              </Button>
-            </div>
+            <Avatar className="w-24 h-24">
+              <AvatarImage src={profileData.avatar} />
+              <AvatarFallback className="text-xl">뮤</AvatarFallback>
+            </Avatar>
             <div className="flex-1">
               <h2 className="text-xl font-semibold mb-2">{profileData.name}</h2>
               <p className="text-muted-foreground text-sm leading-relaxed mb-3">{profileData.bio}</p>
@@ -99,15 +156,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={() => onNavigate('rate-record')}>
-                  <div className="flex items-center gap-4">
-                    <Settings className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">평가 기록</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">내가 평가한 음악 보기</p>
-                    </div>
-                  </div>
-                </div>
+                
 
                 <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={() => onNavigate('create-collection')}>
                   <div className="flex items-center gap-4">
@@ -133,24 +182,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
 
             <Separator />
 
-            {/* 알림 설정 */}
-            <div className="space-y-5">
-              <h3 className="font-semibold text-lg">알림</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl">
-                  <div className="flex items-center gap-4">
-                    <Bell className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">푸시 알림</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">새로운 음악, 업데이트 알림</p>
-                    </div>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
+            
 
             {/* 앱 설정 */}
             <div className="space-y-5">
@@ -213,18 +245,43 @@ export function UserPage({ onNavigate }: UserPageProps) {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>프로필 편집</DialogTitle>
-            <DialogDescription>이름과 소개를 변경할 수 있습니다.</DialogDescription>
+            <DialogDescription>이미지와 소개를 변경할 수 있습니다.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            {/* 프로필 이미지 업로드 */}
             <div className="space-y-2">
-              <Label htmlFor="name">이름</Label>
-              <Input
-                id="name"
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                className="col-span-3"
-              />
+              <Label>프로필 이미지</Label>
+              <div className="flex justify-center">
+                <div className="relative">
+                  <Avatar className="w-24 h-24">
+                    <AvatarImage src={previewUrl || profileData.avatar} />
+                    <AvatarFallback className="text-xl">뮤</AvatarFallback>
+                  </Avatar>
+                  <Button
+                    size="sm"
+                    className="absolute -bottom-1 -right-1 w-10 h-10 rounded-full"
+                    variant="secondary"
+                    onClick={handleImageClick}
+                    disabled={bioLoading || imageLoading}
+                  >
+                    <Camera className="w-5 h-5" />
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+              {selectedFile && (
+                <p className="text-xs text-center text-muted-foreground">
+                  선택된 파일: {selectedFile.name}
+                </p>
+              )}
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="bio">소개</Label>
               <Textarea
@@ -232,15 +289,51 @@ export function UserPage({ onNavigate }: UserPageProps) {
                 value={editedBio}
                 onChange={(e) => setEditedBio(e.target.value)}
                 className="col-span-3"
+                disabled={bioLoading || imageLoading}
               />
             </div>
+
+            {/* 에러 메시지 */}
+            {(bioError || imageError) && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-sm text-destructive">
+                  {bioError?.message || imageError?.message}
+                </p>
+              </div>
+            )}
+
+            {/* 성공 메시지 */}
+            {submitSuccess && (
+              <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <p className="text-sm text-green-600">✓ 프로필이 업데이트되었습니다!</p>
+              </div>
+            )}
           </div>
           <DialogFooter>
-            <Button type="button" onClick={() => setIsEditDialogOpen(false)}>
+            <Button
+              type="button"
+              onClick={() => {
+                setIsEditDialogOpen(false);
+                setSelectedFile(null);
+                setPreviewUrl(null);
+              }}
+              disabled={bioLoading || imageLoading}
+            >
               취소
             </Button>
-            <Button type="button" onClick={handleEditProfile}>
-              저장
+            <Button
+              type="button"
+              onClick={handleEditProfile}
+              disabled={bioLoading || imageLoading || submitSuccess}
+            >
+              {bioLoading || imageLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  저장 중...
+                </>
+              ) : (
+                '저장'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

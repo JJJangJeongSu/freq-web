@@ -97,28 +97,28 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
         ) : (
           <Tabs defaultValue="albums" className="px-6 pt-6">
             {/* Material 3 Tab List */}
-            <TabsList className="grid grid-cols-3 rounded-xl p-1 mb-8" style={{ backgroundColor: 'var(--surface-container-highest)' }}>
+            <TabsList className="w-full rounded-xl p-1 mb-3" style={{ backgroundColor: 'var(--surface-container-highest)' }}>
               <TabsTrigger 
                 value="albums"
-                className="py-3 px-4 rounded-lg transition-all duration-200"
+                className="transition-all duration-200"
               >
                 앨범
               </TabsTrigger>
               <TabsTrigger 
                 value="tracks"
-                className="py-3 px-4 rounded-lg transition-all duration-200"
+                className="transition-all duration-200"
               >
                 트랙
               </TabsTrigger>
               <TabsTrigger 
                 value="artists"
-                className="py-3 px-4 rounded-lg transition-all duration-200"
+                className="transition-all duration-200"
               >
                 아티스트
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="albums" className="mt-6">
+            <TabsContent value="albums" className="mt-2">
               <div className="space-y-4">
                 {searchResults.albums.map((album: any) => (
                   <div
@@ -144,38 +144,18 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                       <h3 className="font-semibold text-base line-clamp-1 mb-1.5 leading-tight">{album.title}</h3>
                       {/* 아티스트 - 두 번째로 중요한 정보 */}
                       <p className="text-sm font-medium text-muted-foreground line-clamp-1 mb-1">{album.artist}</p>
-                      {/* 기타 정보 - 가장 덜 중요한 정보 */}
+                      {/* 기타 정보 - 가장 덜 중요한 정보 (인기도 제거) */}
                       <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
                         {album.releaseYear && <span>{album.releaseYear}</span>}
-                        {album.popularity !== undefined && (
-                          <>
-                            {album.releaseYear && <span>•</span>}
-                            <span>인기도 {album.popularity}</span>
-                          </>
-                        )}
                       </div>
                     </div>
-                    {/* Quick Action */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-10 px-4"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Quick rate action
-                        }}
-                      >
-                        <Star className="w-4 h-4 mr-2" />
-                        평가
-                      </Button>
-                    </div>
+                    {/* Quick Action 제거 (평가 버튼 삭제) */}
                   </div>
                 ))}
               </div>
             </TabsContent>
             
-            <TabsContent value="tracks" className="mt-6">
+            <TabsContent value="tracks" className="mt-2">
               <div className="space-y-4">
                 {searchResults.tracks.map((track: any) => (
                   <div
@@ -201,38 +181,19 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                       <h3 className="font-semibold text-base line-clamp-1 mb-1.5 leading-tight">{track.title}</h3>
                       {/* 아티스트 - 두 번째로 중요한 정보 */}
                       <p className="text-sm font-medium text-muted-foreground line-clamp-1 mb-1">{track.artist}</p>
-                      {/* 기타 정보 - 가장 덜 중요한 정보 */}
+                      {/* 기타 정보 - 인기도 제거 */}
                       <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
                         {track.releaseYear && <span>{track.releaseYear}</span>}
-                        {track.popularity !== undefined && (
-                          <>
-                            {track.releaseYear && <span>•</span>}
-                            <span>인기도 {track.popularity}</span>
-                          </>
-                        )}
                       </div>
                     </div>
-                    {/* Quick Action */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-10 px-4"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Quick rate action
-                        }}
-                      >
-                        <Star className="w-4 h-4 mr-2" />
-                        평가
-                      </Button>
-                    </div>
+                    {/* Quick Action 제거 (평가 버튼 삭제) */}
+                    {/* Quick Action 제거 (평가 버튼 삭제) */}
                   </div>
                 ))}
               </div>
             </TabsContent>
             
-            <TabsContent value="artists" className="mt-6">
+            <TabsContent value="artists" className="mt-2">
               <div className="space-y-4">
                 {searchResults.artists.map((artist: any) => (
                   <div
@@ -247,32 +208,12 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                     <div className="flex-1 min-w-0">
                       {/* 이름 - 가장 중요한 정보 */}
                       <h3 className="font-semibold text-base line-clamp-1 mb-1.5 leading-tight">{artist.title}</h3>
-                      {/* 타입 및 인기도 정보 */}
+                      {/* 타입 정보 (인기도 제거) */}
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>아티스트</span>
-                        {artist.popularity !== undefined && (
-                          <>
-                            <span>•</span>
-                            <span>인기도 {artist.popularity}</span>
-                          </>
-                        )}
                       </div>
                     </div>
-                    {/* Quick Action */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant={artist.isRated ? "default" : "outline"}
-                        size="sm"
-                        className="h-10 px-4"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Quick rate action for artists
-                        }}
-                      >
-                        <Star className={`w-4 h-4 mr-2 ${artist.isRated ? 'fill-current' : ''}`} />
-                        {artist.isRated ? '평가됨' : '평가'}
-                      </Button>
-                    </div>
+                    {/* Quick Action 제거 (평가 버튼 삭제) */}
                   </div>
                 ))}
               </div>

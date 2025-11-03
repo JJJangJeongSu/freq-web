@@ -2,20 +2,15 @@ import {
   ArrowLeft,
   Heart,
   RefreshCw,
-  Bug,
   Star,
   Loader2,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import React from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
 import { Progress } from "../components/ui/progress";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
+
 import { useState } from "react";
 import { useTrackDetail } from "../hooks/useTrackDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
@@ -62,17 +57,7 @@ export function TrackDetailPage({
     }
   };
 
-  const handleDummyData = () => {
-    setUserRating(Math.floor(Math.random() * 5) + 1);
-  };
-
-  const handleRefresh = () => {
-    window.location.reload();
-  };
-
-  const handleError = () => {
-    console.log("에러 시뮬레이션");
-  };
+  
 
   const handleWriteComment = () => {
     console.log("코멘트 작성");
@@ -380,29 +365,7 @@ export function TrackDetailPage({
         </div>
       </main>
 
-      {/* Debug Menu */}
-      <div className="fixed bottom-20 right-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Bug className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={handleDummyData}>
-              더미 평점
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleRefresh}>
-              <RefreshCw className="w-4 h-4 mr-2" />
-              새로고침
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleError}>
-              <Bug className="w-4 h-4 mr-2" />
-              에러
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      
     </div>
   );
 }

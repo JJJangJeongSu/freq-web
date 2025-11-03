@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
 import { Button } from "../components/ui/button";
+import React from "react";
 import { Textarea } from "../components/ui/textarea";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
@@ -12,13 +13,30 @@ interface WriteReviewPageProps {
 }
 
 export function WriteReviewPage({ albumId, onNavigate }: WriteReviewPageProps) {
-  // TODO: 실제로는 albumId를 사용하여 앨범 정보를 가져와야 함
-  const [album] = useState({
+  // 앨범 메타데이터: 앨범 상세에서 세션 스토리지로 전달됨
+  const [album, setAlbum] = useState<{ id: string; title: string; artist: string; imageUrl: string }>({
     id: albumId,
-    title: 'Thriller',
-    artist: 'Michael Jackson',
-    imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    title: '',
+    artist: '',
+    imageUrl: ''
   });
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('review:albumMeta');
+      if (raw) {
+        const meta = JSON.parse(raw);
+        if (meta && meta.id === albumId) {
+          setAlbum({
+            id: meta.id,
+            title: meta.title || '',
+            artist: meta.artist || '',
+            imageUrl: meta.imageUrl || ''
+          });
+        }
+      }
+    } catch {}
+  }, [albumId]);
 
   const [rating, setRating] = useState(4); // 앨범 상세 페이지에서 선택한 별점이 전달됨
   const [reviewText, setReviewText] = useState('');
@@ -55,13 +73,13 @@ export function WriteReviewPage({ albumId, onNavigate }: WriteReviewPageProps) {
           {/* Album Info */}
           <div className="flex flex-col items-center space-y-4">
             <ImageWithFallback
-              src={album.imageUrl}
+              src={album.imageUrl || 'https://placehold.co/300x300?text=Album'}
               alt={album.title}
               className="w-40 h-40 rounded-lg object-cover shadow-lg"
             />
             <div className="text-center">
-              <h2 className="text-xl font-bold">{album.title}</h2>
-              <p className="text-muted-foreground">{album.artist}</p>
+              <h2 className="text-xl font-bold">{album.title || '앨범 제목'}</h2>
+              <p className="text-muted-foreground">{album.artist || '아티스트'}</p>
             </div>
           </div>
 

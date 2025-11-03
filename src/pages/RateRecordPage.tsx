@@ -226,7 +226,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
             </div>
             <div className="flex flex-col items-center justify-center min-h-[60px]">
               <div className="text-2xl font-bold text-primary">{userStats.receivedLikes}</div>
-              <div className="text-xs text-muted-foreground mt-1 text-center leading-tight">받은<br />좋아요</div>
+              <div className="text-xs text-muted-foreground mt-1 text-center leading-tight">좋아요</div>
             </div>
             <div 
               className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
