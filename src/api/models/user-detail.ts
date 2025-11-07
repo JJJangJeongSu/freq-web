@@ -18,13 +18,7 @@
 import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RatedAlbum } from './rated-album';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RatedTrack } from './rated-track';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RatingDistribution } from './rating-distribution';
+import type { GetMyActivity200ResponseAllOfDataRateDistributions } from './get-my-activity200-response-all-of-data-rate-distributions';
 
 /**
  * 
@@ -87,23 +81,17 @@ export interface UserDetail {
      */
     'likedArtistCount': number;
     /**
-     * 
-     * @type {RatingDistribution}
-     * @memberof UserDetail
-     */
-    'rateDistribution': RatingDistribution;
-    /**
      * 평가한 앨범 미리보기
-     * @type {Array<RatedAlbum>}
+     * @type {Array<object>}
      * @memberof UserDetail
      */
-    'ratedAlbums': Array<RatedAlbum>;
+    'ratedAlbums': Array<object>;
     /**
      * 평가한 트랙 미리보기
-     * @type {Array<RatedTrack>}
+     * @type {Array<object>}
      * @memberof UserDetail
      */
-    'ratedTracks': Array<RatedTrack>;
+    'ratedTracks': Array<object>;
     /**
      * 내가 만든 컬렉션
      * @type {Array<CollectionPreview>}
@@ -116,5 +104,11 @@ export interface UserDetail {
      * @memberof UserDetail
      */
     'likedCollections': Array<CollectionPreview>;
+    /**
+     * 
+     * @type {GetMyActivity200ResponseAllOfDataRateDistributions}
+     * @memberof UserDetail
+     */
+    'rateDistributions': GetMyActivity200ResponseAllOfDataRateDistributions;
 }
 

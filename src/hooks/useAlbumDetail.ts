@@ -6,10 +6,10 @@
 
 import { useState, useEffect } from 'react';
 import { apiService } from '@/services/api.service';
-import { AlbumDetail } from '@/api/models';
+import type { AlbumDetailWithReviews } from '@/types/api-overrides';
 
 interface UseAlbumDetailReturn {
-  data: AlbumDetail | null;
+  data: AlbumDetailWithReviews | null;
   loading: boolean;
   error: Error | null;
   refetch: () => void;
@@ -21,7 +21,7 @@ interface UseAlbumDetailReturn {
  * @param albumId - Spotify Album ID
  */
 export const useAlbumDetail = (albumId: string): UseAlbumDetailReturn => {
-  const [data, setData] = useState<AlbumDetail | null>(null);
+  const [data, setData] = useState<AlbumDetailWithReviews | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -43,7 +43,8 @@ export const useAlbumDetail = (albumId: string): UseAlbumDetailReturn => {
       const responseData = response.data;
 
       if (responseData.success && responseData.data) {
-        setData(responseData.data as unknown as AlbumDetail);
+        // Trust API as source of truth; extend to include reviews fields
+        setData(responseData.data as unknown as AlbumDetailWithReviews);
       } else {
         throw new Error('Failed to fetch album detail');
       }

@@ -18,16 +18,10 @@
 import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { GetMyActivity200ResponseAllOfDataRateDistributions } from './get-my-activity200-response-all-of-data-rate-distributions';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { GetMyActivity200ResponseAllOfDataUserPreferencesInner } from './get-my-activity200-response-all-of-data-user-preferences-inner';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RatedAlbum } from './rated-album';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RatedTrack } from './rated-track';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RatingDistribution } from './rating-distribution';
 
 /**
  * 
@@ -90,23 +84,17 @@ export interface GetMyActivity200ResponseAllOfData {
      */
     'likedArtistCount': number;
     /**
-     * 
-     * @type {RatingDistribution}
-     * @memberof GetMyActivity200ResponseAllOfData
-     */
-    'rateDistribution': RatingDistribution;
-    /**
      * 평가한 앨범 미리보기
-     * @type {Array<RatedAlbum>}
+     * @type {Array<object>}
      * @memberof GetMyActivity200ResponseAllOfData
      */
-    'ratedAlbums': Array<RatedAlbum>;
+    'ratedAlbums': Array<object>;
     /**
      * 평가한 트랙 미리보기
-     * @type {Array<RatedTrack>}
+     * @type {Array<object>}
      * @memberof GetMyActivity200ResponseAllOfData
      */
-    'ratedTracks': Array<RatedTrack>;
+    'ratedTracks': Array<object>;
     /**
      * 내가 만든 컬렉션
      * @type {Array<CollectionPreview>}
@@ -119,6 +107,12 @@ export interface GetMyActivity200ResponseAllOfData {
      * @memberof GetMyActivity200ResponseAllOfData
      */
     'likedCollections': Array<CollectionPreview>;
+    /**
+     * 
+     * @type {GetMyActivity200ResponseAllOfDataRateDistributions}
+     * @memberof GetMyActivity200ResponseAllOfData
+     */
+    'rateDistributions': GetMyActivity200ResponseAllOfDataRateDistributions;
     /**
      * 
      * @type {Array<GetMyActivity200ResponseAllOfDataUserPreferencesInner>}
