@@ -10,7 +10,8 @@ Name | Type | Description | Notes
 **artists** | **Array&lt;string&gt;** | 아티스트 목록 | [default to undefined]
 **imageUrl** | **string** | 앨범 커버 이미지 URL (앨범 상세에서는 불필요) | [optional] [default to undefined]
 **releaseDate** | **string** | 발매일 | [optional] [default to undefined]
-**rating** | **number** | 평균 평점 또는 사용자 평점 | [optional] [default to undefined]
+**averageRating** | **number** | 평균 평점 | [optional] [default to undefined]
+**userRating** | **number** |  사용자 평점 | [default to undefined]
 **isRated** | **boolean** | 사용자가 평가했는지 여부 | [default to undefined]
 
 ## Example
@@ -24,7 +25,8 @@ const instance: TrackPreview = {
     artists,
     imageUrl,
     releaseDate,
-    rating,
+    averageRating,
+    userRating,
     isRated,
 };
 ```

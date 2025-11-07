@@ -10,8 +10,7 @@ All URIs are relative to *http://localhost*
 |[**deleteReview_0**](#deletereview_0) | **DELETE** /reviews/{reviewId} | 리뷰 삭제|
 |[**getReviewDetail**](#getreviewdetail) | **GET** /reviews/{reviewId} | 리뷰 상세 조회|
 |[**getReviewDetail_0**](#getreviewdetail_0) | **GET** /reviews/{reviewId} | 리뷰 상세 조회|
-|[**getReviews**](#getreviews) | **GET** /reviews | 리뷰 목록 조회|
-|[**getReviews_0**](#getreviews_0) | **GET** /reviews | 리뷰 목록 조회|
+|[**getReviews**](#getreviews) | **GET** /reviews | 리뷰 목록 조회 Copy|
 |[**toggleArtistLike**](#toggleartistlike) | **POST** /reviews/artist-like/{artistId} | 아티스트 좋아요 토글|
 |[**toggleArtistLike_0**](#toggleartistlike_0) | **POST** /reviews/artist-like/{artistId} | 아티스트 좋아요 토글|
 |[**toggleReviewLike**](#togglereviewlike) | **POST** /reviews/{reviewId}/likes/toggle | 리뷰 좋아요 토글|
@@ -350,7 +349,7 @@ No authorization required
 # **getReviews**
 > GetReviews200Response getReviews()
 
-특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
+특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
 
 ### Example
 
@@ -364,11 +363,9 @@ const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
 let targetId: string; //가져올 대상의 ID (앨범 ID 또는 트랙 ID) (default to undefined)
-let type: 'album' | 'track'; //대상 타입 (default to undefined)
 
 const { status, data } = await apiInstance.getReviews(
-    targetId,
-    type
+    targetId
 );
 ```
 
@@ -377,63 +374,6 @@ const { status, data } = await apiInstance.getReviews(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **targetId** | [**string**] | 가져올 대상의 ID (앨범 ID 또는 트랙 ID) | defaults to undefined|
-| **type** | [**&#39;album&#39; | &#39;track&#39;**]**Array<&#39;album&#39; &#124; &#39;track&#39;>** | 대상 타입 | defaults to undefined|
-
-
-### Return type
-
-**GetReviews200Response**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | 리뷰 목록 조회 성공 |  -  |
-|**400** | 잘못된 요청 |  -  |
-|**500** | 서버 오류 |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getReviews_0**
-> GetReviews200Response getReviews_0()
-
-특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-
-### Example
-
-```typescript
-import {
-    ReviewsApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ReviewsApi(configuration);
-
-let targetId: string; //가져올 대상의 ID (앨범 ID 또는 트랙 ID) (default to undefined)
-let type: 'album' | 'track'; //대상 타입 (default to undefined)
-
-const { status, data } = await apiInstance.getReviews_0(
-    targetId,
-    type
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **targetId** | [**string**] | 가져올 대상의 ID (앨범 ID 또는 트랙 ID) | defaults to undefined|
-| **type** | [**&#39;album&#39; | &#39;track&#39;**]**Array<&#39;album&#39; &#124; &#39;track&#39;>** | 대상 타입 | defaults to undefined|
 
 
 ### Return type

@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [default to undefined]
 **title** | **string** |  | [default to undefined]
-**artist** | **string** |  | [default to undefined]
+**artist** | **Array&lt;string&gt;** |  | [default to undefined]
 **imageUrl** | **string** | 앨범 커버 | [default to undefined]
 
 ## Example

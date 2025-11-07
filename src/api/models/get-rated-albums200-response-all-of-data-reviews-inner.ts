@@ -25,10 +25,10 @@ import type { GetRatedAlbums200ResponseAllOfDataReviewsInnerAlbum } from './get-
 export interface GetRatedAlbums200ResponseAllOfDataReviewsInner {
     /**
      * 리뷰 ID
-     * @type {string}
+     * @type {number}
      * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
      */
-    'reviewId': string;
+    'reviewId': number;
     /**
      * 별점 (0.5 ~ 5.0)
      * @type {number}

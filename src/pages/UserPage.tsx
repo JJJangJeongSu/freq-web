@@ -7,36 +7,42 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useUpdateBio } from "../hooks/useUpdateBio";
 import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
+import { useUserProfile } from "../hooks/useUserProfile";
 
 interface UserPageProps {
   onNavigate: (page: string, id?: string) => void;
 }
 
 export function UserPage({ onNavigate }: UserPageProps) {
+  // 현재 로그인한 사용자의 ID 가져오기
+  const userId = localStorage.getItem('userId') || '';
+
+  // API에서 프로필 데이터 가져오기 (캐싱 적용)
+  const { data: apiProfile, isLoading: profileLoading, error: profileError, refetch } = useUserProfile(userId);
+
   // API Hooks
   const { updateBio, loading: bioLoading, error: bioError } = useUpdateBio();
   const { updateProfileImage, loading: imageLoading, error: imageError } = useUpdateProfileImage();
 
-  // 프로필 상태
-  const [profileData, setProfileData] = useState({
-    name: '뮤직러버',
-    bio: '클래식 록과 재즈를 사랑하는 음악 애호가입니다.',
-    avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-  });
-
   // 프로필 편집 모달 상태
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editedName, setEditedName] = useState(profileData.name);
-  const [editedBio, setEditedBio] = useState(profileData.bio);
+  const [editedBio, setEditedBio] = useState('');
 
   // 이미지 업로드 상태
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // API 프로필 데이터가 로드되면 editedBio 업데이트
+  useEffect(() => {
+    if (apiProfile) {
+      setEditedBio(apiProfile.bio);
+    }
+  }, [apiProfile]);
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -72,21 +78,16 @@ export function UserPage({ onNavigate }: UserPageProps) {
 
       // 이미지 업데이트
       if (selectedFile) {
-        const result = await updateProfileImage(selectedFile);
-        setProfileData(prev => ({
-          ...prev,
-          avatar: result.imageUrl
-        }));
+        await updateProfileImage(selectedFile);
       }
 
       // 소개글 업데이트
-      if (editedBio !== profileData.bio) {
+      if (apiProfile && editedBio !== apiProfile.bio) {
         await updateBio(editedBio);
-        setProfileData(prev => ({
-          ...prev,
-          bio: editedBio
-        }));
       }
+
+      // 프로필 데이터 다시 가져오기 (캐시 업데이트)
+      await refetch();
 
       // 성공 처리
       setSubmitSuccess(true);
@@ -100,6 +101,55 @@ export function UserPage({ onNavigate }: UserPageProps) {
       console.error('Profile update failed:', err);
     }
   };
+
+  // Loading 상태
+  if (profileLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <header className="flex items-center justify-between p-4 border-b border-border">
+          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-lg font-semibold">설정</h1>
+          <div className="w-8" />
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">프로필을 불러오는 중...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Error 상태
+  if (profileError || !apiProfile) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <header className="flex items-center justify-between p-4 border-b border-border">
+          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-lg font-semibold">설정</h1>
+          <div className="w-8" />
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-destructive mb-2">프로필을 불러오는데 실패했습니다</p>
+            {profileError && <p className="text-sm text-muted-foreground">{profileError.message}</p>}
+            <Button
+              variant="outline"
+              className="mt-4"
+              onClick={() => refetch()}
+            >
+              다시 시도
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -118,12 +168,14 @@ export function UserPage({ onNavigate }: UserPageProps) {
         <div className="px-6 py-6">
           <div className="flex items-center gap-5 mb-8">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={profileData.avatar} />
-              <AvatarFallback className="text-xl">뮤</AvatarFallback>
+              <AvatarImage src={apiProfile.profileImageUrl} />
+              <AvatarFallback className="text-xl">
+                {apiProfile.username.substring(0, 2).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-2">{profileData.name}</h2>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">{profileData.bio}</p>
+              <h2 className="text-xl font-semibold mb-2">{apiProfile.username}</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-3">{apiProfile.bio}</p>
               <Button variant="ghost" size="sm" className="p-0 h-auto" onClick={() => setIsEditDialogOpen(true)}>
                 <Edit className="w-4 h-4 mr-2" />
                 프로필 편집
@@ -139,11 +191,10 @@ export function UserPage({ onNavigate }: UserPageProps) {
             <div className="space-y-5">
               <h3 className="font-semibold text-lg">계정</h3>
               <div className="space-y-3">
-                <div 
+                <div
                   className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors"
                   onClick={() => {
-                    setEditedName(profileData.name);
-                    setEditedBio(profileData.bio);
+                    setEditedBio(apiProfile.bio);
                     setIsEditDialogOpen(true);
                   }}
                 >
@@ -254,8 +305,10 @@ export function UserPage({ onNavigate }: UserPageProps) {
               <div className="flex justify-center">
                 <div className="relative">
                   <Avatar className="w-24 h-24">
-                    <AvatarImage src={previewUrl || profileData.avatar} />
-                    <AvatarFallback className="text-xl">뮤</AvatarFallback>
+                    <AvatarImage src={previewUrl || apiProfile.profileImageUrl} />
+                    <AvatarFallback className="text-xl">
+                      {apiProfile.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                   <Button
                     size="sm"

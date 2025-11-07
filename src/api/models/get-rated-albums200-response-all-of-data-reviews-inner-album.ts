@@ -34,10 +34,10 @@ export interface GetRatedAlbums200ResponseAllOfDataReviewsInnerAlbum {
     'title': string;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInnerAlbum
      */
-    'artist': string;
+    'artist': Array<string>;
     /**
      * 앨범 커버
      * @type {string}

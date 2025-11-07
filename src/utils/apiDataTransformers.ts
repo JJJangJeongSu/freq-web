@@ -8,6 +8,7 @@ import type {
 
 /**
  * API RatingDistribution 객체를 페이지 컴포넌트용 배열로 변환
+ * 0.5 단위를 올림해서 정수 별점으로 그룹화
  * @param distribution API에서 받은 별점 분포 객체
  * @returns 별점, 개수, 백분율을 포함한 배열
  */
@@ -26,22 +27,27 @@ export function transformRatingDistribution(
     return [];
   }
 
-  // 5점부터 0.5점까지 역순으로 정렬된 배열 생성
-  const ratings = [5.0, 4.5, 4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 1.0, 0.5];
+  // 정수 별점으로 그룹화 (5점부터 1점까지)
+  const ratings = [5, 4, 3, 2, 1];
 
-  return ratings
-    .map(rating => {
-      const key = rating.toFixed(1) as keyof RatingDistribution;
-      const count = distribution[key] || 0;
-      const percentage = Math.round((count / total) * 100);
+  return ratings.map(rating => {
+    // 예: rating=4이면 4.0과 3.5를 합침
+    const wholeKey = `${rating}.0` as keyof RatingDistribution;
+    const halfKey = `${rating - 0.5}` as keyof RatingDistribution;
 
-      return {
-        rating,
-        count,
-        percentage
-      };
-    })
-    .filter(item => item.count > 0); // 0개인 별점은 제외
+    const wholeCount = distribution[wholeKey] || 0;
+    const halfCount = distribution[halfKey] || 0;
+    const count = wholeCount + halfCount;
+
+    const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+
+    return {
+      rating,
+      count,
+      percentage
+    };
+  });
+  // 모든 별점을 표시 (0개인 별점도 포함)
 }
 
 /**

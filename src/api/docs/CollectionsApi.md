@@ -11,16 +11,19 @@ All URIs are relative to *http://localhost*
 |[**deleteCollection_0**](#deletecollection_0) | **DELETE** /collections/{collectionId} | 컬렉션 삭제|
 |[**getCollectionDetail**](#getcollectiondetail) | **GET** /collections/{collectionId} | 컬렉션 상세 조회|
 |[**getCollectionDetail_0**](#getcollectiondetail_0) | **GET** /collections/{collectionId} | 컬렉션 상세 조회|
-|[**getMyCollections**](#getmycollections) | **GET** /users/me/collections | 내 컬렉션 목록 조회|
-|[**getMyCollections_0**](#getmycollections_0) | **GET** /users/{userId}/collections/liked | 좋아요한 컬렉션 목록|
+|[**getMyCollections**](#getmycollections) | **GET** /users/{userId}/collections | 컬렉션 목록 조회|
+|[**getMyCollections_0**](#getmycollections_0) | **GET** /users/me/collections | 내 컬렉션 목록 조회|
+|[**getMyCollections_1**](#getmycollections_1) | **GET** /users/{userId}/collections/liked | 좋아요한 컬렉션 목록|
+|[**getReviews**](#getreviews) | **GET** /reviews | 리뷰 목록 조회 Copy|
 |[**getUserCollections**](#getusercollections) | **GET** /collections/all | 컬렉션 전체 조회|
 |[**getUserCollections_0**](#getusercollections_0) | **GET** /collections/all | 컬렉션 전체 조회|
 |[**getUserCollections_1**](#getusercollections_1) | **GET** /users/me/badges | 내 칭호 목록 조회|
 |[**getUserCollections_2**](#getusercollections_2) | **GET** /users/me/active-badge | 활성화된 칭호 확인|
 |[**getUserCollections_3**](#getusercollections_3) | **PATCH** /users/me/active-badge | 칭호 설정|
 |[**getUserCollections_4**](#getusercollections_4) | **GET** /users/{userId}/badges | 타인의 칭호 목록 조회|
-|[**getUserCollections_5**](#getusercollections_5) | **GET** /users/{userId}/collections | 타인의 컬렉션 목록 조회|
-|[**getUserCollections_6**](#getusercollections_6) | **GET** /home | 홈 화면 조회|
+|[**getUserCollections_5**](#getusercollections_5) | **GET** /home | 홈 화면 조회|
+|[**getUserCollections_6**](#getusercollections_6) | **GET** /popular-albums | 인기 앨범 목록|
+|[**getUserCollections_7**](#getusercollections_7) | **GET** /popular-tracks | 인기 트랙 목록|
 |[**search**](#search) | **GET** /collections/search | 컬렉션 검색|
 |[**toggleCollectionLike**](#togglecollectionlike) | **POST** /collections/{collectionId}/likes/toggle | 컬렉션 좋아요 토글|
 |[**toggleCollectionLike_0**](#togglecollectionlike_0) | **POST** /collections/{collectionId}/likes/toggle | 컬렉션 좋아요 토글|
@@ -413,6 +416,59 @@ No authorization required
 # **getMyCollections**
 > GetUserCollections200Response getMyCollections()
 
+특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let userId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getMyCollections(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GetUserCollections200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMyCollections_0**
+> GetUserCollections200Response getMyCollections_0()
+
 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
 
 ### Example
@@ -426,7 +482,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CollectionsApi(configuration);
 
-const { status, data } = await apiInstance.getMyCollections();
+const { status, data } = await apiInstance.getMyCollections_0();
 ```
 
 ### Parameters
@@ -456,10 +512,10 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getMyCollections_0**
-> GetMyCollections200Response getMyCollections_0()
+# **getMyCollections_1**
+> GetMyCollections200Response getMyCollections_1()
 
-현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+현재 인증된 사용자가 좋아요한 컬렉션의 목록
 
 ### Example
 
@@ -474,7 +530,7 @@ const apiInstance = new CollectionsApi(configuration);
 
 let userId: string; // (default to undefined)
 
-const { status, data } = await apiInstance.getMyCollections_0(
+const { status, data } = await apiInstance.getMyCollections_1(
     userId
 );
 ```
@@ -505,6 +561,59 @@ const { status, data } = await apiInstance.getMyCollections_0(
 |-------------|-------------|------------------|
 |**200** | 컬렉션 목록 조회 성공 |  -  |
 |**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getReviews**
+> GetReviews200Response getReviews()
+
+특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let targetId: string; //가져올 대상의 ID (앨범 ID 또는 트랙 ID) (default to undefined)
+
+const { status, data } = await apiInstance.getReviews(
+    targetId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **targetId** | [**string**] | 가져올 대상의 ID (앨범 ID 또는 트랙 ID) | defaults to undefined|
+
+
+### Return type
+
+**GetReviews200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 리뷰 목록 조회 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
 |**500** | 서버 오류 |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -801,9 +910,9 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getUserCollections_5**
-> GetUserCollections200Response getUserCollections_5()
+> GetUserCollections200Response4 getUserCollections_5()
 
-특정 사용자가 생성한 컬렉션 중 \'공개(public)\'로 설정된 목록만 조회합니다. 다른 사용자의 비공개 컬렉션은 이 API를 통해 조회할 수 없습니다.
+홈 화면에 해당하는 API
 
 ### Example
 
@@ -816,27 +925,20 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CollectionsApi(configuration);
 
-let userId: string; //조회할 사용자 ID (integer) (default to undefined)
-
-const { status, data } = await apiInstance.getUserCollections_5(
-    userId
-);
+const { status, data } = await apiInstance.getUserCollections_5();
 ```
 
 ### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **userId** | [**string**] | 조회할 사용자 ID (integer) | defaults to undefined|
+This endpoint does not have any parameters.
 
 
 ### Return type
 
-**GetUserCollections200Response**
+**GetUserCollections200Response4**
 
 ### Authorization
 
-[bearer](../README.md#bearer)
+No authorization required
 
 ### HTTP request headers
 
@@ -854,9 +956,9 @@ const { status, data } = await apiInstance.getUserCollections_5(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getUserCollections_6**
-> GetUserCollections200Response3 getUserCollections_6()
+> GetUserCollections200Response5 getUserCollections_6()
 
-홈 화면에 해당하는 API
+인기 앨범 목록  상위 100개 불러오기
 
 ### Example
 
@@ -878,7 +980,53 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**GetUserCollections200Response3**
+**GetUserCollections200Response5**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserCollections_7**
+> GetUserCollections200Response6 getUserCollections_7()
+
+인기 트랙 목록  상위 100개 불러오기 인기도는 복합적으로 계산해야할 듯?
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+const { status, data } = await apiInstance.getUserCollections_7();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GetUserCollections200Response6**
 
 ### Authorization
 

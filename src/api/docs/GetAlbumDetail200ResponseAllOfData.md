@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **collections** | [**Array&lt;CollectionPreview&gt;**](CollectionPreview.md) | 이 앨범이 포함된 컬렉션 목록 | [default to undefined]
 **userRating** | **number** | 현재 사용자가 준 평점 (로그인 시에만) | [optional] [default to undefined]
 **isRated** | **boolean** | 현재 사용자가 평가했는지 여부 (로그인 시에만) | [optional] [default to undefined]
+**reviews** | [**Array&lt;GetAlbumDetail200ResponseAllOfDataReviewsInner&gt;**](GetAlbumDetail200ResponseAllOfDataReviewsInner.md) | 내용 있는 리뷰(rate와 다름) | [default to undefined]
+**reviewCount** | **number** | 내용 있는 리뷰의 개수 | [default to undefined]
 
 ## Example
 
@@ -36,6 +38,8 @@ const instance: GetAlbumDetail200ResponseAllOfData = {
     collections,
     userRating,
     isRated,
+    reviews,
+    reviewCount,
 };
 ```
 

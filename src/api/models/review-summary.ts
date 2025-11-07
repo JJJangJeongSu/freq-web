@@ -43,7 +43,7 @@ export interface ReviewSummary {
      * @type {string}
      * @memberof ReviewSummary
      */
-    'userProfileImage'?: string;
+    'userProfileImage': string;
     /**
      * 별점 (0.5 ~ 5.0)
      * @type {number}
@@ -51,29 +51,23 @@ export interface ReviewSummary {
      */
     'rating': number;
     /**
-     * 리뷰 제목
-     * @type {string}
-     * @memberof ReviewSummary
-     */
-    'title'?: string;
-    /**
      * 리뷰 내용 미리보기
      * @type {string}
      * @memberof ReviewSummary
      */
-    'content'?: string;
+    'content': string;
     /**
      * 좋아요 개수
      * @type {number}
      * @memberof ReviewSummary
      */
-    'likeCount'?: number;
+    'likeCount': number;
     /**
      * 댓글 개수
      * @type {number}
      * @memberof ReviewSummary
      */
-    'commentCount'?: number;
+    'commentCount': number;
     /**
      * 작성일시
      * @type {string}

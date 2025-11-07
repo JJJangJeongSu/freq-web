@@ -252,18 +252,15 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-         * @summary 리뷰 목록 조회
+         * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
+         * @summary 리뷰 목록 조회 Copy
          * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {GetReviewsTypeEnum} type 대상 타입
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviews: async (targetId: string, type: GetReviewsTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getReviews: async (targetId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'targetId' is not null or undefined
             assertParamExists('getReviews', 'targetId', targetId)
-            // verify required parameter 'type' is not null or undefined
-            assertParamExists('getReviews', 'type', type)
             const localVarPath = `/reviews`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -278,54 +275,6 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
 
             if (targetId !== undefined) {
                 localVarQueryParameter['targetId'] = targetId;
-            }
-
-            if (type !== undefined) {
-                localVarQueryParameter['type'] = type;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-         * @summary 리뷰 목록 조회
-         * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {GetReviews0TypeEnum} type 대상 타입
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getReviews_4: async (targetId: string, type: GetReviews0TypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'targetId' is not null or undefined
-            assertParamExists('getReviews_4', 'targetId', targetId)
-            // verify required parameter 'type' is not null or undefined
-            assertParamExists('getReviews_4', 'type', type)
-            const localVarPath = `/reviews`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (targetId !== undefined) {
-                localVarQueryParameter['targetId'] = targetId;
-            }
-
-            if (type !== undefined) {
-                localVarQueryParameter['type'] = type;
             }
 
 
@@ -380,9 +329,9 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleArtistLike_5: async (artistId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        toggleArtistLike_4: async (artistId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'artistId' is not null or undefined
-            assertParamExists('toggleArtistLike_5', 'artistId', artistId)
+            assertParamExists('toggleArtistLike_4', 'artistId', artistId)
             const localVarPath = `/reviews/artist-like/{artistId}`
                 .replace(`{${"artistId"}}`, encodeURIComponent(String(artistId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -448,9 +397,9 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleReviewLike_6: async (reviewId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        toggleReviewLike_5: async (reviewId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
-            assertParamExists('toggleReviewLike_6', 'reviewId', reviewId)
+            assertParamExists('toggleReviewLike_5', 'reviewId', reviewId)
             const localVarPath = `/reviews/{reviewId}/likes/toggle`
                 .replace(`{${"reviewId"}}`, encodeURIComponent(String(reviewId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -521,9 +470,9 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReview_7: async (reviewId: string, updateReviewRequest?: UpdateReviewRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateReview_6: async (reviewId: string, updateReviewRequest?: UpdateReviewRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
-            assertParamExists('updateReview_7', 'reviewId', reviewId)
+            assertParamExists('updateReview_6', 'reviewId', reviewId)
             const localVarPath = `/reviews/{reviewId}`
                 .replace(`{${"reviewId"}}`, encodeURIComponent(String(reviewId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -640,31 +589,16 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-         * @summary 리뷰 목록 조회
+         * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
+         * @summary 리뷰 목록 조회 Copy
          * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {GetReviewsTypeEnum} type 대상 타입
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getReviews(targetId: string, type: GetReviewsTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetReviews200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviews(targetId, type, options);
+        async getReviews(targetId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetReviews200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviews(targetId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.getReviews']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-         * @summary 리뷰 목록 조회
-         * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {GetReviews0TypeEnum} type 대상 타입
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getReviews_4(targetId: string, type: GetReviews0TypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetReviews200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviews_4(targetId, type, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.getReviews_4']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -687,10 +621,10 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async toggleArtistLike_5(artistId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleArtistLike_5(artistId, options);
+        async toggleArtistLike_4(artistId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleArtistLike_4(artistId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.toggleArtistLike_5']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.toggleArtistLike_4']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -713,10 +647,10 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async toggleReviewLike_6(reviewId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleReviewLike200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleReviewLike_6(reviewId, options);
+        async toggleReviewLike_5(reviewId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleReviewLike200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleReviewLike_5(reviewId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.toggleReviewLike_6']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.toggleReviewLike_5']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -741,10 +675,10 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateReview_7(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateReview200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReview_7(reviewId, updateReviewRequest, options);
+        async updateReview_6(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateReview200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReview_6(reviewId, updateReviewRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.updateReview_7']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ReviewsApi.updateReview_6']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -818,26 +752,14 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getReviewDetail_3(reviewId, options).then((request) => request(axios, basePath));
         },
         /**
-         * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-         * @summary 리뷰 목록 조회
+         * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
+         * @summary 리뷰 목록 조회 Copy
          * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {GetReviewsTypeEnum} type 대상 타입
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviews(targetId: string, type: GetReviewsTypeEnum, options?: RawAxiosRequestConfig): AxiosPromise<GetReviews200Response> {
-            return localVarFp.getReviews(targetId, type, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-         * @summary 리뷰 목록 조회
-         * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {GetReviews0TypeEnum} type 대상 타입
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getReviews_4(targetId: string, type: GetReviews0TypeEnum, options?: RawAxiosRequestConfig): AxiosPromise<GetReviews200Response> {
-            return localVarFp.getReviews_4(targetId, type, options).then((request) => request(axios, basePath));
+        getReviews(targetId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetReviews200Response> {
+            return localVarFp.getReviews(targetId, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 아티스트에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 아티스트에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다.
@@ -856,8 +778,8 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleArtistLike_5(artistId: string, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
-            return localVarFp.toggleArtistLike_5(artistId, options).then((request) => request(axios, basePath));
+        toggleArtistLike_4(artistId: string, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
+            return localVarFp.toggleArtistLike_4(artistId, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
@@ -876,8 +798,8 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleReviewLike_6(reviewId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleReviewLike200Response> {
-            return localVarFp.toggleReviewLike_6(reviewId, options).then((request) => request(axios, basePath));
+        toggleReviewLike_5(reviewId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleReviewLike200Response> {
+            return localVarFp.toggleReviewLike_5(reviewId, options).then((request) => request(axios, basePath));
         },
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
@@ -898,8 +820,8 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReview_7(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateReview200Response> {
-            return localVarFp.updateReview_7(reviewId, updateReviewRequest, options).then((request) => request(axios, basePath));
+        updateReview_6(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateReview200Response> {
+            return localVarFp.updateReview_6(reviewId, updateReviewRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -984,29 +906,15 @@ export class ReviewsApi extends BaseAPI {
     }
 
     /**
-     * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-     * @summary 리뷰 목록 조회
+     * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
+     * @summary 리뷰 목록 조회 Copy
      * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-     * @param {GetReviewsTypeEnum} type 대상 타입
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public getReviews(targetId: string, type: GetReviewsTypeEnum, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).getReviews(targetId, type, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 특정 앨범 또는 트랙에 작성된 모든 리뷰의 목록을 조회합니다. 페이지네이션과 정렬을 위한 파라미터(예: page, size, sortBy)를 추가하여 사용하는 것을 권장합니다.
-     * @summary 리뷰 목록 조회
-     * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-     * @param {GetReviews0TypeEnum} type 대상 타입
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ReviewsApi
-     */
-    public getReviews_4(targetId: string, type: GetReviews0TypeEnum, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).getReviews_4(targetId, type, options).then((request) => request(this.axios, this.basePath));
+    public getReviews(targetId: string, options?: RawAxiosRequestConfig) {
+        return ReviewsApiFp(this.configuration).getReviews(targetId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1029,8 +937,8 @@ export class ReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public toggleArtistLike_5(artistId: string, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).toggleArtistLike_5(artistId, options).then((request) => request(this.axios, this.basePath));
+    public toggleArtistLike_4(artistId: string, options?: RawAxiosRequestConfig) {
+        return ReviewsApiFp(this.configuration).toggleArtistLike_4(artistId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1053,8 +961,8 @@ export class ReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public toggleReviewLike_6(reviewId: string, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).toggleReviewLike_6(reviewId, options).then((request) => request(this.axios, this.basePath));
+    public toggleReviewLike_5(reviewId: string, options?: RawAxiosRequestConfig) {
+        return ReviewsApiFp(this.configuration).toggleReviewLike_5(reviewId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1079,24 +987,8 @@ export class ReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public updateReview_7(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).updateReview_7(reviewId, updateReviewRequest, options).then((request) => request(this.axios, this.basePath));
+    public updateReview_6(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig) {
+        return ReviewsApiFp(this.configuration).updateReview_6(reviewId, updateReviewRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
-/**
- * @export
- */
-export const GetReviewsTypeEnum = {
-    Album: 'album',
-    Track: 'track'
-} as const;
-export type GetReviewsTypeEnum = typeof GetReviewsTypeEnum[keyof typeof GetReviewsTypeEnum];
-/**
- * @export
- */
-export const GetReviews0TypeEnum = {
-    Album: 'album',
-    Track: 'track'
-} as const;
-export type GetReviews0TypeEnum = typeof GetReviews0TypeEnum[keyof typeof GetReviews0TypeEnum];

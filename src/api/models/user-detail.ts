@@ -19,6 +19,12 @@ import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { GetMyActivity200ResponseAllOfDataRateDistributions } from './get-my-activity200-response-all-of-data-rate-distributions';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RatedAlbum } from './rated-album';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RatedTrack } from './rated-track';
 
 /**
  * 
@@ -82,16 +88,16 @@ export interface UserDetail {
     'likedArtistCount': number;
     /**
      * 평가한 앨범 미리보기
-     * @type {Array<object>}
+     * @type {Array<RatedAlbum>}
      * @memberof UserDetail
      */
-    'ratedAlbums': Array<object>;
+    'ratedAlbums': Array<RatedAlbum>;
     /**
      * 평가한 트랙 미리보기
-     * @type {Array<object>}
+     * @type {Array<RatedTrack>}
      * @memberof UserDetail
      */
-    'ratedTracks': Array<object>;
+    'ratedTracks': Array<RatedTrack>;
     /**
      * 내가 만든 컬렉션
      * @type {Array<CollectionPreview>}

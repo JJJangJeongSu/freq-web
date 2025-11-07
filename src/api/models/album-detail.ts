@@ -21,6 +21,9 @@ import type { ArtistPreview } from './artist-preview';
 import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { GetAlbumDetail200ResponseAllOfDataReviewsInner } from './get-album-detail200-response-all-of-data-reviews-inner';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { RatingDistribution } from './rating-distribution';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -110,5 +113,17 @@ export interface AlbumDetail {
      * @memberof AlbumDetail
      */
     'isRated'?: boolean;
+    /**
+     * 내용 있는 리뷰(rate와 다름)
+     * @type {Array<GetAlbumDetail200ResponseAllOfDataReviewsInner>}
+     * @memberof AlbumDetail
+     */
+    'reviews': Array<GetAlbumDetail200ResponseAllOfDataReviewsInner>;
+    /**
+     * 내용 있는 리뷰의 개수
+     * @type {number}
+     * @memberof AlbumDetail
+     */
+    'reviewCount': number;
 }
 

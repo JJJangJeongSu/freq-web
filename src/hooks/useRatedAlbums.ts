@@ -1,28 +1,21 @@
 import { useState, useEffect } from 'react';
-import { UsersApi, Configuration } from '../api';
-import { apiClient } from '../api/client';
-import type { GetRatedAlbums200Response } from '../api/models';
-
-// UsersApi 인스턴스 생성
-const usersApi = new UsersApi(
-  new Configuration({
-    basePath: import.meta.env.VITE_API_BASE_URL
-  }),
-  undefined,
-  apiClient
-);
+import { apiService } from '@/services/api.service';
+import type { GetUserRatedAlbums200ResponseAllOfDataAlbumsInner } from '@/api/models';
 
 export interface RatedAlbumItem {
   id: string;
   title: string;
-  artist: string;
+  artist: string; // artists 배열을 join한 문자열
   imageUrl: string;
   rating: number;
   ratedDate: string;
+  reviewId: number;
+  content: string;
 }
 
-export function useRatedAlbums() {
+export function useRatedAlbums(userId?: string) {
   const [albums, setAlbums] = useState<RatedAlbumItem[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -31,31 +24,45 @@ export function useRatedAlbums() {
       setLoading(true);
       setError(null);
 
-      const response: GetRatedAlbums200Response = await usersApi.getRatedAlbums();
+      // userId가 없으면 localStorage에서 가져오기
+      const userIdToUse = userId || localStorage.getItem('userId') || '';
 
-      // API 응답에서 data 추출
-      const apiData = (response as any).data;
+      if (!userIdToUse) {
+        throw new Error('User ID not found');
+      }
 
-      if (!apiData || !apiData.reviews) {
+      const response = await apiService.users.getUserRatedAlbums(userIdToUse);
+
+      // API 응답 구조: { success: true, data: { totalCount, albums } }
+      const apiData = (response.data as any)?.data;
+
+      if (!apiData || !apiData.albums) {
         setAlbums([]);
+        setTotalCount(0);
         return;
       }
 
-      // 데이터 변환: reviews → albums
-      const transformedAlbums: RatedAlbumItem[] = apiData.reviews.map((review: any) => ({
-        id: review.album.id,
-        title: review.album.title,
-        artist: review.album.artist,
-        imageUrl: review.album.imageUrl,
-        rating: review.rating,
-        ratedDate: review.createdAt
-      }));
+      setTotalCount(apiData.totalCount || 0);
+
+      // 데이터 변환
+      const transformedAlbums: RatedAlbumItem[] = apiData.albums.map(
+        (album: GetUserRatedAlbums200ResponseAllOfDataAlbumsInner) => ({
+          id: album.id,
+          title: album.title,
+          artist: album.artists.join(', '), // 배열을 문자열로 변환
+          imageUrl: album.imageUrl,
+          rating: album.rating,
+          ratedDate: album.ratedDate,
+          reviewId: album.reviewId,
+          content: album.content
+        })
+      );
 
       setAlbums(transformedAlbums);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Unknown error occurred');
+      const error = err instanceof Error ? err : new Error('평가한 앨범을 불러올 수 없습니다');
       setError(error);
-      console.error('Error fetching rated albums:', error);
+      console.error('❌ Error fetching rated albums:', error);
     } finally {
       setLoading(false);
     }
@@ -63,7 +70,7 @@ export function useRatedAlbums() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [userId]);
 
-  return { albums, loading, error, refetch: fetchData };
+  return { albums, totalCount, loading, error, refetch: fetchData };
 }

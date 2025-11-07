@@ -88,10 +88,37 @@ export function useMyActivity() {
       setLoading(true);
       setError(null);
 
-      const response: GetMyActivity200Response = await usersApi.getMyActivity();
+      // getMyActivity_3()를 사용 (파라미터 없음, /users/me/activity)
+      const response = await usersApi.getMyActivity_3();
 
-      // API 응답에서 data 추출
-      const apiData = (response as any).data;
+      // API 응답 구조: { success: true, data: { ... } }
+      // Axios는 이미 response.data로 래핑하므로, 실제로는 response.data.data를 사용해야 함
+      const fullResponse = response as any;
+
+      // 디버깅: 전체 응답 구조 확인
+      console.group('🔍 Full Response Structure');
+      console.log('Response:', fullResponse);
+      console.log('Response.data:', fullResponse.data);
+      console.log('Response.data type:', typeof fullResponse.data);
+      if (fullResponse.data) {
+        console.log('Response.data keys:', Object.keys(fullResponse.data));
+      }
+      console.groupEnd();
+
+      // 실제 데이터 추출 - { success: true, data: {...} } 구조에서 data 추출
+      let apiData;
+      if (fullResponse.data && fullResponse.data.data) {
+        // Case 1: Axios가 래핑한 경우 - response.data.data
+        apiData = fullResponse.data.data;
+      } else if (fullResponse.data && fullResponse.data.userId) {
+        // Case 2: 이미 data 필드가 언래핑된 경우 - response.data
+        apiData = fullResponse.data;
+      } else if (fullResponse.userId) {
+        // Case 3: 완전히 언래핑된 경우 - response
+        apiData = fullResponse;
+      } else {
+        throw new Error('Unable to extract data from API response');
+      }
 
       if (!apiData) {
         throw new Error('No data received from API');
@@ -99,7 +126,7 @@ export function useMyActivity() {
 
       // 디버깅: API 응답 구조 확인
       console.group('🔍 API Response Analysis');
-      console.log('Full API Response:', apiData);
+      console.log('Extracted API Data:', apiData);
       console.log('Available Fields:', Object.keys(apiData));
       console.log('rateDistribution (단수):', apiData.rateDistribution);
       console.log('rateDistributions (복수):', (apiData as any).rateDistributions);
@@ -144,6 +171,17 @@ export function useMyActivity() {
         recentAlbums: (apiData.ratedAlbums || []).map(transformRatedAlbum),
         recentTracks: (apiData.ratedTracks || []).map(transformRatedTrack)
       };
+
+      // 변환된 데이터 확인
+      console.group('✅ Transformed Data Check');
+      console.log('Rating Distribution (album):', transformedData.ratingDistribution.album);
+      console.log('Rating Distribution (track):', transformedData.ratingDistribution.track);
+      console.log('Genre Keywords:', transformedData.genreKeywords);
+      console.log('Recent Albums count:', transformedData.recentAlbums.length);
+      console.log('Recent Tracks count:', transformedData.recentTracks.length);
+      console.log('My Collections count:', transformedData.myCollections.length);
+      console.log('Liked Collections count:', transformedData.likedCollections.length);
+      console.groupEnd();
 
       setData(transformedData);
     } catch (err) {

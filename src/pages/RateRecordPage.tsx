@@ -67,6 +67,9 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
     ? data.ratingDistribution.album
     : data.ratingDistribution.track;
 
+  // 실제 평가 개수 계산 (모든 count의 합)
+  const totalRatings = currentRatingDistribution.reduce((sum, item) => sum + item.count, 0);
+
 
 
   return (
@@ -117,32 +120,45 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-5 gap-3">
-            <div className="flex flex-col items-center justify-center min-h-[60px]">
-              <div className="text-2xl font-bold text-primary">{data.statistics.albumReviews}</div>
-              <div className="text-xs text-muted-foreground mt-1">앨범</div>
+          <div className="space-y-3">
+            {/* 첫 번째 행: 앨범, 트랙, 아티스트 */}
+            <div className="grid grid-cols-3 gap-3">
+              <div
+                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
+                onClick={() => onNavigate('rated-albums')}
+              >
+                <div className="text-2xl font-bold text-primary">{data.statistics.albumReviews}</div>
+                <div className="text-xs text-muted-foreground mt-1">앨범</div>
+              </div>
+              <div
+                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
+                onClick={() => onNavigate('rated-tracks')}
+              >
+                <div className="text-2xl font-bold text-primary">{data.statistics.trackReviews}</div>
+                <div className="text-xs text-muted-foreground mt-1">트랙</div>
+              </div>
+              <div
+                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
+                onClick={() => onNavigate('liked-artists')}
+              >
+                <div className="text-2xl font-bold text-primary">{data.statistics.likedArtists}</div>
+                <div className="text-xs text-muted-foreground mt-1">아티스트</div>
+              </div>
             </div>
-            <div className="flex flex-col items-center justify-center min-h-[60px]">
-              <div className="text-2xl font-bold text-primary">{data.statistics.trackReviews}</div>
-              <div className="text-xs text-muted-foreground mt-1">트랙</div>
-            </div>
-            <div
-              className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
-              onClick={() => onNavigate('my-reviews')}
-            >
-              <div className="text-2xl font-bold text-primary">{data.statistics.writtenReviews}</div>
-              <div className="text-xs text-muted-foreground mt-1">리뷰</div>
-            </div>
-            <div className="flex flex-col items-center justify-center min-h-[60px]">
-              <div className="text-2xl font-bold text-primary">{data.statistics.receivedLikes}</div>
-              <div className="text-xs text-muted-foreground mt-1 text-center leading-tight">좋아요</div>
-            </div>
-            <div
-              className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
-              onClick={() => onNavigate('liked-artists')}
-            >
-              <div className="text-2xl font-bold text-primary">{data.statistics.likedArtists}</div>
-              <div className="text-xs text-muted-foreground mt-1">아티스트</div>
+
+            {/* 두 번째 행: 작성한 리뷰, 받은 좋아요 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div
+                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
+                onClick={() => onNavigate('my-reviews')}
+              >
+                <div className="text-2xl font-bold text-primary">{data.statistics.writtenReviews}</div>
+                <div className="text-xs text-muted-foreground mt-1">작성한 리뷰</div>
+              </div>
+              <div className="flex flex-col items-center justify-center min-h-[60px] bg-muted/30 rounded-lg p-3">
+                <div className="text-2xl font-bold text-primary">{data.statistics.receivedLikes}</div>
+                <div className="text-xs text-muted-foreground mt-1 text-center leading-tight">받은 좋아요</div>
+              </div>
             </div>
           </div>
         </div>
@@ -171,16 +187,30 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {currentRatingDistribution.map((item) => (
-                <div key={item.rating} className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5 w-14">
-                    <span className="text-sm font-medium">{item.rating}</span>
-                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+              {totalRatings > 0 ? (
+                currentRatingDistribution.map((item) => (
+                  <div key={item.rating} className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 w-14">
+                      <span className="text-sm font-medium">{item.rating}</span>
+                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                    </div>
+                    <Progress value={item.percentage} className="flex-1" />
+                    <span className="text-sm text-muted-foreground w-12 text-right">{item.count}개</span>
                   </div>
-                  <Progress value={item.percentage} className="flex-1" />
-                  <span className="text-sm text-muted-foreground w-12 text-right">{item.count}개</span>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <Star className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    아직 {ratingType === 'album' ? '앨범을' : '트랙을'} 평가하지 않았습니다
+                  </p>
+                  <p className="text-xs text-muted-foreground/70">
+                    음악을 평가하고 나만의 취향을 분석해보세요
+                  </p>
                 </div>
-              ))}
+              )}
             </CardContent>
           </Card>
         </div>
@@ -207,32 +237,59 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {data.myCollections.map((collection) => (
-                <div key={collection.id} className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
-                    {collection.coverImages[0] && (
-                      <img
-                        src={collection.coverImages[0]}
-                        alt={collection.title}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
+              {data.myCollections.length > 0 ? (
+                <>
+                  {data.myCollections.map((collection) => (
+                    <div
+                      key={collection.id}
+                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors"
+                      onClick={() => onNavigate('curation-detail', String(collection.id))}
+                    >
+                      <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
+                        {collection.coverImages[0] && (
+                          <img
+                            src={collection.coverImages[0]}
+                            alt={collection.title}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-base mb-1.5 line-clamp-1">{collection.title}</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-1 leading-relaxed">{collection.description}</p>
+                        <p className="text-xs text-muted-foreground/80">{collection.itemCount}곡</p>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    className="w-full h-12 mt-4"
+                    onClick={() => onNavigate('create-collection')}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    새 콜렉션 만들기
+                  </Button>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <FolderOpen className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-base mb-1.5 line-clamp-1">{collection.title}</h4>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-1 leading-relaxed">{collection.description}</p>
-                    <p className="text-xs text-muted-foreground/80">{collection.itemCount}곡</p>
-                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    아직 만든 콜렉션이 없습니다
+                  </p>
+                  <p className="text-xs text-muted-foreground/70 mb-6">
+                    좋아하는 음악들을 모아 나만의 콜렉션을 만들어보세요
+                  </p>
+                  <Button
+                    onClick={() => onNavigate('create-collection')}
+                    className="h-10"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    첫 콜렉션 만들기
+                  </Button>
                 </div>
-              ))}
-              <Button 
-                variant="outline" 
-                className="w-full h-12 mt-4"
-                onClick={() => onNavigate('create-collection')}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                새 콜렉션 만들기
-              </Button>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -259,35 +316,60 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {data.likedCollections.map((collection) => (
-                <div key={collection.id} className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
-                    {collection.coverImages[0] ? (
-                      <img
-                        src={collection.coverImages[0]}
-                        alt={collection.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <FolderOpen className="w-7 h-7 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-base mb-1.5 line-clamp-1">{collection.title}</h4>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2 leading-relaxed">{collection.description}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-                      <span>by {collection.creator}</span>
-                      <span>•</span>
-                      <span>{collection.itemCount}곡</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Heart className="w-3 h-3" />
-                        {collection.likes}
-                      </span>
+              {data.likedCollections.length > 0 ? (
+                data.likedCollections.map((collection) => (
+                  <div
+                    key={collection.id}
+                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => onNavigate('curation-detail', String(collection.id))}
+                  >
+                    <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
+                      {collection.coverImages[0] ? (
+                        <img
+                          src={collection.coverImages[0]}
+                          alt={collection.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FolderOpen className="w-7 h-7 text-muted-foreground" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-base mb-1.5 line-clamp-1">{collection.title}</h4>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2 leading-relaxed">{collection.description}</p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
+                        <span>by {collection.creator}</span>
+                        <span>•</span>
+                        <span>{collection.itemCount}곡</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Heart className="w-3 h-3" />
+                          {collection.likes}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <Heart className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    좋아요한 콜렉션이 없습니다
+                  </p>
+                  <p className="text-xs text-muted-foreground/70 mb-6">
+                    다른 사람들의 콜렉션을 둘러보고 마음에 드는 것을 저장해보세요
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => onNavigate('all-collections')}
+                    className="h-10"
+                  >
+                    콜렉션 둘러보기
+                  </Button>
                 </div>
-              ))}
+              )}
             </CardContent>
           </Card>
         </div>
@@ -304,24 +386,40 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-3">
-                {data.genreKeywords.map((genre) => (
-                  <Badge
-                    key={genre.name}
-                    variant="secondary"
-                    className={`${genre.color} text-xs`}
-                    style={{
-                      fontSize: `${Math.max(0.7, genre.weight / 100)}rem`,
-                      padding: `${Math.max(6, genre.weight / 20)}px ${Math.max(10, genre.weight / 15)}px`
-                    }}
-                  >
-                    {genre.name}
-                  </Badge>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
-                크기는 평가한 곡 수에 비례합니다
-              </p>
+              {data.genreKeywords.length > 0 ? (
+                <>
+                  <div className="flex flex-wrap gap-3">
+                    {data.genreKeywords.map((genre) => (
+                      <Badge
+                        key={genre.name}
+                        variant="secondary"
+                        className={`${genre.color} text-xs`}
+                        style={{
+                          fontSize: `${Math.max(0.7, genre.weight / 100)}rem`,
+                          padding: `${Math.max(6, genre.weight / 20)}px ${Math.max(10, genre.weight / 15)}px`
+                        }}
+                      >
+                        {genre.name}
+                      </Badge>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
+                    크기는 평가한 곡 수에 비례합니다
+                  </p>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <Tag className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    장르 분석 데이터가 없습니다
+                  </p>
+                  <p className="text-xs text-muted-foreground/70">
+                    더 많은 음악을 평가하면 선호하는 장르를 분석해드립니다
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

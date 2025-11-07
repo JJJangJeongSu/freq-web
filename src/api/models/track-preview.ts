@@ -51,11 +51,17 @@ export interface TrackPreview {
      */
     'releaseDate'?: string;
     /**
-     * 평균 평점 또는 사용자 평점
+     * 평균 평점
      * @type {number}
      * @memberof TrackPreview
      */
-    'rating'?: number;
+    'averageRating'?: number;
+    /**
+     *  사용자 평점
+     * @type {number}
+     * @memberof TrackPreview
+     */
+    'userRating': number;
     /**
      * 사용자가 평가했는지 여부
      * @type {boolean}

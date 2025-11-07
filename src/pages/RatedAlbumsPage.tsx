@@ -12,7 +12,7 @@ interface RatedAlbumsPageProps {
 
 export function RatedAlbumsPage({ onNavigate }: RatedAlbumsPageProps) {
   // API 데이터 가져오기
-  const { albums, loading, error } = useRatedAlbums();
+  const { albums, totalCount, loading, error } = useRatedAlbums();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
@@ -96,7 +96,10 @@ export function RatedAlbumsPage({ onNavigate }: RatedAlbumsPageProps) {
         <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
-        <h1 className="text-lg font-semibold">평가한 앨범</h1>
+        <div className="text-center">
+          <h1 className="text-lg font-semibold">평가한 앨범</h1>
+          <p className="text-xs text-muted-foreground">총 {totalCount}개</p>
+        </div>
         <div className="w-8" />
       </header>
 

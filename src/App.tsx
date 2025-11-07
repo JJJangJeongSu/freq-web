@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BottomNavigation } from "./components/BottomNavigation";
+import { Toaster } from "./components/ui/toaster";
 import { getAuthToken, clearAuthToken } from "./api/client";
 import { HomePage } from "./pages/HomePage";
 import { SearchPage } from "./pages/SearchPage";
@@ -73,6 +74,7 @@ export default function App() {
     return (
       <div className="size-full">
         <AuthPage onLogin={handleLogin} />
+        <Toaster />
       </div>
     );
   }
@@ -136,6 +138,7 @@ export default function App() {
           onTabChange={handleTabChange}
         />
       )}
+      <Toaster />
     </div>
   );
 }

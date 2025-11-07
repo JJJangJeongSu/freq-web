@@ -28,10 +28,10 @@ export interface CreateCommentRequest {
     'type': CreateCommentRequestTypeEnum;
     /**
      * 댓글을 작성할 대상 ID (리뷰 ID 또는 컬렉션 ID)
-     * @type {string}
+     * @type {number}
      * @memberof CreateCommentRequest
      */
-    'targetId': string;
+    'targetId': number;
     /**
      * 댓글 내용
      * @type {string}
@@ -40,10 +40,10 @@ export interface CreateCommentRequest {
     'content': string;
     /**
      * 대댓글인 경우 부모 댓글 ID (선택사항)
-     * @type {string}
+     * @type {number}
      * @memberof CreateCommentRequest
      */
-    'parentId'?: string;
+    'parentId'?: number;
 }
 
 export const CreateCommentRequestTypeEnum = {

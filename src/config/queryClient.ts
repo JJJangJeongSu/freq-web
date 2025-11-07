@@ -132,6 +132,7 @@ export const queryKeys = {
   users: {
     all: ['users'] as const,
     detail: (id: number) => ['users', 'detail', id] as const,
+    profile: (userId: string) => ['users', 'profile', userId] as const,
     myActivity: ['users', 'my-activity'] as const,
     rateRecords: (id: number) => ['users', 'rate-records', id] as const,
   },

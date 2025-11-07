@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**reviewId** | **string** | 리뷰 ID | [default to undefined]
+**reviewId** | **number** | 리뷰 ID | [default to undefined]
 **rating** | **number** | 별점 (0.5 ~ 5.0) | [default to undefined]
 **title** | **string** | 리뷰 제목 | [optional] [default to undefined]
 **content** | **string** | 리뷰 내용 미리보기 | [default to undefined]

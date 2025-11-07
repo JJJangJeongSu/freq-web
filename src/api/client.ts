@@ -93,7 +93,7 @@ apiClient.interceptors.request.use(
       const url = config.url || '';
 
       console.groupCollapsed(
-        `%c🚀 ${method} %c${url}%c @ ${timestamp}`,
+        `%c➡️ ${method} %c${url}%c @ ${timestamp}`,
         'color: #3b82f6; font-weight: bold',
         'color: #10b981; font-weight: normal',
         'color: #6b7280; font-weight: normal'
@@ -116,11 +116,35 @@ apiClient.interceptors.request.use(
 
       console.groupEnd();
     }
+      // Upload Image endpoint focused log
+      if ((config.url || '').includes('/upload-image')) {
+        try {
+          console.groupCollapsed(
+            '%c[Upload] Image API %cRequest',
+            'color: #0ea5e9; font-weight: bold',
+            'color: #6b7280; font-weight: normal'
+          );
+          if (config.data instanceof FormData) {
+            const file = (config.data as FormData).get('file') as File | null;
+            if (file) {
+              console.log('%cFile Name:', 'color: #8b5cf6; font-weight: bold', file.name);
+              console.log('%cFile Type:', 'color: #8b5cf6; font-weight: bold', file.type);
+              const sizeKB = (file.size / 1024).toFixed(2) + ' KB';
+              console.log('%cFile Size:', 'color: #8b5cf6; font-weight: bold', sizeKB);
+            } else {
+              console.log('%cFormData has no file field', 'color: #f59e0b');
+            }
+          }
+          console.groupEnd();
+        } catch (e) {
+          console.warn('Upload log (request) skipped:', e);
+        }
+      }
 
     return config;
   },
   (error: AxiosError) => {
-    console.error('%c❌ Request Setup Error', 'color: #ef4444; font-weight: bold', error.message);
+    console.error('%c❌Request Setup Error', 'color: #ef4444; font-weight: bold', error.message);
     return Promise.reject(error);
   }
 );
@@ -149,7 +173,7 @@ apiClient.interceptors.response.use(
       if (status >= 400) statusColor = '#ef4444'; // red for 4xx/5xx
 
       console.groupCollapsed(
-        `%c✅ ${status} %c${method} %c${url}%c (${duration}ms)`,
+        `%c✅${status} %c${method} %c${url}%c (${duration}ms)`,
         `color: ${statusColor}; font-weight: bold`,
         'color: #3b82f6; font-weight: bold',
         'color: #10b981; font-weight: normal',
@@ -180,6 +204,27 @@ apiClient.interceptors.response.use(
 
       console.groupEnd();
     }
+      // Upload Image endpoint focused log
+      if ((response.config.url || '').includes('/upload-image')) {
+        try {
+          console.groupCollapsed(
+            '%c[Upload] Image API %cResponse',
+            'color: #10b981; font-weight: bold',
+            'color: #6b7280; font-weight: normal'
+          );
+          const payload: any = response.data;
+          console.log('%cSuccess:', 'color: #10b981; font-weight: bold', payload?.success);
+          if (payload?.data?.imageUrl) {
+            console.log('%cImage URL:', 'color: #8b5cf6; font-weight: bold', payload.data.imageUrl);
+          }
+          if (payload?.data?.presignedUrl) {
+            console.log('%cPresigned URL:', 'color: #8b5cf6; font-weight: bold', payload.data.presignedUrl);
+          }
+          console.groupEnd();
+        } catch (e) {
+          console.warn('Upload log (response) skipped:', e);
+        }
+      }
 
     return response;
   },
@@ -190,7 +235,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       // Avoid refresh loop for /auth/reissue endpoint
       if (originalRequest.url?.includes('/auth/reissue')) {
-        console.groupCollapsed('%c❌ 401 RefreshToken Invalid', 'color: #ef4444; font-weight: bold');
+        console.groupCollapsed('%c❌401 RefreshToken Invalid', 'color: #ef4444; font-weight: bold');
         console.error('Refresh token is invalid or expired');
         console.log('Action: Clearing localStorage and redirecting to login');
         console.groupEnd();
@@ -203,7 +248,7 @@ apiClient.interceptors.response.use(
       // If already refreshing, add to queue
       if (isRefreshing) {
         console.log(
-          '%c⏳ Token Refresh In Progress',
+          '%c⏳Token Refresh In Progress',
           'color: #f59e0b; font-weight: bold',
           `Adding request to queue (${failedQueue.length + 1} requests waiting)`
         );
@@ -212,7 +257,7 @@ apiClient.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            console.log('%c✅ Request Resumed', 'color: #10b981; font-weight: bold', originalRequest.url);
+            console.log('%c▶️Request Resumed', 'color: #10b981; font-weight: bold', originalRequest.url);
             if (originalRequest.headers) {
               originalRequest.headers['Authorization'] = `Bearer ${token}`;
             }
@@ -239,13 +284,13 @@ apiClient.interceptors.response.use(
         const newToken = await refreshAccessToken();
 
         console.timeEnd('Token Refresh Duration');
-        console.log('%c✅ New Token Acquired', 'color: #10b981; font-weight: bold');
+        console.log('%c✅New Token Acquired', 'color: #10b981; font-weight: bold');
         console.log('Token (first 30 chars):', newToken.substring(0, 30) + '...');
         console.groupEnd();
 
         // Process queued requests
         console.log(
-          `%c📤 Processing ${failedQueue.length} Queued Requests`,
+          `%c📦 Processing ${failedQueue.length} Queued Requests`,
           'color: #8b5cf6; font-weight: bold'
         );
         processQueue(null, newToken);
@@ -256,7 +301,7 @@ apiClient.interceptors.response.use(
         }
         return apiClient(originalRequest);
       } catch (refreshError) {
-        console.groupCollapsed('%c❌ Token Refresh Failed', 'color: #ef4444; font-weight: bold');
+        console.groupCollapsed('%c❌Token Refresh Failed', 'color: #ef4444; font-weight: bold');
         console.error('Refresh Error:', refreshError);
         console.log('Clearing all auth data');
         console.log('Rejecting', failedQueue.length, 'queued requests');
@@ -291,7 +336,7 @@ apiClient.interceptors.response.use(
       let errorColor = '#ef4444';
 
       if (status === 403) {
-        errorIcon = '🚫';
+        errorIcon = '🔒';
         errorColor = '#f59e0b';
       } else if (status === 404) {
         errorIcon = '🔍';
@@ -370,17 +415,36 @@ apiClient.interceptors.response.use(
           break;
       }
 
+      if ((url || '').includes('/upload-image')) {
+        try {
+          console.groupCollapsed(
+            '%c[Upload] Image API %cError',
+            'color: #ef4444; font-weight: bold',
+            'color: #6b7280; font-weight: normal'
+          );
+          console.error('%cStatus:', 'color: #ef4444; font-weight: bold', status, statusText);
+          if (data) {
+            const emsg = (data as any)?.error?.message || (data as any)?.message || 'No message';
+            const ecode = (data as any)?.error?.code || (data as any)?.code || 'UNKNOWN';
+            console.error('%cError Message:', 'color: #f59e0b; font-weight: bold', emsg);
+            console.error('%cError Code:', 'color: #f59e0b; font-weight: bold', ecode);
+          }
+          console.groupEnd();
+        } catch (e) {
+          console.warn('Upload log (error) skipped:', e);
+        }
+      }
       console.groupEnd();
     } else if (error.request) {
       // Request was made but no response received
-      console.groupCollapsed('%c📡 No Response from Server', 'color: #ef4444; font-weight: bold');
+      console.groupCollapsed('%c🌐 No Response from Server', 'color: #ef4444; font-weight: bold');
       console.error('Request was sent but no response received');
       console.error('This could be a network error or CORS issue');
       console.log('%cRequest Config:', 'color: #6b7280', error.config);
       console.groupEnd();
     } else {
       // Something happened in setting up the request
-      console.groupCollapsed('%c⚙️ Request Setup Error', 'color: #ef4444; font-weight: bold');
+      console.groupCollapsed('%c⚠️ Request Setup Error', 'color: #ef4444; font-weight: bold');
       console.error('Error:', error.message);
       console.log('This error occurred before the request was sent');
       console.groupEnd();
