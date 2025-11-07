@@ -6,6 +6,7 @@
  */
 
 import type { ReviewDetail as GeneratedReviewDetail } from '@/api/models';
+import type { AlbumDetail as GeneratedAlbumDetail, ReviewSummary } from '@/api/models';
 
 /**
  * ReviewDetail Type Override
@@ -50,3 +51,13 @@ export type ExtractData<T> = T extends ApiResponse<infer D> ? D : T;
  * Combined unwrap type
  */
 export type UnwrapApiData<T> = ExtractData<UnwrapAxiosResponse<T>>;
+
+/**
+ * AlbumDetail type with reviews (contentful reviews) added per latest API spec.
+ * The generated model may lag the spec, so we extend it here to avoid breaking changes
+ * when the generator is updated later.
+ */
+export interface AlbumDetailWithReviews extends GeneratedAlbumDetail {
+  reviews: ReviewSummary[];
+  reviewCount: number;
+}

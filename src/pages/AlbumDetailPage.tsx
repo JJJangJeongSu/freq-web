@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2 } from "lucide-react";
+import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2, MessageCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import React from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -264,6 +264,57 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
                 </div>
               ))}
             </div>
+          </div>
+
+          <Separator />
+
+          {/* Reviews */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">리뷰</h3>
+              <span className="text-sm text-muted-foreground">총 {('reviewCount' in album ? (album as any).reviewCount : (album as any).reviews?.length || 0)}개</span>
+            </div>
+            {('reviews' in album && (album as any).reviews && (album as any).reviews.length > 0) ? (
+              <div className="space-y-3">
+                {(album as any).reviews.map((review: any) => (
+                  <div key={review.reviewId} className="flex gap-3 p-3 rounded-lg border border-border/50">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={review.userProfileImage} />
+                      <AvatarFallback>{(review.username || '?').charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{review.username}</span>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs text-muted-foreground">{Number(review.rating).toFixed(1)}</span>
+                          </div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">{review.createdAt}</span>
+                      </div>
+                      {review.content && (
+                        <p className="text-sm line-clamp-2">{review.content}</p>
+                      )}
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Heart className="w-3 h-3" />
+                          <span>{review.likeCount ?? 0}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MessageCircle className="w-3 h-3" />
+                          <span>{review.commentCount ?? 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-lg">
+                <p className="text-sm text-muted-foreground">아직 리뷰가 없어요</p>
+              </div>
+            )}
           </div>
 
           <Separator />
