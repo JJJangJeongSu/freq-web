@@ -3,11 +3,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NotificationItem } from "@/components/NotificationItem";
 
-interface NotificationsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function NotificationsPage({ onNavigate }: NotificationsPageProps) {
+export function NotificationsPage() {
   const { data, isLoading, error, refetch } = useNotifications();
 
   const renderContent = () => {
@@ -47,7 +43,6 @@ export function NotificationsPage({ onNavigate }: NotificationsPageProps) {
           <NotificationItem
             key={notification.id}
             notification={notification}
-            onNavigate={onNavigate}
           />
         ))}
       </div>

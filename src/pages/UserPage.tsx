@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Settings, Edit, Camera, Shield, Palette, Volume2, Download, Info, LogOut, FolderOpen, Plus, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -12,16 +13,20 @@ import { useTheme } from "../components/theme-provider";
 import { useUpdateBio } from "../hooks/useUpdateBio";
 import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
 import { useUserProfile } from "../hooks/useUserProfile";
+import { clearAuthToken } from "../api/client";
 
-interface UserPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function UserPage({ onNavigate }: UserPageProps) {
+export function UserPage() {
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
 
   // 현재 로그인한 사용자의 ID 가져오기
   const userId = localStorage.getItem('userId') || '';
+
+  const handleLogout = () => {
+    clearAuthToken();
+    localStorage.clear();
+    navigate('/auth');
+  };
 
   // API에서 프로필 데이터 가져오기 (캐싱 적용)
   const { data: apiProfile, isLoading: profileLoading, error: profileError, refetch } = useUserProfile(userId);
@@ -110,7 +115,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/home')}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-lg font-semibold">설정</h1>
@@ -131,7 +136,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/home')}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-lg font-semibold">설정</h1>
@@ -198,7 +203,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
                 
                 
 
-                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={() => onNavigate('create-collection')}>
+                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={() => navigate('/collections/new')}>
                   <div className="flex items-center gap-4">
                     <Plus className="w-5 h-5 text-muted-foreground" />
                     <div>
@@ -269,7 +274,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors">
+                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={handleLogout}>
                   <div className="flex items-center gap-4">
                     <LogOut className="w-5 h-5 text-destructive" />
                     <div>

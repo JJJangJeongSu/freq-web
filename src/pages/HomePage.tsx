@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
@@ -7,15 +8,19 @@ import { LogOut, Music, Search, Heart, MessageCircle, Clock, Star, Sparkles, Tre
 import { Input } from "../components/ui/input";
 import { useHomeData } from "../hooks/useHomeData";
 import { StarRating } from "../components/StarRating";
+import { clearAuthToken } from "../api/client";
 
-interface HomePageProps {
-  onNavigate: (page: string, id?: string) => void;
-  onLogout?: () => void;
-}
+export function HomePage() {
+  const navigate = useNavigate();
 
-export function HomePage({ onNavigate, onLogout }: HomePageProps) {
   // Fetch home page data from API
   const { data: homeData, loading, error, refetch } = useHomeData();
+
+  const handleLogout = () => {
+    clearAuthToken();
+    localStorage.clear();
+    navigate('/auth');
+  };
 
   // Loading state
   if (loading) {
@@ -150,11 +155,9 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
           <h1 className="text-title-large" style={{ color: 'var(--on-surface)' }}>뮤직레이트</h1>
         </div>
         <div className="flex items-center gap-2">
-          {onLogout && (
-            <Button variant="ghost" size="sm" onClick={onLogout} className="w-10 h-10 p-0 rounded-full">
-              <LogOut className="w-5 h-5" />
-            </Button>
-          )}
+          <Button variant="ghost" size="sm" onClick={handleLogout} className="w-10 h-10 p-0 rounded-full">
+            <LogOut className="w-5 h-5" />
+          </Button>
         </div>
       </header>
 
@@ -170,7 +173,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                 backgroundColor: 'var(--surface)',
                 borderColor: 'var(--outline)'
               }}
-              onClick={() => onNavigate('search')}
+              onClick={() => navigate('/search')}
             >
               <Search className="w-6 h-6 mr-4" style={{ color: 'var(--on-surface-variant)' }} />
               <span className="text-body-large" style={{ color: 'var(--on-surface-variant)' }}>
@@ -186,7 +189,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                   backgroundColor: 'var(--primary)', 
                   color: 'var(--on-primary)' 
                 }}
-                onClick={() => onNavigate('rate-record')}
+              onClick={() => navigate('/rate-record')}
               >
                 <Star className="w-5 h-5 mr-3" />
                 <span className="text-label-large">평가하기</span>
@@ -199,7 +202,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                   backgroundColor: 'transparent',
                   color: 'var(--primary)' 
                 }}
-                onClick={() => onNavigate('create-collection')}
+              onClick={() => navigate('/collections/new')}
               >
                 <Plus className="w-5 h-5 mr-3" />
                 <span className="text-label-large">컬렉션 만들기</span>
@@ -222,7 +225,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                     color: 'var(--primary)',
                     backgroundColor: 'transparent'
                   }}
-                  onClick={() => onNavigate('create-collection')}
+                onClick={() => navigate('/collections/new')}
                 >
                   <Plus className="w-4 h-4 mr-1 md:mr-2" />
                   <span className="text-label-large">만들기</span>
@@ -232,7 +235,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                   size="sm"
                   className="h-10 px-3 md:px-4 rounded-full state-layer-hover"
                   style={{ color: 'var(--primary)' }}
-                  onClick={() => onNavigate('all-collections')}
+                onClick={() => navigate('/collections')}
                 >
                   <span className="text-label-large">전체보기</span>
                 </Button>
@@ -244,7 +247,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                   key={collection.id}
                   className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-80 lg:w-96 cursor-pointer transition-all rounded-xl overflow-hidden border hover:shadow-md"
                   style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                  onClick={() => collection.id === 'kma-2024' ? onNavigate('kma-collection') : onNavigate('curation-detail', collection.id)}
+                onClick={() => collection.id === 'kma-2024' ? navigate('/collections/kma') : navigate(`/collections/${collection.id}`)}
                 >
                   <div className="relative h-48">
                     <ImageWithFallback
@@ -301,9 +304,9 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (collection.creator.isOfficial) {
-                              onNavigate('user-profile', 'korean-music-awards');
+                            navigate('/users/korean-music-awards');
                             } else {
-                              onNavigate('user-profile', 'user-1');
+                            navigate('/users/user-1');
                             }
                           }}
                         >
@@ -316,9 +319,9 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (collection.creator.isOfficial) {
-                              onNavigate('user-profile', 'korean-music-awards');
+                            navigate('/users/korean-music-awards');
                             } else {
-                              onNavigate('user-profile', 'user-1');
+                            navigate('/users/user-1');
                             }
                           }}
                         >
@@ -371,7 +374,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                   key={comment.id}
                   className="flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[500px] lg:w-[550px] cursor-pointer transition-all rounded-2xl p-4 border hover:shadow-md"
                   style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                  onClick={() => onNavigate('comment-detail', comment.id)}
+                onClick={() => navigate(`/reviews/${comment.id}`)}
                 >
                   {/* 상단: 프로필 & 별점 */}
                   <div className="flex items-center justify-between mb-3">
@@ -401,7 +404,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                       className="flex flex-col gap-2 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onNavigate('album-detail', comment.album.id);
+                      navigate(`/albums/${comment.album.id}`);
                       }}
                     >
                       <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
@@ -460,7 +463,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                   key={comment.id}
                   className="flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[500px] lg:w-[550px] cursor-pointer transition-all rounded-2xl p-4 border hover:shadow-md"
                   style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                  onClick={() => onNavigate('comment-detail', comment.id)}
+                onClick={() => navigate(`/reviews/${comment.id}`)}
                 >
                   {/* 상단: 프로필 & 별점 */}
                   <div className="flex items-center justify-between mb-3">
@@ -495,7 +498,7 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                       className="flex flex-col gap-2 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onNavigate('album-detail', comment.album.id);
+                      navigate(`/albums/${comment.album.id}`);
                       }}
                     >
                       <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">

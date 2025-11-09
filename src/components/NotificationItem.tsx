@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Notification,
   NotificationActor,
@@ -8,7 +9,6 @@ import { Heart, MessageSquare, Star, UserPlus } from "lucide-react";
 
 interface NotificationItemProps {
   notification: Notification;
-  onNavigate: (page: string, id: string) => void;
 }
 
 const getIconForType = (type: NotificationTypeEnum) => {
@@ -28,17 +28,17 @@ const getIconForType = (type: NotificationTypeEnum) => {
 
 const getEntityPath = (
   entity: Notification["entity"]
-): { page: string; id: string } | null => {
+): string | null => {
   if (!entity || !entity.id) return null;
   switch (entity.type) {
     case "REVIEW":
-      return { page: "review-detail", id: String(entity.id) };
+      return `/reviews/${entity.id}`;
     case "COLLECTION":
-      return { page: "curation-detail", id: String(entity.id) };
+      return `/collections/${entity.id}`;
     case "ALBUM":
-      return { page: "album-detail", id: String(entity.id) };
+      return `/albums/${entity.id}`;
     case "USER":
-      return { page: "user-profile", id: String(entity.id) };
+      return `/users/${entity.id}`;
     default:
       return null;
   }
@@ -46,14 +46,14 @@ const getEntityPath = (
 
 export function NotificationItem({
   notification,
-  onNavigate,
 }: NotificationItemProps) {
+  const navigate = useNavigate();
   const { id, actor, entity, message, isRead, createdAt, type } = notification;
 
   const handleItemClick = () => {
     const path = getEntityPath(entity);
     if (path) {
-      onNavigate(path.page, path.id);
+      navigate(path);
     }
   };
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, Loader2, Star, Heart } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -7,11 +8,8 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { useSearch } from "../hooks/useSearch";
 
-interface SearchPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function SearchPage({ onNavigate }: SearchPageProps) {
+export function SearchPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const { data: searchResults, loading: isLoading, error, search } = useSearch();
 
@@ -124,7 +122,7 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                   <div
                     key={album.id}
                     className="flex items-center gap-4 p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors"
-                    onClick={() => onNavigate('album-detail', album.id)}
+                  onClick={() => navigate(`/albums/${album.id}`)}
                   >
                     <div className="relative">
                       <ImageWithFallback
@@ -161,7 +159,7 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                   <div
                     key={track.id}
                     className="flex items-center gap-4 p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors"
-                    onClick={() => onNavigate('track-detail', track.id)}
+                  onClick={() => navigate(`/tracks/${track.id}`)}
                   >
                     <div className="relative">
                       <ImageWithFallback
@@ -199,7 +197,7 @@ export function SearchPage({ onNavigate }: SearchPageProps) {
                   <div
                     key={artist.id}
                     className="flex items-center gap-4 p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors"
-                    onClick={() => onNavigate('artist-detail', artist.id)}
+                  onClick={() => navigate(`/artists/${artist.id}`)}
                   >
                     <Avatar className="w-16 h-16 flex-shrink-0">
                       <AvatarImage src={artist.imageUrl} alt={artist.title} />

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MoreVertical, Plus, Star, Heart, FolderOpen, Tag, Disc, Music, MessageSquare, ThumbsUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -10,11 +11,8 @@ import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useState } from "react";
 import { useMyActivity } from "../hooks/useMyActivity";
 
-interface RateRecordPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
+export function RateRecordPage() {
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { data, loading, error } = useMyActivity();
 
@@ -104,7 +102,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
           <div className="flex gap-3 mb-4">
             <Button 
               className="flex-1 h-12" 
-              onClick={() => onNavigate('search')}
+            onClick={() => navigate('/search')}
             >
               <Star className="w-5 h-5 mr-2" />
               음악 평가하기
@@ -112,7 +110,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
             <Button 
               variant="outline" 
               className="flex-1 h-12" 
-              onClick={() => onNavigate('create-collection')}
+            onClick={() => navigate('/collections/new')}
             >
               <Plus className="w-5 h-5 mr-2" />
               컬렉션 만들기
@@ -131,7 +129,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                   {/* Rated Albums */}
                   <div
                     className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
-                    onClick={() => onNavigate('rated-albums')}
+                  onClick={() => navigate('/rated-albums')}
                   >
                     <Disc className="w-5 h-5 mx-auto text-primary mb-1" />
                     <div className="text-3xl font-extrabold">{data.statistics.albumReviews}</div>
@@ -141,7 +139,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                   {/* Rated Tracks */}
                   <div
                     className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
-                    onClick={() => onNavigate('rated-tracks')}
+                  onClick={() => navigate('/rated-tracks')}
                   >
                     <Music className="w-5 h-5 mx-auto text-primary mb-1" />
                     <div className="text-3xl font-extrabold">{data.statistics.trackReviews}</div>
@@ -151,7 +149,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                   {/* Liked Artists */}
                   <div
                     className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
-                    onClick={() => onNavigate('liked-artists')}
+                  onClick={() => navigate('/liked-artists')}
                   >
                     <Heart className="w-5 h-5 mx-auto text-primary mb-1" />
                     <div className="text-3xl font-extrabold">{data.statistics.likedArtists}</div>
@@ -171,7 +169,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                   {/* Written Reviews */}
                   <div
                     className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
-                    onClick={() => onNavigate('my-reviews')}
+                  onClick={() => navigate('/my-reviews')}
                   >
                     <MessageSquare className="w-5 h-5 mx-auto text-primary mb-1" />
                     <div className="text-3xl font-extrabold">{data.statistics.writtenReviews}</div>
@@ -254,7 +252,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => onNavigate('my-collections')}
+                onClick={() => navigate('/my-collections')}
                   className="text-primary hover:text-primary/80"
                 >
                   모두 보기
@@ -268,7 +266,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                     <div
                       key={collection.id}
                       className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors"
-                      onClick={() => onNavigate('curation-detail', String(collection.id))}
+                    onClick={() => navigate(`/collections/${collection.id}`)}
                     >
                       <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                         {collection.coverImages[0] && (
@@ -289,7 +287,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                   <Button
                     variant="outline"
                     className="w-full h-12 mt-4"
-                    onClick={() => onNavigate('create-collection')}
+                  onClick={() => navigate('/collections/new')}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     새 콜렉션 만들기
@@ -307,7 +305,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
                     좋아하는 음악들을 모아 나만의 콜렉션을 만들어보세요
                   </p>
                   <Button
-                    onClick={() => onNavigate('create-collection')}
+                  onClick={() => navigate('/collections/new')}
                     className="h-10"
                   >
                     <Plus className="w-4 h-4 mr-2" />
