@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Music, Mail, Lock, Eye, EyeOff, Bug, User, Check, X } from "lucide-react";
+import { Music, Mail, Lock, Eye, EyeOff, User, Check, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -20,7 +20,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
-  const [debugMode, setDebugMode] = useState(false);
+
   const [activeTab, setActiveTab] = useState("login");
   const [nicknameCheckResult, setNicknameCheckResult] = useState<"available" | "taken" | null>(null);
   const [emailCheckResult, setEmailCheckResult] = useState<"available" | "taken" | null>(null);
@@ -82,13 +82,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
     }
   };
 
-  const handleDebugToggle = (checked: boolean) => {
-    setDebugMode(checked);
-    if (checked) {
-      // 디버그 모드 켜지면 바로 로그인
-      onLogin();
-    }
-  };
+
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -233,17 +227,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Debug Toggle */}
-      <div className="flex justify-end p-4">
-        <div className="flex items-center gap-2">
-          <Label htmlFor="debug-mode" className="text-sm">디버그</Label>
-          <Switch
-            id="debug-mode"
-            checked={debugMode}
-            onCheckedChange={handleDebugToggle}
-          />
-        </div>
-      </div>
+
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-6">
