@@ -163,7 +163,7 @@ export function UserPage() {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/home')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="text-lg font-semibold">설정</h1>

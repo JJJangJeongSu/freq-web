@@ -328,10 +328,10 @@ export function RateRecordPage() {
                   <Heart className="w-5 h-5" />
                   좋아요한 콜렉션
                 </CardTitle>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
-                  onClick={() => onNavigate('liked-collections')}
+                  onClick={() => navigate('/collections/liked')}
                   className="text-primary hover:text-primary/80"
                 >
                   모두 보기
@@ -344,7 +344,7 @@ export function RateRecordPage() {
                   <div
                     key={collection.id}
                     className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => onNavigate('curation-detail', String(collection.id))}
+                    onClick={() => navigate(`/collections/${collection.id}`)}
                   >
                     <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                       {collection.coverImages[0] ? (
@@ -386,7 +386,7 @@ export function RateRecordPage() {
                   </p>
                   <Button
                     variant="outline"
-                    onClick={() => onNavigate('all-collections')}
+                    onClick={() => navigate('/collections/all')}
                     className="h-10"
                   >
                     콜렉션 둘러보기
@@ -455,16 +455,16 @@ export function RateRecordPage() {
             title="평가한 앨범"
             items={data.recentAlbums}
             type="album"
-            onItemClick={(id) => onNavigate('album-detail', id)}
-            onViewAll={() => onNavigate('rated-albums')}
+            onItemClick={(id) => navigate(`/albums/${id}`)}
+            onViewAll={() => navigate('/rated/albums')}
           />
 
           <HorizontalMusicSection
             title="평가한 트랙"
             items={data.recentTracks}
             type="track"
-            onItemClick={(id) => onNavigate('track-detail', id)}
-            onViewAll={() => onNavigate('rated-tracks')}
+            onItemClick={(id) => navigate(`/tracks/${id}`)}
+            onViewAll={() => navigate('/rated/tracks')}
           />
         </div>
       </main>
