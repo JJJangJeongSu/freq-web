@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "lucide-react";
 import { useAllCollections } from "../hooks/useAllCollections";
 import { CollectionCard } from "../components/CollectionCard";
 
@@ -45,7 +45,7 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
   // 로딩 상태
   if (loading) {
     return (
-      <div className="min-h-screen pb-20 flex items-center justify-center bg-white">
+      <div className="min-h-screen pb-20 flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
           <p className="text-muted-foreground">컬렉션을 불러오는 중...</p>
@@ -57,7 +57,7 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
   // 에러 상태
   if (error) {
     return (
-      <div className="min-h-screen pb-20 flex items-center justify-center p-6 bg-white">
+      <div className="min-h-screen pb-20 flex items-center justify-center p-6 bg-background">
         <div className="text-center space-y-4">
           <p className="font-semibold text-destructive">컬렉션을 불러올 수 없습니다</p>
           <p className="text-sm text-muted-foreground">{error.message}</p>
@@ -71,65 +71,75 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
   }
 
   return (
-    <div className="min-h-screen pb-20 bg-white">
+    <div className="min-h-screen pb-20 bg-background text-foreground">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b">
-        <div className="flex items-center gap-4 p-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onNavigate('home')}
-            className="h-10 w-10 rounded-full"
-          >
-            <ArrowLeft className="h-5 w-5 text-primary" />
-          </Button>
-          <h1 className="text-xl font-semibold text-foreground">모든 컬렉션</h1>
+      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onNavigate('home')}
+                className="h-10 w-10 rounded-full"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <h1 className="text-xl font-bold">모든 컬렉션</h1>
+            </div>
+            <Button onClick={() => onNavigate('create-collection')}>
+              <Plus className="w-4 h-4 mr-2" />
+              컬렉션 만들기
+            </Button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Search and Filter Section */}
-      <div className="p-4 space-y-4 bg-white">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            placeholder="컬렉션 제목 검색..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-12 rounded-full bg-muted/50 border"
-          />
+      <main className="container mx-auto px-4 py-8">
+        {/* Search and Filter Section */}
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              placeholder="컬렉션 제목 또는 설명으로 검색..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-12 rounded-full bg-card border-border focus-visible:ring-primary"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Results Count */}
-      <div className="px-4 py-2">
-        <p className="text-sm text-muted-foreground">
-          총 {filteredCollections.length}개의 컬렉션
-        </p>
-      </div>
-
-      {/* Collections Grid */}
-      <div className="p-4 flex flex-wrap justify-center gap-6">
-        {filteredCollections.map((collection) => (
-          <CollectionCard
-            key={collection.id}
-            {...collection}
-            onClick={() => onNavigate('curation-detail', collection.id)}
-          />
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredCollections.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 px-4">
-          <SlidersHorizontal className="h-16 w-16 mb-4 text-muted" />
-          <p className="text-lg mb-2 text-muted-foreground">
-            검색 결과가 없습니다
-          </p>
-          <p className="text-sm text-muted-foreground/80">
-            다른 검색어를 시도해보세요
+        {/* Results Count */}
+        <div className="mb-6">
+          <p className="text-sm text-muted-foreground">
+            총 {filteredCollections.length}개의 컬렉션
           </p>
         </div>
-      )}
+
+        {/* Collections Grid */}
+        {filteredCollections.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredCollections.map((collection) => (
+              <CollectionCard
+                key={collection.id}
+                {...collection}
+                onClick={() => onNavigate('curation-detail', collection.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <SlidersHorizontal className="h-16 w-16 mb-6 text-muted-foreground/50" />
+            <p className="text-xl font-semibold mb-2 text-foreground">
+              검색 결과가 없습니다
+            </p>
+            <p className="text-base text-muted-foreground">
+              다른 검색어를 시도해보세요.
+            </p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
