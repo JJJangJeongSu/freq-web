@@ -5,10 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**code** | **string** | 에러 코드 | [default to undefined]
-**message** | **string** | 사용자를 위한 에러 메시지 | [default to undefined]
-**details** | **{ [key: string]: any; }** | 추가 에러 상세 정보 | [optional] [default to undefined]
-**timestamp** | **string** | 에러 발생 시간 | [optional] [default to undefined]
+**code** | **string** |  | [default to undefined]
+**message** | **string** |  | [default to undefined]
 
 ## Example
 
@@ -18,8 +16,6 @@ import { ErrorResponseError } from './api';
 const instance: ErrorResponseError = {
     code,
     message,
-    details,
-    timestamp,
 };
 ```
 

@@ -24,7 +24,7 @@ import type { ErrorResponseError } from './error-response-error';
  */
 export interface ErrorResponse {
     /**
-     * 요청 성공 여부
+     * 
      * @type {boolean}
      * @memberof ErrorResponse
      */

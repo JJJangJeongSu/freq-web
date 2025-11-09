@@ -21,28 +21,16 @@
  */
 export interface ErrorResponseError {
     /**
-     * 에러 코드
+     * 
      * @type {string}
      * @memberof ErrorResponseError
      */
     'code': string;
     /**
-     * 사용자를 위한 에러 메시지
+     * 
      * @type {string}
      * @memberof ErrorResponseError
      */
     'message': string;
-    /**
-     * 추가 에러 상세 정보
-     * @type {{ [key: string]: any; }}
-     * @memberof ErrorResponseError
-     */
-    'details'?: { [key: string]: any; };
-    /**
-     * 에러 발생 시간
-     * @type {string}
-     * @memberof ErrorResponseError
-     */
-    'timestamp'?: string;
 }
 

@@ -506,7 +506,7 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             };
         },
         /**
-         * 인증된 사용자가 자신의 프로필 이미지를 변경합니다. 이미지 파일 자체를 업로드하는 것이 아니라, \'이미지 업로드\' API(POST /upload-image)를 통해 얻은 이미지 URL을 전달하여 업데이트합니다.
+         * 인증된 사용자가 자신의 프로필 이미지를 변경합니다.  파일을 보내서 서버에서 파일 url을 구한뒤, 프론트로 보내지 않고 db에만 업데이트를 수행합니다 /upload-image 경로와 같이 파일을 보내지만 , 돌아오는 응답은 db에 파일의 url경로가 적용되었는지만 확인됩니다.(url 반환 없음)
          * @summary 프로필 이미지 업데이트
          * @param {File} [file] 
          * @param {*} [options] Override http request option.
@@ -723,7 +723,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 인증된 사용자가 자신의 프로필 이미지를 변경합니다. 이미지 파일 자체를 업로드하는 것이 아니라, \'이미지 업로드\' API(POST /upload-image)를 통해 얻은 이미지 URL을 전달하여 업데이트합니다.
+         * 인증된 사용자가 자신의 프로필 이미지를 변경합니다.  파일을 보내서 서버에서 파일 url을 구한뒤, 프론트로 보내지 않고 db에만 업데이트를 수행합니다 /upload-image 경로와 같이 파일을 보내지만 , 돌아오는 응답은 db에 파일의 url경로가 적용되었는지만 확인됩니다.(url 반환 없음)
          * @summary 프로필 이미지 업데이트
          * @param {File} [file] 
          * @param {*} [options] Override http request option.
@@ -875,7 +875,7 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
             return localVarFp.updateBio(updateBioRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 인증된 사용자가 자신의 프로필 이미지를 변경합니다. 이미지 파일 자체를 업로드하는 것이 아니라, \'이미지 업로드\' API(POST /upload-image)를 통해 얻은 이미지 URL을 전달하여 업데이트합니다.
+         * 인증된 사용자가 자신의 프로필 이미지를 변경합니다.  파일을 보내서 서버에서 파일 url을 구한뒤, 프론트로 보내지 않고 db에만 업데이트를 수행합니다 /upload-image 경로와 같이 파일을 보내지만 , 돌아오는 응답은 db에 파일의 url경로가 적용되었는지만 확인됩니다.(url 반환 없음)
          * @summary 프로필 이미지 업데이트
          * @param {File} [file] 
          * @param {*} [options] Override http request option.
@@ -1050,7 +1050,7 @@ export class AuthenticationApi extends BaseAPI {
     }
 
     /**
-     * 인증된 사용자가 자신의 프로필 이미지를 변경합니다. 이미지 파일 자체를 업로드하는 것이 아니라, \'이미지 업로드\' API(POST /upload-image)를 통해 얻은 이미지 URL을 전달하여 업데이트합니다.
+     * 인증된 사용자가 자신의 프로필 이미지를 변경합니다.  파일을 보내서 서버에서 파일 url을 구한뒤, 프론트로 보내지 않고 db에만 업데이트를 수행합니다 /upload-image 경로와 같이 파일을 보내지만 , 돌아오는 응답은 db에 파일의 url경로가 적용되었는지만 확인됩니다.(url 반환 없음)
      * @summary 프로필 이미지 업데이트
      * @param {File} [file] 
      * @param {*} [options] Override http request option.

@@ -16,6 +16,7 @@ import { CollectionsApi } from '@/api/apis/collections-api';
 import { CommentsApi } from '@/api/apis/comments-api';
 import { DetailPagesApi } from '@/api/apis/detail-pages-api';
 import { FastAPIApi } from '@/api/apis/fast-apiapi';
+import { HomeApi } from '@/api/apis/home-api';
 import { NotificationsApi } from '@/api/apis/notifications-api';
 import { ReviewsApi } from '@/api/apis/reviews-api';
 import { SearchApi } from '@/api/apis/search-api';
@@ -48,6 +49,9 @@ export const apiService = {
 
   // Detail Pages APIs
   detailPages: new DetailPagesApi(configuration, API_CONFIG.baseURL, apiClient),
+
+  // Home API
+  home: new HomeApi(configuration, API_CONFIG.baseURL, apiClient),
 
   // Search API
   search: new SearchApi(configuration, API_CONFIG.baseURL, apiClient),

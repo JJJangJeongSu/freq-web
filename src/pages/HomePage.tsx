@@ -3,8 +3,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { LogOut, Music, Search, Heart, MessageCircle, Clock, Star, Sparkles, TrendingUp, Plus } from "lucide-react";
+import { LogOut, Music, Search, Heart, MessageCircle, Clock, Star, Sparkles, TrendingUp, Plus, Loader2, RefreshCw } from "lucide-react";
 import { Input } from "../components/ui/input";
+import { useHomeData } from "../hooks/useHomeData";
+import { StarRating } from "../components/StarRating";
 
 interface HomePageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -12,156 +14,126 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate, onLogout }: HomePageProps) {
+  // Fetch home page data from API
+  const { data: homeData, loading, error, refetch } = useHomeData();
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen items-center justify-center" style={{ backgroundColor: 'var(--surface)' }}>
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--primary)' }} />
+        <p className="mt-4 text-body-large" style={{ color: 'var(--on-surface-variant)' }}>
+          로딩 중...
+        </p>
+      </div>
+    );
+  }
 
-  // 컬렉션 데이터  
-  const collections = [
-    {
-      id: '1',
-      title: '새벽에 듣는 음악',
-      description: '조용한 새벽 시간에 어울리는 차분한 음악들',
-      type: 'mixed' as const, // 앨범과 트랙 모두 포함
-      creator: {
-        name: '음악평론가',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        isVerified: true
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1559121060-686a11356a87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGN1cmF0b3IlMjBlZGl0b3JpYWwlMjBwaWNrc3xlbnwxfHx8fDE3NTg3MDE3ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      tags: ['#새벽', '#감성', '#차분함'],
-      stats: { likes: 234, comments: 45 }
+  // Error state
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen items-center justify-center px-6" style={{ backgroundColor: 'var(--surface)' }}>
+        <div className="text-center space-y-4">
+          <p className="text-body-large" style={{ color: 'var(--error)' }}>
+            데이터를 불러오는데 실패했습니다
+          </p>
+          <p className="text-body-medium" style={{ color: 'var(--on-surface-variant)' }}>
+            {error.message}
+          </p>
+          <Button
+            onClick={refetch}
+            className="h-10 px-6 rounded-full"
+            style={{
+              backgroundColor: 'var(--primary)',
+              color: 'var(--on-primary)'
+            }}
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            다시 시도
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Helper function to convert timestamp to relative time
+  const getTimeAgo = (timestamp: string): string => {
+    const now = new Date();
+    const past = new Date(timestamp);
+    const diffMs = now.getTime() - past.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return '방금 전';
+    if (diffMins < 60) return `${diffMins}분 전`;
+    if (diffHours < 24) return `${diffHours}시간 전`;
+    return `${diffDays}일 전`;
+  };
+
+  // Map API data to UI format
+  const collections = (homeData?.recommandedCollections || []).map(collection => ({
+    id: String(collection.collectionId),
+    title: collection.title,
+    description: collection.description,
+    type: 'mixed' as const, // API doesn't specify type, default to mixed
+    creator: {
+      name: collection.author.username,
+      avatar: collection.author.imageUrl,
+      isVerified: false, // API doesn't provide verification status
+      isOfficial: false
     },
-    {
-      id: '2', 
-      title: '운동할 때 추천',
-      description: '운동할 때 들으면 좋은 신나는 음악들',
-      type: 'tracks' as const, // 트랙만 포함
-      creator: {
-        name: '피트니스러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        isVerified: false
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaXRuZXNzJTIwbXVzaWMlMjB3b3Jrb3V0fGVufDF8fHx8MTc1ODcwMTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      tags: ['#운동', '#에너지', '#업비트'],
-      stats: { likes: 189, comments: 32 }
-    },
-    {
-      id: '3',
-      title: '재즈 입문자를 위한',
-      description: '재즈를 처음 듣는 분들에게 추천하는 곡들',
-      type: 'albums' as const, // 앨범만 포함
-      creator: {
-        name: '재즈마니아',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        isVerified: true
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxqYXp6JTIwbXVzaWMlMjBpbnN0cnVtZW50c3xlbnwxfHx8fDE3NTg3MDE3ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      tags: ['#재즈', '#입문', '#클래식'],
-      stats: { likes: 156, comments: 28 }
-    },
-    {
-      id: 'kma-2024',
-      title: '2024 한국대중음악상 수상작',
-      description: '올해 한국대중음악상을 수상한 뛰어난 작품들을 만나보세요',
-      type: 'albums' as const,
-      creator: {
-        name: '한국대중음악상',
-        avatar: 'https://images.unsplash.com/photo-1512352036558-e6fb1f0c8340?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrb3JlYW4lMjBtdXNpYyUyMGF3YXJkJTIwY2VyZW1vbnl8ZW58MXx8fHwxNzU4NzAyNjUyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        isVerified: true,
-        isOfficial: true
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1512352036558-e6fb1f0c8340?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrb3JlYW4lMjBtdXNpYyUyMGF3YXJkJTIwY2VyZW1vbnl8ZW58MXx8fHwxNzU4NzAyNjUyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      tags: ['#한국대중음악상', '#2024', '#수상작'],
-      stats: { likes: 892, comments: 143 }
+    imageUrl: collection.coverImageUrl,
+    tags: [], // API doesn't provide tags
+    stats: {
+      likes: collection.likeCount,
+      comments: 0 // API doesn't provide comment count for collections
     }
-  ];
+  }));
 
-  // 인기 댓글
-  const popularComments = [
-    {
-      id: '1',
+  // Map popular reviews to comment format (filter out reviews without album data)
+  const popularComments = (homeData?.popularReviews || [])
+    .filter(review => review.album) // Only include reviews with album data
+    .map(review => ({
+      id: String(review.reviewId),
       user: {
-        name: '음악애호가',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
+        name: review.username,
+        avatar: review.userProfileImage
       },
-      content: '역사상 최고의 팝 앨범 중 하나입니다. 마이클 잭슨의 보컬과 프로덕션이 완벽하게 조화를 이룹니다.',
+      content: review.content,
       album: {
-        title: 'Thriller',
-        artist: 'Michael Jackson',
-        id: '1',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
+        title: review.album.title,
+        artist: review.album.artists?.[0] || 'Unknown Artist',
+        id: review.album.id,
+        imageUrl: review.album.imageUrl
       },
-      likes: 127,
-      rating: 5
-    },
-    {
-      id: '2', 
-      user: {
-        name: '록러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      content: '이 앨범 없이는 모던 록을 논할 수 없죠. 특히 Money와 Time은 지금 들어도 혁신적입니다.',
-      album: {
-        title: 'The Dark Side of the Moon',
-        artist: 'Pink Floyd',
-        id: '3',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      likes: 89,
-      rating: 5
-    }
-  ];
+      likes: review.likeCount,
+      rating: review.rating,
+      commentCount: review.commentCount
+    }));
 
-  // 최근 댓글
-  const recentComments = [
-    {
-      id: '3',
+  // Map recent reviews to comment format with timeAgo (filter out reviews without album data)
+  const recentComments = (homeData?.recentReviews || [])
+    .filter(review => review.album) // Only include reviews with album data
+    .map(review => ({
+      id: String(review.reviewId),
       user: {
-        name: '새벽러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8fDE3NTg3MDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
+        name: review.username,
+        avatar: review.userProfileImage
       },
-      content: 'Bon Iver의 목소리는 정말 마법 같아요. 새벽에 들으면 마음이 정화되는 느낌...',
+      content: review.content,
       album: {
-        title: 'Bon Iver',
-        artist: 'Bon Iver',
-        id: '4',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
+        title: review.album.title,
+        artist: review.album.artists?.[0] || 'Unknown Artist',
+        id: review.album.id,
+        imageUrl: review.album.imageUrl
       },
-      timeAgo: '방금 전',
-      rating: 5
-    },
-    {
-      id: '4',
-      user: {
-        name: '재즈맨',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      content: '처음 들었을 때의 충격을 잊을 수 없네요. 마일스 데이비스의 트펫이 이렇게 아름다울 줄이야.',
-      album: {
-        title: 'Kind of Blue',
-        artist: 'Miles Davis',
-        id: '5',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      timeAgo: '5분 전',
-      rating: 5
-    },
-    {
-      id: '5',
-      user: {
-        name: '팝러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      content: '40년이 지난 지금도 빌리 진과 스릴러는 여전히 최고예요. 시대를 초월한 명곡들.',
-      album: {
-        title: 'Thriller',
-        artist: 'Michael Jackson',
-        id: '1',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-      },
-      timeAgo: '12분 전',
-      rating: 4
-    }
-  ];
+      timeAgo: getTimeAgo(review.createdAt),
+      rating: review.rating,
+      likes: review.likeCount,
+      commentCount: review.commentCount
+    }));
+
 
 
 
@@ -458,13 +430,13 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                         <div className="flex items-center gap-2">
                           <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {Math.floor(Math.random() * 50) + 10}
+                            {comment.likes}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {Math.floor(Math.random() * 20) + 3}
+                            {comment.commentCount}
                           </span>
                         </div>
                       </div>
@@ -552,13 +524,13 @@ export function HomePage({ onNavigate, onLogout }: HomePageProps) {
                         <div className="flex items-center gap-2">
                           <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {Math.floor(Math.random() * 50) + 10}
+                            {comment.likes}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {Math.floor(Math.random() * 20) + 3}
+                            {comment.commentCount}
                           </span>
                         </div>
                       </div>

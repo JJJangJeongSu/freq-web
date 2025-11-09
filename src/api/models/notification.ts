@@ -12,45 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- * @export
- * @interface NotificationActor
- */
-export interface NotificationActor {
-    /**
-     * @type {number}
-     * @memberof NotificationActor
-     */
-    'id': number;
-    /**
-     * @type {string}
-     * @memberof NotificationActor
-     */
-    'username': string;
-    /**
-     * @type {string}
-     * @memberof NotificationActor
-     */
-    'profileImage': string;
-}
 
-/**
- * @export
- * @interface NotificationEntity
- */
-export interface NotificationEntity {
-    /**
-     * @type {string}
-     * @memberof NotificationEntity
-     */
-    'type': 'REVIEW' | 'COLLECTION' | 'ALBUM' | 'USER';
-    /**
-     * @type {number}
-     * @memberof NotificationEntity
-     */
-    'id': number;
-}
-
+// May contain unused imports in some cases
+// @ts-ignore
+import type { NotificationActor } from './notification-actor';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { NotificationEntity } from './notification-entity';
 
 /**
  * 
@@ -102,14 +70,14 @@ export interface Notification {
     'createdAt': string;
 }
 
-/**
-* @export
-* @enum {string}
-*/
-export enum NotificationTypeEnum {
-    ReviewCreated = 'REVIEW_CREATED',
-    UserFollowedYou = 'USER_FOLLOWED_YOU',
-    CollectionLiked = 'COLLECTION_LIKED',
-    ReviewLiked = 'REVIEW_LIKED',
-    AlbumLiked = 'ALBUM_LIKED'
-}
+export const NotificationTypeEnum = {
+    ReviewCreated: 'REVIEW_CREATED',
+    UserFollowedYou: 'USER_FOLLOWED_YOU',
+    CollectionLiked: 'COLLECTION_LIKED',
+    ReviewLiked: 'REVIEW_LIKED',
+    AlbumLiked: 'ALBUM_LIKED'
+} as const;
+
+export type NotificationTypeEnum = typeof NotificationTypeEnum[keyof typeof NotificationTypeEnum];
+
+

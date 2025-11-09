@@ -13,6 +13,9 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { AlbumPreview } from './album-preview';
 
 /**
  * 
@@ -74,5 +77,11 @@ export interface GetAlbumDetail200ResponseAllOfDataReviewsInner {
      * @memberof GetAlbumDetail200ResponseAllOfDataReviewsInner
      */
     'createdAt': string;
+    /**
+     * 
+     * @type {AlbumPreview}
+     * @memberof GetAlbumDetail200ResponseAllOfDataReviewsInner
+     */
+    'album': AlbumPreview;
 }
 

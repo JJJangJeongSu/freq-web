@@ -20,6 +20,8 @@ All URIs are relative to *http://localhost*
 |[**getUserCollections_0**](#getusercollections_0) | **GET** /users/me/active-badge | 활성화된 칭호 확인|
 |[**getUserCollections_1**](#getusercollections_1) | **PATCH** /users/me/active-badge | 칭호 설정|
 |[**getUserCollections_2**](#getusercollections_2) | **GET** /users/{userId}/badges | 타인의 칭호 목록 조회|
+|[**getUserProfile**](#getuserprofile) | **GET** /users/{userId}/profile | 사용자 프로필 조회|
+|[**getUserProfile_0**](#getuserprofile_0) | **GET** /users/{userId}/profile | 사용자 프로필 조회|
 |[**getUserRatedAlbums**](#getuserratedalbums) | **GET** /users/{userId}/rated-albums | 평가한 앨범 페이지|
 |[**getUserRatedAlbums_0**](#getuserratedalbums_0) | **GET** /users/{userId}/rated-albums | 평가한 앨범 페이지|
 |[**getUserRatedTracks**](#getuserratedtracks) | **GET** /users/{userId}/rated-tracks | 평가한 트랙 페이지|
@@ -793,6 +795,114 @@ No authorization required
 |-------------|-------------|------------------|
 |**200** | 컬렉션 목록 조회 성공 |  -  |
 |**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserProfile**
+> GetUserProfile200Response getUserProfile()
+
+특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
+
+### Example
+
+```typescript
+import {
+    UsersApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UsersApi(configuration);
+
+let userId: number; //프로필을 조회할 사용자 ID (default to undefined)
+
+const { status, data } = await apiInstance.getUserProfile(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**number**] | 프로필을 조회할 사용자 ID | defaults to undefined|
+
+
+### Return type
+
+**GetUserProfile200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 프로필 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**404** | 사용자를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserProfile_0**
+> GetUserProfile200Response getUserProfile_0()
+
+특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
+
+### Example
+
+```typescript
+import {
+    UsersApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UsersApi(configuration);
+
+let userId: number; //프로필을 조회할 사용자 ID (default to undefined)
+
+const { status, data } = await apiInstance.getUserProfile_0(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**number**] | 프로필을 조회할 사용자 ID | defaults to undefined|
+
+
+### Return type
+
+**GetUserProfile200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 프로필 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**404** | 사용자를 찾을 수 없음 |  -  |
 |**500** | 서버 오류 |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

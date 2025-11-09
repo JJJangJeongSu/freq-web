@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**success** | **boolean** | 요청 성공 여부 | [default to undefined]
+**success** | **boolean** |  | [default to undefined]
 **error** | [**CheckEmail409ResponseAllOfError**](CheckEmail409ResponseAllOfError.md) |  | [default to undefined]
 
 ## Example

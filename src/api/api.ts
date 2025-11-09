@@ -22,10 +22,12 @@ export * from './apis/collections-api';
 export * from './apis/comments-api';
 export * from './apis/detail-pages-api';
 export * from './apis/fast-apiapi';
+export * from './apis/follows-api';
 export * from './apis/home-api';
+export * from './apis/notifications-api';
 export * from './apis/reviews-api';
 export * from './apis/search-api';
+export * from './apis/social-api';
 export * from './apis/users-api';
-export * from './apis/users-social-api';
 export * from './apis/utilities-api';
 

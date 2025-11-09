@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**success** | **boolean** | 요청 성공 여부 | [default to undefined]
+**success** | **boolean** |  | [default to undefined]
 **data** | **object** | 응답 데이터 | [default to undefined]
 **message** | **string** |  | [optional] [default to undefined]
 

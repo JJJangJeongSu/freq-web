@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**recommandedCollections** | **Array&lt;string&gt;** | 사용자 취향 맞춤 컬렉션 | [default to undefined]
+**recommandedCollections** | [**Array&lt;CollectionPreview&gt;**](CollectionPreview.md) | 사용자 취향 맞춤 컬렉션 | [default to undefined]
 **popularReviews** | [**Array&lt;ReviewSummary&gt;**](ReviewSummary.md) | 인기 많은 리뷰(단위시간) | [default to undefined]
 **recentReviews** | [**Array&lt;ReviewSummary&gt;**](ReviewSummary.md) | 최신 리뷰 | [default to undefined]
 **popularAlbums** | [**Array&lt;AlbumPreview&gt;**](AlbumPreview.md) | 인기순으로 10개 | [default to undefined]

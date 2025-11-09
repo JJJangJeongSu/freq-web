@@ -24,9 +24,11 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { ErrorResponse } from '../models';
 // @ts-ignore
-import type { Notification } from '../models';
+import type { GetNotifications200Response } from '../models';
 // @ts-ignore
-import type { SuccessResponse } from '../models';
+import type { MarkAllNotificationsRead200Response } from '../models';
+// @ts-ignore
+import type { MarkNotificationRead200Response } from '../models';
 /**
  * NotificationsApi - axios parameter creator
  * @export
@@ -34,7 +36,7 @@ import type { SuccessResponse } from '../models';
 export const NotificationsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다.
+         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
          * @summary 알림 목록 조회
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -52,9 +54,171 @@ export const NotificationsApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication bearerAuth required
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
+         * @summary 알림 목록 조회
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getNotifications_1: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/notifications`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+         * @summary 전체 알림 읽음 처리
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAllNotificationsRead: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/notifications/read-all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+         * @summary 전체 알림 읽음 처리
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAllNotificationsRead_2: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/notifications/read-all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 특정 알림을 읽음 상태로 변경합니다.
+         * @summary 단일 알림 읽음 처리
+         * @param {number} id 알림 ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markNotificationRead: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('markNotificationRead', 'id', id)
+            const localVarPath = `/notifications/{id}/read`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 특정 알림을 읽음 상태로 변경합니다.
+         * @summary 단일 알림 읽음 처리
+         * @param {number} id 알림 ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markNotificationRead_3: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('markNotificationRead_3', 'id', id)
+            const localVarPath = `/notifications/{id}/read`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -78,15 +242,77 @@ export const NotificationsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = NotificationsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다.
+         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
          * @summary 알림 목록 조회
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getNotifications(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
+        async getNotifications(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetNotifications200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getNotifications(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NotificationsApi.getNotifications']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
+         * @summary 알림 목록 조회
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getNotifications_1(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetNotifications200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getNotifications_1(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NotificationsApi.getNotifications_1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+         * @summary 전체 알림 읽음 처리
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markAllNotificationsRead(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MarkAllNotificationsRead200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markAllNotificationsRead(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NotificationsApi.markAllNotificationsRead']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+         * @summary 전체 알림 읽음 처리
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markAllNotificationsRead_2(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MarkAllNotificationsRead200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markAllNotificationsRead_2(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NotificationsApi.markAllNotificationsRead_2']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 특정 알림을 읽음 상태로 변경합니다.
+         * @summary 단일 알림 읽음 처리
+         * @param {number} id 알림 ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markNotificationRead(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MarkNotificationRead200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markNotificationRead(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NotificationsApi.markNotificationRead']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 특정 알림을 읽음 상태로 변경합니다.
+         * @summary 단일 알림 읽음 처리
+         * @param {number} id 알림 ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markNotificationRead_3(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MarkNotificationRead200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markNotificationRead_3(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NotificationsApi.markNotificationRead_3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -100,13 +326,60 @@ export const NotificationsApiFactory = function (configuration?: Configuration, 
     const localVarFp = NotificationsApiFp(configuration)
     return {
         /**
-         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다.
+         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
          * @summary 알림 목록 조회
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getNotifications(options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
+        getNotifications(options?: RawAxiosRequestConfig): AxiosPromise<GetNotifications200Response> {
             return localVarFp.getNotifications(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
+         * @summary 알림 목록 조회
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getNotifications_1(options?: RawAxiosRequestConfig): AxiosPromise<GetNotifications200Response> {
+            return localVarFp.getNotifications_1(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+         * @summary 전체 알림 읽음 처리
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAllNotificationsRead(options?: RawAxiosRequestConfig): AxiosPromise<MarkAllNotificationsRead200Response> {
+            return localVarFp.markAllNotificationsRead(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+         * @summary 전체 알림 읽음 처리
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAllNotificationsRead_2(options?: RawAxiosRequestConfig): AxiosPromise<MarkAllNotificationsRead200Response> {
+            return localVarFp.markAllNotificationsRead_2(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 특정 알림을 읽음 상태로 변경합니다.
+         * @summary 단일 알림 읽음 처리
+         * @param {number} id 알림 ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markNotificationRead(id: number, options?: RawAxiosRequestConfig): AxiosPromise<MarkNotificationRead200Response> {
+            return localVarFp.markNotificationRead(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 특정 알림을 읽음 상태로 변경합니다.
+         * @summary 단일 알림 읽음 처리
+         * @param {number} id 알림 ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markNotificationRead_3(id: number, options?: RawAxiosRequestConfig): AxiosPromise<MarkNotificationRead200Response> {
+            return localVarFp.markNotificationRead_3(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -119,7 +392,7 @@ export const NotificationsApiFactory = function (configuration?: Configuration, 
  */
 export class NotificationsApi extends BaseAPI {
     /**
-     * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다.
+     * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
      * @summary 알림 목록 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -128,4 +401,62 @@ export class NotificationsApi extends BaseAPI {
     public getNotifications(options?: RawAxiosRequestConfig) {
         return NotificationsApiFp(this.configuration).getNotifications(options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 로그인한 사용자의 알림 목록을 조회합니다.   필터나 페이징 없이 전체 알림을 반환합니다. 
+     * @summary 알림 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public getNotifications_1(options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).getNotifications_1(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+     * @summary 전체 알림 읽음 처리
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public markAllNotificationsRead(options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).markAllNotificationsRead(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 로그인한 사용자의 모든 알림을 읽음 처리합니다.
+     * @summary 전체 알림 읽음 처리
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public markAllNotificationsRead_2(options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).markAllNotificationsRead_2(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 특정 알림을 읽음 상태로 변경합니다.
+     * @summary 단일 알림 읽음 처리
+     * @param {number} id 알림 ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public markNotificationRead(id: number, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).markNotificationRead(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 특정 알림을 읽음 상태로 변경합니다.
+     * @summary 단일 알림 읽음 처리
+     * @param {number} id 알림 ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public markNotificationRead_3(id: number, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).markNotificationRead_3(id, options).then((request) => request(this.axios, this.basePath));
+    }
 }
+

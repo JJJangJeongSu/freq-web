@@ -18,6 +18,9 @@
 import type { AlbumPreview } from './album-preview';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { CollectionPreview } from './collection-preview';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { ReviewSummary } from './review-summary';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -31,10 +34,10 @@ import type { TrackPreview } from './track-preview';
 export interface GetUserCollections200Response4AllOfData {
     /**
      * 사용자 취향 맞춤 컬렉션
-     * @type {Array<string>}
+     * @type {Array<CollectionPreview>}
      * @memberof GetUserCollections200Response4AllOfData
      */
-    'recommandedCollections': Array<string>;
+    'recommandedCollections': Array<CollectionPreview>;
     /**
      * 인기 많은 리뷰(단위시간)
      * @type {Array<ReviewSummary>}

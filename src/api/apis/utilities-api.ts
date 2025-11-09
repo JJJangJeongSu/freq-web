@@ -32,7 +32,7 @@ import type { UploadImage200Response } from '../models';
 export const UtilitiesApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
          * @summary 이미지 업로드
          * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
          * @param {*} [options] Override http request option.
@@ -73,7 +73,7 @@ export const UtilitiesApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
-         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
          * @summary 이미지 업로드
          * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
          * @param {*} [options] Override http request option.
@@ -124,7 +124,7 @@ export const UtilitiesApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = UtilitiesApiAxiosParamCreator(configuration)
     return {
         /**
-         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
          * @summary 이미지 업로드
          * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
          * @param {*} [options] Override http request option.
@@ -137,7 +137,7 @@ export const UtilitiesApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
          * @summary 이미지 업로드
          * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
          * @param {*} [options] Override http request option.
@@ -160,7 +160,7 @@ export const UtilitiesApiFactory = function (configuration?: Configuration, base
     const localVarFp = UtilitiesApiFp(configuration)
     return {
         /**
-         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
          * @summary 이미지 업로드
          * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
          * @param {*} [options] Override http request option.
@@ -170,7 +170,7 @@ export const UtilitiesApiFactory = function (configuration?: Configuration, base
             return localVarFp.uploadImage(file, options).then((request) => request(axios, basePath));
         },
         /**
-         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+         * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
          * @summary 이미지 업로드
          * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
          * @param {*} [options] Override http request option.
@@ -190,7 +190,7 @@ export const UtilitiesApiFactory = function (configuration?: Configuration, base
  */
 export class UtilitiesApi extends BaseAPI {
     /**
-     * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+     * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
      * @summary 이미지 업로드
      * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
      * @param {*} [options] Override http request option.
@@ -202,7 +202,7 @@ export class UtilitiesApi extends BaseAPI {
     }
 
     /**
-     * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다. `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다. 이 URL을 사용하여 프로필 이미지 변경 등의 후속 작업을 수행할 수 있습니다.
+     * 서비스 내에서 사용할 이미지(프로필 이미지, 컬렉션 커버 등)를 서버에 업로드합니다.  `multipart/form-data` 형식으로 이미지 파일을 전송해야 하며, 성공 시 업로드된 이미지에 접근할 수 있는 URL을 반환합니다 /user/me/profile-img와 비슷하게 파일을 받지만, /upload-image에서는 파일을 저장하고 접근URL을 반환할 뿐 db에 저장하지 않습니다
      * @summary 이미지 업로드
      * @param {File} file 업로드할 이미지 파일 (JPEG, PNG, GIF 지원)
      * @param {*} [options] Override http request option.

@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **likeCount** | **number** | 좋아요 개수 | [default to undefined]
 **commentCount** | **number** | 댓글 개수 | [default to undefined]
 **createdAt** | **string** | 작성일시 | [default to undefined]
+**album** | [**AlbumPreview**](AlbumPreview.md) |  | [default to undefined]
 
 ## Example
 
@@ -30,6 +31,7 @@ const instance: ReviewSummary = {
     likeCount,
     commentCount,
     createdAt,
+    album,
 };
 ```
 

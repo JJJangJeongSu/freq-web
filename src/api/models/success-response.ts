@@ -21,7 +21,7 @@
  */
 export interface SuccessResponse {
     /**
-     * 요청 성공 여부
+     * 
      * @type {boolean}
      * @memberof SuccessResponse
      */
@@ -32,11 +32,5 @@ export interface SuccessResponse {
      * @memberof SuccessResponse
      */
     'data': object;
-    /**
-     * 추가 메시지 (선택사항)
-     * @type {string}
-     * @memberof SuccessResponse
-     */
-    'message'?: string;
 }
 

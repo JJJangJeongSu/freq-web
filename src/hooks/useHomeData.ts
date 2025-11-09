@@ -6,10 +6,10 @@
 
 import { useState, useEffect } from 'react';
 import { apiService } from '@/services/api.service';
-import type { ReviewSummary, AlbumPreview, TrackPreview } from '@/api/models';
+import type { ReviewSummary, AlbumPreview, TrackPreview, CollectionPreview } from '@/api/models';
 
 interface HomePageData {
-  recommandedCollections: string[];
+  recommandedCollections: CollectionPreview[];
   popularReviews: ReviewSummary[];
   recentReviews: ReviewSummary[];
   popularAlbums: AlbumPreview[];
@@ -34,7 +34,7 @@ export const useHomeData = (): UseHomeDataReturn => {
       setError(null);
 
       // API 호출 (/home)
-      const response = await apiService.fastAPI.getUserCollections();
+      const response = await apiService.home.getUserCollections();
 
       // 응답 unwrap
       const responseData = response.data;

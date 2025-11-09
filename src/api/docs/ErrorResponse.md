@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**success** | **boolean** | 요청 성공 여부 | [default to undefined]
+**success** | **boolean** |  | [default to undefined]
 **error** | [**ErrorResponseError**](ErrorResponseError.md) |  | [default to undefined]
 
 ## Example
