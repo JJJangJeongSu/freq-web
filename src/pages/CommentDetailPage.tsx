@@ -136,7 +136,7 @@ export function CommentDetailPage() {
             <div className="flex-1">
               <p className="font-medium">{review.targetTitle}</p>
               <p className="text-sm text-muted-foreground">
-                {review.artists.join(', ')}
+                {review.artists?.join(', ') || 'Unknown Artist'}
               </p>
               <p className="text-xs text-muted-foreground">
                 {new Date(review.releaseDate).getFullYear()}
