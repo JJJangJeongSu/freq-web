@@ -5,7 +5,7 @@ import { StarRating } from "../components/StarRating";
 import { Textarea } from "../components/ui/textarea";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 import { Separator } from "../components/ui/separator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useReviewDetail } from "../hooks/useReviewDetail";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -16,16 +16,16 @@ export function CommentDetailPage() {
   const { data: review, loading, error, refetch } = useReviewDetail(reviewId || '');
 
   const [replyText, setReplyText] = useState('');
-  const [isReviewLiked, setIsReviewLiked] = useState(review?.isLiked || false);
-  const [reviewLikes, setReviewLikes] = useState(review?.likeCount || 0);
+  const [isReviewLiked, setIsReviewLiked] = useState(false);
+  const [reviewLikes, setReviewLikes] = useState(0);
 
   // Update likes when review data changes
-  useState(() => {
+  useEffect(() => {
     if (review) {
       setIsReviewLiked(review.isLiked || false);
       setReviewLikes(review.likeCount);
     }
-  });
+  }, [review]);
 
   const handleLikeReview = () => {
     // TODO: API 호출로 좋아요 토글
@@ -148,12 +148,12 @@ export function CommentDetailPage() {
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <Avatar className="w-12 h-12">
-                <AvatarImage src={review.userImageUrl} />
-                <AvatarFallback>{review.username.charAt(0)}</AvatarFallback>
+                <AvatarImage src={review.userImageUrl || undefined} />
+                <AvatarFallback>{review.username?.charAt(0) || 'U'}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <p className="font-medium">{review.username}</p>
+                  <p className="font-medium">{review.username || 'Unknown'}</p>
                   <span className="text-xs text-muted-foreground">
                     {formatDate(review.createdAt)}
                   </span>
