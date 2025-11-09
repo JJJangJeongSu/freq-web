@@ -29,50 +29,102 @@ Builds the application using Vite. Output directory is `build/`.
 
 ### Navigation System
 
-The app uses a custom client-side routing system via state management in `App.tsx`. There is NO React Router - navigation is handled through:
+The app uses **React Router v6** for client-side routing. Navigation architecture:
 
-- `currentPage` state: Controls which page component is rendered
-- `handleNavigate(page, id?)`: Function passed to all page components for navigation
-- `selectedId` state: Stores the ID of selected items (albums, tracks, artists, etc.)
-- Bottom navigation bar visibility is conditional based on current page
+- **BrowserRouter**: Wraps the entire application in `App.tsx`
+- **Routes & Route**: Declarative route configuration
+- **useNavigate() hook**: For programmatic navigation (replaces old `onNavigate` prop)
+- **useParams() hook**: Extract URL parameters (e.g., `albumId`, `trackId`)
+- **NavLink component**: For navigation links with active state styling
+- **ProtectedRoute**: HOC pattern using `<Outlet />` for authentication-required routes
+- **Layout component**: Nested route wrapper with conditional `BottomNavigation` visibility
+
+**Route Structure:**
+- Public routes: `/auth` (AuthPage)
+- Protected routes: All other routes require authentication
+- Nested routes: Main routes wrapped in `<Layout>` component
+- 404 handling: Catch-all `*` route shows `NotFoundPage`
+
+See `ROUTE_STRUCTURE.md` for complete URL schema (28 total routes).
 
 ### Authentication Flow
 
-- Users start on `AuthPage` when `isLoggedIn` is false
-- After login via `handleLogin()`, users are redirected to `HomePage`
-- `handleLogout()` returns users to `AuthPage`
-- All pages except `AuthPage` require authentication
+- Users start on `/auth` when no token is present
+- After login, `navigate('/home')` redirects to HomePage
+- Logout clears token and calls `navigate('/auth')`
+- ProtectedRoute checks `localStorage.getItem('authToken')`
+- Unauthorized access redirects to `/auth` via `<Navigate to="/auth" replace />`
 
 ### Page Structure
 
-All pages follow a consistent pattern:
-- Receive `onNavigate` prop for navigation between pages
-- Receive optional ID props for detail pages (e.g., `albumId`, `trackId`, `artistId`)
-- Return full-page layouts without built-in routing
+**Modern Pattern (React Router v6):**
+- No props required for navigation (use `useNavigate()` hook)
+- No ID props required (use `useParams()` hook)
+- Clean component interfaces without prop drilling
+- Direct access to routing context via hooks
 
-Main page categories:
-- **Core navigation**: HomePage, SearchPage, RateRecordPage, UserPage
-- **Detail pages**: AlbumDetailPage, TrackDetailPage, ArtistDetailPage, CommentDetailPage, CurationDetailPage, UserProfilePage
-- **Collection pages**: CreateCollectionPage, KMACollectionPage, MyCollectionsPage, LikedCollectionsPage, AllCollectionsPage
-- **Rating pages**: RatedAlbumsPage, RatedTracksPage, WriteReviewPage, MyReviewsPage
+**Example:**
+```typescript
+// Detail page
+export function AlbumDetailPage() {
+  const { albumId } = useParams();
+  const navigate = useNavigate();
+
+  return (
+    <div>
+      <button onClick={() => navigate(-1)}>Back</button>
+      <button onClick={() => navigate(`/albums/${albumId}/review`)}>
+        Write Review
+      </button>
+    </div>
+  );
+}
+```
+
+**Main page categories:**
+- **Core navigation** (Bottom nav): `/home`, `/search`, `/rate-record`, `/notifications`, `/user`
+- **Detail pages**: `/albums/:albumId`, `/tracks/:trackId`, `/artists/:artistId`, `/comments/:commentId`, `/curations/:curationId`, `/users/:userId`
+- **Collection pages**: `/collections/new`, `/collections/my`, `/collections/liked`, `/collections/all`, `/collections/:collectionId`, `/kma-collection`
+- **Rating pages**: `/rated/albums`, `/rated/tracks`, `/albums/:albumId/review`, `/reviews/my`, `/reviews/:reviewId`
+- **Artists**: `/artists/liked`
+- **404**: Any invalid route shows `/` NotFoundPage
+
+**Navigation Patterns:**
+```typescript
+// Navigate to route
+navigate('/home')
+
+// Navigate with params
+navigate(`/albums/${albumId}`)
+
+// Browser back
+navigate(-1)
+
+// Replace history (no back button)
+navigate('/auth', { replace: true })
+```
 
 ### Component Organization
 
 ```
 src/
 ├── components/
-│   ├── ui/              # shadcn/ui components (50+ Radix UI-based components)
-│   ├── figma/           # Figma-exported components (e.g., ImageWithFallback)
-│   ├── BottomNavigation.tsx
+│   ├── ui/                   # shadcn/ui components (50+ Radix UI-based components)
+│   ├── figma/                # Figma-exported components (e.g., ImageWithFallback)
+│   ├── BottomNavigation.tsx  # Bottom nav using NavLink (React Router)
+│   ├── ProtectedRoute.tsx    # Authentication wrapper using Outlet
+│   ├── Layout.tsx            # Layout wrapper with conditional BottomNavigation
 │   ├── MusicCard.tsx
 │   ├── HorizontalMusicSection.tsx
 │   ├── StarRating.tsx
 │   ├── EnhancedButton.tsx
 │   └── EnhancedCard.tsx
-├── pages/               # 21 page components
+├── pages/
+│   ├── NotFoundPage.tsx      # 404 error page
+│   └── ...                   # 21 other page components
 ├── types/
-│   └── api.ts           # TypeScript type definitions for API responses
-└── api-examples/        # Mock data and API specs
+│   └── api.ts                # TypeScript type definitions for API responses
+└── api-examples/             # Mock data and API specs
 ```
 
 ### UI Framework
@@ -167,14 +219,33 @@ import { Button } from "@/components/ui/button"
 
 ## Important Notes
 
+- **✅ React Router v6 migration complete:** Application now uses declarative routing with hooks
 - **Backend API is available** at `https://port-0-musicapp-md8e80po64ad31eb.sel5.cloudtype.app`
 - **API integration is partially configured:** Axios client is ready, but API service files need to be generated by APIdog
 - **Current data source:** Pages use hardcoded mock data (will be replaced with API calls)
-- No git repository is initialized
-- No linting or testing scripts configured
+- **Build status:** ✅ Successful (731.64 kB bundle, 76.82 kB CSS)
 - The project uses SWC for faster React compilation via `@vitejs/plugin-react-swc`
 - All dependencies use specific versions with extensive Radix UI components
 - The application is Korean-language focused (UI text in Korean)
+- **Production deployment requires SPA fallback configuration** - see `SERVER_CONFIG.md`
+
+## Deployment
+
+For production deployment, the server must be configured with **SPA fallback** to serve `index.html` for all routes. This allows React Router to handle client-side routing.
+
+**See `SERVER_CONFIG.md` for:**
+- Development server configuration (Vite)
+- Production server options (Express, Nginx, Apache)
+- Cloud platform configurations (Netlify, Vercel, AWS, Firebase)
+- Environment variables
+- Common issues and solutions
+- Deployment checklist
+
+**See `TESTING.md` for:**
+- Build validation checklist
+- Navigation flow testing
+- Key user journey scenarios
+- Browser behavior testing
 
 ## Next Steps for API Integration
 
