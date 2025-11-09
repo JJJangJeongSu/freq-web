@@ -242,8 +242,10 @@ export function CurationDetailPage({ curationId, onNavigate }: CurationDetailPag
                       <p className="text-sm text-muted-foreground">{item.artists.join(', ')}</p>
                     )}
                     <div className="flex items-center gap-2">
-                      <StarRating rating={item.rating} readonly size="sm" />
-                      <span className="text-xs text-muted-foreground">{item.rating.toFixed(1)}</span>
+                      <StarRating rating={item.rating || 0} readonly size="sm" />
+                      <span className="text-xs text-muted-foreground">
+                        {item.rating ? item.rating.toFixed(1) : '0.0'}
+                      </span>
                     </div>
                     {item.description && (
                       <p className="text-xs text-muted-foreground leading-relaxed mt-2">

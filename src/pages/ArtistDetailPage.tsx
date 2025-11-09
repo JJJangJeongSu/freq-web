@@ -4,8 +4,9 @@ import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { Separator } from "../components/ui/separator";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useArtistDetail } from "../hooks/useArtistDetail";
+import { useToggleArtistLike } from "../hooks/useToggleArtistLike";
 
 interface ArtistDetailPageProps {
   artistId: string;
@@ -14,13 +15,35 @@ interface ArtistDetailPageProps {
 
 export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps) {
   // API 데이터 가져오기
-  const { data: artist, loading, error } = useArtistDetail(artistId);
+  const { data: artist, loading, error, refetch } = useArtistDetail(artistId);
+
+  // 좋아요 토글 hook
+  const { toggleLike, loading: likeLoading } = useToggleArtistLike();
 
   // isLiked 상태는 API의 isLiked 값으로 초기화
-  const [isLiked, setIsLiked] = useState(artist?.isLiked || false);
+  const [isLiked, setIsLiked] = useState(false);
 
-  const handleLikeToggle = () => {
-    setIsLiked(!isLiked);
+  // artist 데이터가 로드되면 isLiked 상태 업데이트
+  useEffect(() => {
+    if (artist?.isLiked !== undefined) {
+      setIsLiked(artist.isLiked);
+    }
+  }, [artist?.isLiked]);
+
+  const handleLikeToggle = async () => {
+    const previousLikedState = isLiked;
+
+    try {
+      // 낙관적 업데이트 (UI 즉시 변경)
+      setIsLiked(!isLiked);
+
+      // API 호출
+      await toggleLike(artistId);
+    } catch (err) {
+      // 실패 시 원래 상태로 되돌림
+      setIsLiked(previousLikedState);
+      console.error('Failed to toggle like:', err);
+    }
   };
 
   // Loading 상태
@@ -92,10 +115,20 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                     variant={isLiked ? "default" : "outline"}
                     size="sm"
                     onClick={handleLikeToggle}
+                    disabled={likeLoading}
                     className="flex-shrink-0"
                   >
-                    <Heart className={`w-4 h-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
-                    {isLiked ? '좋아요' : '좋아요'}
+                    {likeLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                        처리중
+                      </>
+                    ) : (
+                      <>
+                        <Heart className={`w-4 h-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
+                        {isLiked ? '좋아요' : '좋아요'}
+                      </>
+                    )}
                   </Button>
                 </div>
 

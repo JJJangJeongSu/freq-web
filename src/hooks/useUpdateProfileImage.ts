@@ -12,67 +12,61 @@ import { apiService } from '@/services/api.service';
 import axios from 'axios';
 
 interface UseUpdateProfileImageReturn {
-  updateProfileImage: (file: File) => Promise<{ imageUrl: string; message: string }>;
+
+  updateProfileImage: (file: File) => Promise<{ message: string }>;
+
   loading: boolean;
+
   error: Error | null;
+
 }
 
+
+
 /**
+
  * 프로필 이미지 업데이트 hook
+
  *
+
  * @example
+
  * const { updateProfileImage, loading, error } = useUpdateProfileImage();
+
  * const file = event.target.files[0];
+
  * await updateProfileImage(file);
+
  */
+
 export const useUpdateProfileImage = (): UseUpdateProfileImageReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const updateProfileImage = async (file: File): Promise<{ imageUrl: string; message: string }> => {
+  const updateProfileImage = async (file: File): Promise<{ message: string }> => {
     try {
       setLoading(true);
       setError(null);
 
-      console.log('🚀 Starting profile image update:', {
+      console.log('🚀 Starting profile image update (direct upload):', {
         fileName: file.name,
         fileSize: file.size,
         fileType: file.type
       });
 
-      // Step 1: 이미지 업로드하여 presigned URL 받기
-      const uploadResponse = await apiService.utilities.uploadImage({ file });
-      const uploadData = uploadResponse.data;
+      // API를 통해 직접 파일 업로드
+      const response = await apiService.authUpdate.updateProfileImage(file);
+      const responseData = response.data;
 
-      if (!uploadData.success || !uploadData.data) {
-        throw new Error('Failed to get upload URL');
-      }
-
-      const { presignedUrl, imageUrl } = uploadData.data;
-      console.log('✅ Got presigned URL and image URL');
-
-      // Step 2: Presigned URL로 S3에 업로드
-      await axios.put(presignedUrl, file, {
-        headers: {
-          'Content-Type': file.type,
-        },
-      });
-      console.log('✅ Uploaded image to S3');
-
-      // Step 3: 프로필 이미지 URL 업데이트
-      const updateResponse = await apiService.authUpdate.updateProfileImage({ imageUrl });
-      const updateData = updateResponse.data;
-
-      if (updateData.success && updateData.data) {
+      if (responseData.success) {
         const result = {
-          imageUrl,
-          message: updateData.data.message || '프로필 이미지가 업데이트되었습니다.'
+          message: '프로필 이미지가 업데이트되었습니다.'
         };
 
         console.log('✅ Profile image updated successfully:', result);
         return result;
       } else {
-        throw new Error('Failed to update profile image');
+        throw new Error(responseData.error?.message || 'Failed to update profile image');
       }
     } catch (err: any) {
       console.error('❌ Failed to update profile image:', err);

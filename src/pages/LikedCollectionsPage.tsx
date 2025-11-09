@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { ArrowLeft, Search, Filter, Heart, Music, Share2, UserCheck } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ArrowLeft, Search, Filter, Heart, Music, Share2, UserCheck, Loader2, RefreshCw } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
 import { EnhancedCard } from "../components/EnhancedCard";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useLikedCollections } from "../hooks/useLikedCollections";
 
 interface LikedCollection {
   id: string;
@@ -15,10 +16,9 @@ interface LikedCollection {
   imageUrl: string;
   creatorName: string;
   creatorId: string;
-  createdAt: string;
-  tags: string[];
   likes: number;
   likedAt: string;
+  visibility?: 'public' | 'private';
 }
 
 interface LikedCollectionsPageProps {
@@ -28,81 +28,32 @@ interface LikedCollectionsPageProps {
 export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "name" | "items" | "likes" | "creator">("recent");
-  
-  // Mock data
-  const [likedCollections] = useState<LikedCollection[]>([
-    {
-      id: "1",
-      title: "인디 음악 추천 모음",
-      description: "숨어있는 인디 뮤지션들의 보석 같은 곡들을 발굴해서 모았습니다. 메이저 레이블에서는 찾기 힘든 참신한 사운드들을 만나보세요.",
-      itemCount: 38,
-      imageUrl: "https://images.unsplash.com/photo-1741701862902-d8606228b3ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGNvbGxlY3Rpb24lMjB2aW55bCUyMHJlY29yZHN8ZW58MXx8fHwxNzU5NTY0NjE3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      creatorName: "음악탐험가",
-      creatorId: "user1",
-      createdAt: "2024-12-10",
-      tags: ["인디", "발굴", "숨은명곡"],
-      likes: 542,
-      likedAt: "2024-12-14"
-    },
-    {
-      id: "2",
-      title: "드라이브 음악 완전판",
-      description: "야간 드라이브에 완벽한 음악들만 엄선했습니다.",
-      itemCount: 28,
-      imageUrl: "https://images.unsplash.com/photo-1627491694773-e62d90a0f304?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMHBsYXlsaXN0JTIwY29sbGVjdGlvbiUyMGFsYnVtc3xlbnwxfHx8fDE3NTk1NjQ2MjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      creatorName: "드라이버_J",
-      creatorId: "user2",
-      createdAt: "2024-11-25",
-      tags: ["드라이브", "야간", "분위기"],
-      likes: 892,
-      likedAt: "2024-12-12"
-    },
-    {
-      id: "3",
-      title: "90년대 K-POP 명곡선",
-      description: "세월이 흘러도 여전히 명곡인 90년대 K-POP 트랙들",
-      itemCount: 45,
-      imageUrl: "https://images.unsplash.com/photo-1741701862902-d8606228b3ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGNvbGxlY3Rpb24lMjB2aW55bCUyMHJlY29yZHN8ZW58MXx8fHwxNzU5NTY0NjE3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      creatorName: "레트로매니아",
-      creatorId: "user3",
-      createdAt: "2024-11-18",
-      tags: ["90년대", "K-POP", "추억", "명곡"],
-      likes: 1234,
-      likedAt: "2024-12-08"
-    },
-    {
-      id: "4",
-      title: "집중력 향상 클래식",
-      description: "업무나 공부할 때 집중력을 높여주는 클래식 음악 모음",
-      itemCount: 22,
-      imageUrl: "https://images.unsplash.com/photo-1627491694773-e62d90a0f304?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMHBsYXlsaXN0JTIwY29sbGVjdGlvbiUyMGFsYnVtc3xlbnwxfHx8fDE3NTk1NjQ2MjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      creatorName: "클래식러버",
-      creatorId: "user4",
-      createdAt: "2024-10-30",
-      tags: ["클래식", "집중", "공부", "업무"],
-      likes: 376,
-      likedAt: "2024-12-05"
-    },
-    {
-      id: "5",
-      title: "비 오는 날 감성곡",
-      description: "비 오는 날 듣기 좋은 감성적인 곡들을 모았습니다",
-      itemCount: 19,
-      imageUrl: "https://images.unsplash.com/photo-1741701862902-d8606228b3ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGNvbGxlY3Rpb24lMjB2aW55bCUyMHJlY29yZHN8ZW58MXx8fHwxNzU5NTY0NjE3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      creatorName: "감성충전",
-      creatorId: "user5",
-      createdAt: "2024-10-15",
-      tags: ["비", "감성", "힐링"],
-      likes: 623,
-      likedAt: "2024-11-28"
-    }
-  ]);
+
+  // API 데이터 가져오기
+  const { data: apiData, loading, error, refetch } = useLikedCollections();
+
+  // API 데이터를 UI 형식으로 변환
+  const likedCollections = useMemo<LikedCollection[]>(() => {
+    if (!apiData) return [];
+
+    return apiData.map(collection => ({
+      id: String(collection.collectionId),
+      title: collection.title,
+      description: collection.description,
+      itemCount: collection.itemCount,
+      imageUrl: collection.coverImageUrl,
+      creatorName: collection.author.username,
+      creatorId: String(collection.author.id),
+      likes: collection.likeCount,
+      likedAt: collection.likedDate,
+      visibility: collection.visibility
+    }));
+  }, [apiData]);
 
   const filteredCollections = likedCollections.filter(collection =>
     collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     collection.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    collection.creatorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    collection.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    collection.creatorName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const sortedCollections = [...filteredCollections].sort((a, b) => {
@@ -129,6 +80,40 @@ export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) 
     e.stopPropagation();
     onNavigate('user-profile', creatorId);
   };
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="size-full bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="size-12 animate-spin mx-auto text-primary" />
+          <p className="text-body-medium text-on-surface-variant">
+            좋아요한 컬렉션을 불러오는 중...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="size-full bg-background flex items-center justify-center p-6">
+        <div className="text-center space-y-4">
+          <p className="text-title-medium text-error">
+            컬렉션을 불러올 수 없습니다
+          </p>
+          <p className="text-body-medium text-on-surface-variant">
+            {error.message}
+          </p>
+          <EnhancedButton variant="filled" onClick={refetch}>
+            <RefreshCw className="size-4 mr-2" />
+            다시 시도
+          </EnhancedButton>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="size-full bg-background">
@@ -197,18 +182,9 @@ export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) 
           <div className="text-center py-12">
             <Heart className="size-12 mx-auto mb-4 text-on-surface-variant" />
             <h3 className="text-title-medium mb-2">좋아요한 컬렉션이 없습니다</h3>
-            <p className="text-body-medium text-on-surface-variant mb-6">
+            <p className="text-body-medium text-on-surface-variant">
               {searchQuery ? "검색 결과가 없습니다." : "마음에 드는 컬렉션에 좋아요를 눌러보세요."}
             </p>
-            {!searchQuery && (
-              <EnhancedButton
-                variant="filled"
-                onClick={() => onNavigate('search')}
-              >
-                <Search className="size-4 mr-2" />
-                컬렉션 찾아보기
-              </EnhancedButton>
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
@@ -249,20 +225,7 @@ export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) 
                   <p className="text-body-small text-on-surface-variant mb-3 line-clamp-2">
                     {collection.description}
                   </p>
-                  
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {collection.tags.slice(0, 3).map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {collection.tags.length > 3 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{collection.tags.length - 3}
-                      </Badge>
-                    )}
-                  </div>
-                  
+
                   <div className="flex items-center justify-between mb-2">
                     <button
                       onClick={(e) => handleCreatorClick(collection.creatorId, e)}

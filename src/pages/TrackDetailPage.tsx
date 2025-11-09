@@ -11,7 +11,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
 import { Progress } from "../components/ui/progress";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTrackDetail } from "../hooks/useTrackDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
@@ -31,6 +31,13 @@ export function TrackDetailPage({
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // isRated가 true일 때 초기 별점을 기존 평점으로 설정
+  useEffect(() => {
+    if (track?.isRated && track?.userRating) {
+      setUserRating(track.userRating);
+    }
+  }, [track?.isRated, track?.userRating]);
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
@@ -215,13 +222,15 @@ export function TrackDetailPage({
                 <Button
                   className="w-full"
                   onClick={handleSubmitRating}
-                  disabled={reviewLoading || submitSuccess}
+                  disabled={reviewLoading || submitSuccess || track?.userRating === userRating}
                 >
                   {reviewLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       제출 중...
                     </>
+                  ) : track?.userRating === userRating ? (
+                    '기존 평점과 동일합니다'
                   ) : (
                     '제출하기'
                   )}

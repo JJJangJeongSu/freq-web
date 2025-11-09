@@ -32,7 +32,7 @@ export const useUpdateBio = (): UseUpdateBioReturn => {
       console.log('🚀 Updating bio:', bio);
 
       // API 호출
-      const response = await apiService.authUpdate.updateBio({ bio });
+      const response = await apiService.authUpdate.updateBio({ content: bio });
 
       // 응답 unwrap
       const responseData = response.data;

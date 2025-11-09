@@ -1,4 +1,4 @@
-import { ArrowLeft, MoreVertical, Plus, Star, Heart, FolderOpen, Tag, Disc, Music } from "lucide-react";
+import { ArrowLeft, MoreVertical, Plus, Star, Heart, FolderOpen, Tag, Disc, Music, MessageSquare, ThumbsUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { HorizontalMusicSection } from "../components/HorizontalMusicSection";
@@ -84,8 +84,8 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-24">
         {/* Profile Header with Primary Actions */}
-        <div className="px-6 py-6 border-b border-border">
-          <div className="flex items-center gap-5 mb-6">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="flex items-center gap-5 mb-4">
             <Avatar className="w-20 h-20">
               <AvatarImage src={data.userProfile.profileImageUrl} />
               <AvatarFallback className="text-xl">
@@ -101,7 +101,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
           </div>
           
           {/* Primary Actions - 가장 중요한 액션들 */}
-          <div className="flex gap-3 mb-6">
+          <div className="flex gap-3 mb-4">
             <Button 
               className="flex-1 h-12" 
               onClick={() => onNavigate('search')}
@@ -119,52 +119,78 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
             </Button>
           </div>
 
-          {/* Stats */}
-          <div className="space-y-3">
-            {/* 첫 번째 행: 앨범, 트랙, 아티스트 */}
-            <div className="grid grid-cols-3 gap-3">
-              <div
-                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
-                onClick={() => onNavigate('rated-albums')}
-              >
-                <div className="text-2xl font-bold text-primary">{data.statistics.albumReviews}</div>
-                <div className="text-xs text-muted-foreground mt-1">앨범</div>
-              </div>
-              <div
-                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
-                onClick={() => onNavigate('rated-tracks')}
-              >
-                <div className="text-2xl font-bold text-primary">{data.statistics.trackReviews}</div>
-                <div className="text-xs text-muted-foreground mt-1">트랙</div>
-              </div>
-              <div
-                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
-                onClick={() => onNavigate('liked-artists')}
-              >
-                <div className="text-2xl font-bold text-primary">{data.statistics.likedArtists}</div>
-                <div className="text-xs text-muted-foreground mt-1">아티스트</div>
-              </div>
-            </div>
+          {/* Stats Section */}
+          <div className="space-y-2">
+            {/* ❤️ 좋아요 통계 */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">❤️ 좋아요 통계</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  {/* Rated Albums */}
+                  <div
+                    className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
+                    onClick={() => onNavigate('rated-albums')}
+                  >
+                    <Disc className="w-5 h-5 mx-auto text-primary mb-1" />
+                    <div className="text-3xl font-extrabold">{data.statistics.albumReviews}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">앨범</div>
+                  </div>
 
-            {/* 두 번째 행: 작성한 리뷰, 받은 좋아요 */}
-            <div className="grid grid-cols-2 gap-3">
-              <div
-                className="flex flex-col items-center justify-center min-h-[60px] cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
-                onClick={() => onNavigate('my-reviews')}
-              >
-                <div className="text-2xl font-bold text-primary">{data.statistics.writtenReviews}</div>
-                <div className="text-xs text-muted-foreground mt-1">작성한 리뷰</div>
-              </div>
-              <div className="flex flex-col items-center justify-center min-h-[60px] bg-muted/30 rounded-lg p-3">
-                <div className="text-2xl font-bold text-primary">{data.statistics.receivedLikes}</div>
-                <div className="text-xs text-muted-foreground mt-1 text-center leading-tight">받은 좋아요</div>
-              </div>
-            </div>
+                  {/* Rated Tracks */}
+                  <div
+                    className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
+                    onClick={() => onNavigate('rated-tracks')}
+                  >
+                    <Music className="w-5 h-5 mx-auto text-primary mb-1" />
+                    <div className="text-3xl font-extrabold">{data.statistics.trackReviews}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">트랙</div>
+                  </div>
+
+                  {/* Liked Artists */}
+                  <div
+                    className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
+                    onClick={() => onNavigate('liked-artists')}
+                  >
+                    <Heart className="w-5 h-5 mx-auto text-primary mb-1" />
+                    <div className="text-3xl font-extrabold">{data.statistics.likedArtists}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">아티스트</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 💬 활동 통계 */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">💬 활동 통계</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <div className="grid grid-cols-2 gap-2 text-center">
+                  {/* Written Reviews */}
+                  <div
+                    className="cursor-pointer hover:bg-muted/50 rounded-lg p-2 transition-colors"
+                    onClick={() => onNavigate('my-reviews')}
+                  >
+                    <MessageSquare className="w-5 h-5 mx-auto text-primary mb-1" />
+                    <div className="text-3xl font-extrabold">{data.statistics.writtenReviews}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">작성한 리뷰</div>
+                  </div>
+
+                  {/* Received Likes */}
+                  <div className="rounded-lg p-2">
+                    <ThumbsUp className="w-5 h-5 mx-auto text-primary mb-1" />
+                    <div className="text-3xl font-extrabold">{data.statistics.receivedLikes}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">받은 좋아요</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        {/* 별점 분포 */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-4">
           <Card>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
@@ -217,8 +243,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
 
         <Separator />
 
-        {/* 내가 만든 콜렉션 */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-4">
           <Card>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
@@ -297,7 +322,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
         <Separator />
 
         {/* 좋아요한 콜렉션 */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-4">
           <Card>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
@@ -377,7 +402,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
         <Separator />
 
         {/* 장르 키워드 맵 */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-4">
           <Card>
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2">
@@ -427,7 +452,7 @@ export function RateRecordPage({ onNavigate }: RateRecordPageProps) {
         <Separator />
 
         {/* Recent Reviews */}
-        <div className="pt-6">
+        <div className="pt-4">
           <HorizontalMusicSection
             title="평가한 앨범"
             items={data.recentAlbums}

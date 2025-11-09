@@ -1,144 +1,77 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card, CardContent } from "../components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { ArrowLeft, Search, SlidersHorizontal, Heart, MessageCircle, CheckCircle } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
+import { ArrowLeft, Search, SlidersHorizontal, Heart, Loader2, RefreshCw } from "lucide-react";
+import { useAllCollections } from "../hooks/useAllCollections";
 
 interface AllCollectionsPageProps {
   onNavigate: (page: string, id?: string) => void;
 }
 
-type SortType = "popular" | "latest";
-type CategoryType = "all" | "mixed" | "albums" | "tracks";
-
 export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
+  // API 데이터 가져오기
+  const { data: apiData, loading, error, refetch } = useAllCollections();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortType>("popular");
-  const [category, setCategory] = useState<CategoryType>("all");
 
-  // 전체 컬렉션 데이터
-  const allCollections = [
-    {
-      id: '1',
-      title: '새벽에 듣는 음악',
-      description: '조용한 새벽 시간에 어울리는 차분한 음악들',
-      type: 'mixed' as const,
-      creator: {
-        name: '음악평론가',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-        isVerified: true
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1559121060-686a11356a87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGN1cmF0b3IlMjBlZGl0b3JpYWwlMjBwaWNrc3xlbnwxfHx8fDE3NTg3MDE3ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      tags: ['#새벽', '#감성', '#차분함'],
-      stats: { likes: 234, comments: 45 },
-      createdAt: '2024-10-20'
-    },
-    {
-      id: '2', 
-      title: '운동할 때 추천',
-      description: '운동할 때 들으면 좋은 신나는 음악들',
-      type: 'tracks' as const,
-      creator: {
-        name: '피트니스러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-        isVerified: false
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaXRuZXNzJTIwbXVzaWMlMjB3b3Jrb3V0fGVufDF8fHx8MTc1ODcwMTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080',
-      tags: ['#운동', '#에너지', '#업비트'],
-      stats: { likes: 189, comments: 32 },
-      createdAt: '2024-10-22'
-    },
-    {
-      id: '3',
-      title: '재즈 입문자를 위한',
-      description: '재즈를 처음 듣는 분들에게 추천하는 곡들',
-      type: 'albums' as const,
-      creator: {
-        name: '재즈마스터',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-        isVerified: true
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxqYXp6JTIwbXVzaWMlMjBpbnN0cnVtZW50fGVufDF8fHx8MTc1ODcwMTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080',
-      tags: ['#재즈', '#입문', '#클래식'],
-      stats: { likes: 456, comments: 87 },
-      createdAt: '2024-10-18'
-    },
-    {
-      id: '4',
-      title: '비 오는 날의 플레이리스트',
-      description: '빗소리와 함께 듣기 좋은 음악',
-      type: 'mixed' as const,
-      creator: {
-        name: '감성치즈',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-        isVerified: false
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1428908728789-d2de25dbd4e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyYWlueSUyMGRheSUyMG11c2ljfGVufDF8fHx8MTc1ODcwMTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080',
-      tags: ['#비', '#감성', '#힐링'],
-      stats: { likes: 312, comments: 54 },
-      createdAt: '2024-10-24'
-    },
-    {
-      id: '5',
-      title: '집중력 UP 클래식',
-      description: '공부하거나 일할 때 듣는 클래식 음악',
-      type: 'albums' as const,
-      creator: {
-        name: '클래식러버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-        isVerified: true
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGFzc2ljYWwlMjBtdXNpYyUyMG9yY2hlc3RyYXxlbnwxfHx8fDE3NTg3MDE3ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      tags: ['#클래식', '#집중', '#공부'],
-      stats: { likes: 521, comments: 92 },
-      createdAt: '2024-10-15'
-    },
-    {
-      id: '6',
-      title: '드라이브 필수 팝송',
-      description: '드라이브하면서 듣기 좋은 신나는 팝송',
-      type: 'tracks' as const,
-      creator: {
-        name: '드라이버',
-        avatar: 'https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-        isVerified: false
-      },
-      imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkcml2aW5nJTIwY2FyJTIwcm9hZHxlbnwxfHx8fDE3NTg3MDE3ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      tags: ['#드라이브', '#팝', '#신나는'],
-      stats: { likes: 267, comments: 41 },
-      createdAt: '2024-10-21'
-    }
-  ];
+  // API 데이터를 useMemo로 변환
+  const allCollections = useMemo(() => {
+    if (!apiData) return [];
 
-  // 필터링 및 정렬
-  const filteredCollections = allCollections
-    .filter(collection => {
-      // 검색어 필터
-      const matchesSearch = collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           collection.description.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      // 카테고리 필터
-      const matchesCategory = category === "all" || collection.type === category;
-      
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === "popular") {
-        return b.stats.likes - a.stats.likes;
-      } else {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    return apiData.map(collection => ({
+      id: String(collection.collectionId),
+      title: collection.title,
+      description: collection.description,
+      creator: {
+        name: collection.author.username,
+        avatar: collection.author.imageUrl,
+        id: String(collection.author.id)
+      },
+      imageUrl: collection.coverImageUrl,
+      stats: {
+        likes: collection.likeCount,
+        itemCount: collection.itemCount
       }
-    });
+    }));
+  }, [apiData]);
+
+  // 필터링 (검색어만)
+  const filteredCollections = allCollections.filter(collection =>
+    collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    collection.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="min-h-screen pb-20 flex items-center justify-center" style={{ background: '#FFFFFF' }}>
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto" style={{ color: '#2196F3' }} />
+          <p style={{ color: '#757575' }}>컬렉션을 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="min-h-screen pb-20 flex items-center justify-center p-6" style={{ background: '#FFFFFF' }}>
+        <div className="text-center space-y-4">
+          <p className="font-semibold" style={{ color: '#F44336' }}>컬렉션을 불러올 수 없습니다</p>
+          <p className="text-sm" style={{ color: '#757575' }}>{error.message}</p>
+          <Button onClick={refetch}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            다시 시도
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-20" style={{ background: '#FFFFFF' }}>
@@ -185,7 +118,7 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
       </div>
 
       {/* Collections Grid */}
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-4">
         {filteredCollections.map((collection) => (
           <Card
             key={collection.id}
@@ -204,19 +137,6 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
                   alt={collection.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-2 right-2">
-                  <Badge
-                    className="rounded-full"
-                    style={{
-                      background: collection.type === 'mixed' ? '#2196F3' : 
-                                 collection.type === 'albums' ? '#4CAF50' : '#FF9800',
-                      color: '#FFFFFF'
-                    }}
-                  >
-                    {collection.type === 'mixed' ? '혼합' : 
-                     collection.type === 'albums' ? '앨범' : '트랙'}
-                  </Badge>
-                </div>
               </div>
 
               {/* Collection Info */}
@@ -231,24 +151,6 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
                   </p>
                 </div>
 
-                {/* Tags */}
-                <div className="flex gap-1 flex-wrap">
-                  {collection.tags.map((tag, idx) => (
-                    <Badge
-                      key={idx}
-                      variant="secondary"
-                      className="text-xs rounded-full"
-                      style={{
-                        background: '#F5F5F5',
-                        color: '#2196F3',
-                        border: 'none'
-                      }}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
                 {/* Creator */}
                 <div className="flex items-center gap-2">
                   <Avatar className="h-6 w-6">
@@ -258,9 +160,6 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
                   <span className="text-sm" style={{ color: '#757575' }}>
                     {collection.creator.name}
                   </span>
-                  {collection.creator.isVerified && (
-                    <CheckCircle className="h-4 w-4" style={{ color: '#2196F3' }} />
-                  )}
                 </div>
 
                 {/* Stats */}
@@ -272,9 +171,9 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <MessageCircle className="h-4 w-4" style={{ color: '#757575' }} />
+                    <SlidersHorizontal className="h-4 w-4" style={{ color: '#757575' }} />
                     <span className="text-sm" style={{ color: '#757575' }}>
-                      {collection.stats.comments}
+                      {collection.stats.itemCount}개
                     </span>
                   </div>
                 </div>

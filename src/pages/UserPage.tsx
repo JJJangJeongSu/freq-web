@@ -8,6 +8,7 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { useState, useRef, useEffect } from "react";
+import { useTheme } from "../components/theme-provider";
 import { useUpdateBio } from "../hooks/useUpdateBio";
 import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
 import { useUserProfile } from "../hooks/useUserProfile";
@@ -17,6 +18,8 @@ interface UserPageProps {
 }
 
 export function UserPage({ onNavigate }: UserPageProps) {
+  const { theme, setTheme } = useTheme();
+
   // 현재 로그인한 사용자의 ID 가져오기
   const userId = localStorage.getItem('userId') || '';
 
@@ -191,21 +194,7 @@ export function UserPage({ onNavigate }: UserPageProps) {
             <div className="space-y-5">
               <h3 className="font-semibold text-lg">계정</h3>
               <div className="space-y-3">
-                <div
-                  className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors"
-                  onClick={() => {
-                    setEditedBio(apiProfile.bio);
-                    setIsEditDialogOpen(true);
-                  }}
-                >
-                  <div className="flex items-center gap-4">
-                    <Edit className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">프로필 편집</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">이름, 소개 변경</p>
-                    </div>
-                  </div>
-                </div>
+
                 
                 
 
@@ -247,7 +236,10 @@ export function UserPage({ onNavigate }: UserPageProps) {
                       <p className="text-sm text-muted-foreground leading-relaxed">테마 설정</p>
                     </div>
                   </div>
-                  <Switch />
+                  <Switch
+                    checked={theme === "dark"}
+                    onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                  />
                 </div>
               </div>
             </div>
@@ -300,40 +292,36 @@ export function UserPage({ onNavigate }: UserPageProps) {
           </DialogHeader>
           <div className="space-y-4">
             {/* 프로필 이미지 업로드 */}
-            <div className="space-y-2">
-              <Label>프로필 이미지</Label>
-              <div className="flex justify-center">
-                <div className="relative">
-                  <Avatar className="w-24 h-24">
-                    <AvatarImage src={previewUrl || apiProfile.profileImageUrl} />
-                    <AvatarFallback className="text-xl">
-                      {apiProfile.username.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Button
-                    size="sm"
-                    className="absolute -bottom-1 -right-1 w-10 h-10 rounded-full"
-                    variant="secondary"
-                    onClick={handleImageClick}
-                    disabled={bioLoading || imageLoading}
-                  >
-                    <Camera className="w-5 h-5" />
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </div>
-              </div>
-              {selectedFile && (
-                <p className="text-xs text-center text-muted-foreground">
-                  선택된 파일: {selectedFile.name}
-                </p>
-              )}
-            </div>
+                        <div className="space-y-2">
+                          <Label>프로필 이미지</Label>
+                          <div className="flex justify-center py-4">
+                            <div className="relative">
+                              <Avatar className="w-32 h-32 border-2 border-border">
+                                <AvatarImage src={previewUrl || apiProfile.profileImageUrl} />
+                                <AvatarFallback className="text-4xl">
+                                  {apiProfile.username.substring(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <Button
+                                size="icon"
+                                className="absolute bottom-0 right-0 w-9 h-9 rounded-full"
+                                variant="secondary"
+                                onClick={handleImageClick}
+                                disabled={bioLoading || imageLoading}
+                              >
+                                <Camera className="w-5 h-5" />
+                              </Button>
+                              <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="hidden"
+                                style={{ display: 'none' }}
+                              />
+                            </div>
+                          </div>
+                        </div>
 
             <div className="space-y-2">
               <Label htmlFor="bio">소개</Label>
