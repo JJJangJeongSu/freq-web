@@ -52,13 +52,19 @@ export function CommentDetailPage() {
     if (!reviewId) return;
 
     // 낙관적 업데이트: 즉시 UI 반영
+    const newIsLiked = !isReviewLiked;
+    const newLikeCount = isReviewLiked ? reviewLikes - 1 : reviewLikes + 1;
+
+    setIsReviewLiked(newIsLiked);
+    setReviewLikes(newLikeCount);
+
+    // 백그라운드에서 API 호출
     const result = await toggleReviewLike(reviewId, isReviewLiked, reviewLikes);
 
-    // 결과 반영 (에러 시 롤백)
-    setIsReviewLiked(result.optimisticIsLiked);
-    setReviewLikes(result.optimisticLikeCount);
-
+    // 에러 발생 시 롤백
     if (result.error) {
+      setIsReviewLiked(result.optimisticIsLiked);
+      setReviewLikes(result.optimisticLikeCount);
       console.error('리뷰 좋아요 토글 실패:', result.error.message);
       // TODO: 사용자에게 에러 알림 (토스트 등)
     }
@@ -69,22 +75,35 @@ export function CommentDetailPage() {
     if (!currentState) return;
 
     // 낙관적 업데이트: 즉시 UI 반영
+    const newIsLiked = !currentState.isLiked;
+    const newLikeCount = currentState.isLiked
+      ? currentState.count - 1
+      : currentState.count + 1;
+
+    setCommentLikes(prev => ({
+      ...prev,
+      [commentId]: {
+        isLiked: newIsLiked,
+        count: newLikeCount
+      }
+    }));
+
+    // 백그라운드에서 API 호출
     const result = await toggleCommentLike(
       commentId,
       currentState.isLiked,
       currentState.count
     );
 
-    // 결과 반영 (에러 시 롤백)
-    setCommentLikes(prev => ({
-      ...prev,
-      [commentId]: {
-        isLiked: result.optimisticIsLiked,
-        count: result.optimisticLikeCount
-      }
-    }));
-
+    // 에러 발생 시 롤백
     if (result.error) {
+      setCommentLikes(prev => ({
+        ...prev,
+        [commentId]: {
+          isLiked: result.optimisticIsLiked,
+          count: result.optimisticLikeCount
+        }
+      }));
       console.error('댓글 좋아요 토글 실패:', result.error.message);
       // TODO: 사용자에게 에러 알림 (토스트 등)
     }

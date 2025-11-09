@@ -43,6 +43,7 @@ export function NotificationsPage() {
           <NotificationItem
             key={notification.id}
             notification={notification}
+            onRead={refetch}
           />
         ))}
       </div>
