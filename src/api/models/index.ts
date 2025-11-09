@@ -81,6 +81,7 @@ export * from './kakao-login-request';
 export * from './login200-response';
 export * from './login-request';
 export * from './naver-login-request';
+export * from './notification';
 export * from './rated-album';
 export * from './rated-track';
 export * from './rating-distribution';

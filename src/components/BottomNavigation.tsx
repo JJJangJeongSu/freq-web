@@ -1,4 +1,4 @@
-import { Home, Search, Star, User } from "lucide-react";
+import { Home, Search, Star, User, Bell } from "lucide-react";
 
 interface BottomNavigationProps {
   activeTab: string;
@@ -10,6 +10,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'home', icon: Home, label: '홈' },
     { id: 'search', icon: Search, label: '검색' },
     { id: 'rate-record', icon: Star, label: '평가 기록' },
+    { id: 'notifications', icon: Bell, label: '알림' },
     { id: 'user', icon: User, label: '프로필' },
   ];
 

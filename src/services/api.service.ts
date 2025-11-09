@@ -16,6 +16,7 @@ import { CollectionsApi } from '@/api/apis/collections-api';
 import { CommentsApi } from '@/api/apis/comments-api';
 import { DetailPagesApi } from '@/api/apis/detail-pages-api';
 import { FastAPIApi } from '@/api/apis/fast-apiapi';
+import { NotificationsApi } from '@/api/apis/notifications-api';
 import { ReviewsApi } from '@/api/apis/reviews-api';
 import { SearchApi } from '@/api/apis/search-api';
 import { UsersApi } from '@/api/apis/users-api';
@@ -53,6 +54,9 @@ export const apiService = {
 
   // User APIs
   users: new UsersApi(configuration, API_CONFIG.baseURL, apiClient),
+
+  // Notifications API
+  notifications: new NotificationsApi(configuration, API_CONFIG.baseURL, apiClient),
 
   // Utilities
   utilities: new UtilitiesApi(configuration, API_CONFIG.baseURL, apiClient),

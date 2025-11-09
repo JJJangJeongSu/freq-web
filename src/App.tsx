@@ -23,8 +23,9 @@ import { LikedCollectionsPage } from "./pages/LikedCollectionsPage";
 import { AllCollectionsPage } from "./pages/AllCollectionsPage";
 import { WriteReviewPage } from "./pages/WriteReviewPage";
 import { MyReviewsPage } from "./pages/MyReviewsPage";
+import { NotificationsPage } from "./pages/NotificationsPage";
 
-type Page = 'auth' | 'home' | 'search' | 'rate-record' | 'user' | 'album-detail' | 'track-detail' | 'artist-detail' | 'rated-albums' | 'rated-tracks' | 'comment-detail' | 'curation-detail' | 'user-profile' | 'liked-artists' | 'create-collection' | 'kma-collection' | 'my-collections' | 'liked-collections' | 'all-collections' | 'write-review' | 'my-reviews';
+type Page = 'auth' | 'home' | 'search' | 'rate-record' | 'user' | 'album-detail' | 'track-detail' | 'artist-detail' | 'rated-albums' | 'rated-tracks' | 'comment-detail' | 'curation-detail' | 'user-profile' | 'liked-artists' | 'create-collection' | 'kma-collection' | 'my-collections' | 'liked-collections' | 'all-collections' | 'write-review' | 'my-reviews' | 'notifications';
 
 export default function App() {
   // Check for existing token on mount
@@ -88,6 +89,8 @@ export default function App() {
         return <SearchPage onNavigate={handleNavigate} />;
       case 'rate-record':
         return <RateRecordPage onNavigate={handleNavigate} />;
+      case 'notifications':
+        return <NotificationsPage onNavigate={handleNavigate} />;
       case 'user':
         return <UserPage onNavigate={handleNavigate} />;
       case 'album-detail':
