@@ -183,10 +183,7 @@ In `firebase.json`:
 
 ## Current Backend Server
 
-The application connects to a backend API at:
-```
-https://port-0-musicapp-md8e80po64ad31eb.sel5.cloudtype.app
-```
+
 
 This is the **API server** only. The **frontend SPA** needs its own hosting with SPA fallback configuration.
 
@@ -196,7 +193,6 @@ Ensure `.env` is properly configured for production:
 
 ```env
 # Production API base URL
-VITE_API_BASE_URL=https://port-0-musicapp-md8e80po64ad31eb.sel5.cloudtype.app
 
 # Other environment variables
 VITE_APP_NAME=뮤직레이트

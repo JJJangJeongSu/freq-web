@@ -203,8 +203,6 @@ VITE_ENV=development
 
 프로덕션 배포 시 `.env.production` 생성:
 ```env
-VITE_API_BASE_URL=https://your-production-api.com
-VITE_ENV=production
 ```
 
 ### 인증 토큰
