@@ -35,8 +35,8 @@ export function useToggleCommentLike() {
       setLoading(true);
       setError(null);
 
-      // 2. API 호출
-      const response = await apiService.comments.toggleCommentLike(commentId);
+      // 2. API 호출 (commentId를 string으로 변환)
+      const response = await apiService.comments.toggleCommentLike(String(commentId));
 
       console.log('✅ Comment like toggle response:', response.data);
 

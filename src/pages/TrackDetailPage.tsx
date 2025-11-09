@@ -15,17 +15,23 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTrackDetail } from "../hooks/useTrackDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
+import { useUpdateReview } from "../hooks/useUpdateReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
 
 export function TrackDetailPage() {
   const { trackId } = useParams();
   const navigate = useNavigate();
   // API 데이터 가져오기
-  const { data: track, loading, error } = useTrackDetail(trackId);
-  const { createReview, loading: reviewLoading, error: reviewError } = useCreateReview();
+  const { data: track, loading, error, refetch } = useTrackDetail(trackId);
+  const { createReview, loading: createLoading, error: createError } = useCreateReview();
+  const { updateReview, loading: updateLoading, error: updateError } = useUpdateReview();
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // 로딩과 에러를 통합
+  const reviewLoading = createLoading || updateLoading;
+  const reviewError = createError || updateError;
 
   // isRated가 true일 때 초기 별점을 기존 평점으로 설정
   useEffect(() => {
@@ -33,6 +39,26 @@ export function TrackDetailPage() {
       setUserRating(track.userRating);
     }
   }, [track?.isRated, track?.userRating]);
+
+  // 페이지가 다시 포커스를 받을 때 데이터 새로고침
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('📱 Page focused, refreshing track data...');
+        refetch();
+      }
+    };
+
+    // 페이지 포커스 이벤트 리스너
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 컴포넌트가 다시 마운트될 때도 새로고침
+    refetch();
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [trackId]); // trackId가 변경될 때만 재설정
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
@@ -43,19 +69,56 @@ export function TrackDetailPage() {
     if (!track || userRating === 0) return;
 
     try {
-      await createReview({
-        rating: userRating,
-        type: CreateReviewRequestTypeEnum.Track,
-        targetId: trackId,
-        artistIds: track.artists.map(a => a.id)
-      });
+      // 이미 리뷰가 있고 reviewId가 존재하면 수정 API 호출
+      if (track.isRated && track.reviewId) {
+        console.log('📝 Updating existing review:', {
+          reviewId: track.reviewId,
+          rating: userRating,
+          type: 'track'
+        });
+
+        await updateReview(track.reviewId, {
+          rating: userRating,
+          type: CreateReviewRequestTypeEnum.Track
+        });
+
+        console.log('✅ Review updated successfully');
+      } else {
+        // 새 리뷰 작성
+        console.log('✨ Creating new review:', {
+          rating: userRating,
+          type: 'track',
+          targetId: trackId
+        });
+
+        await createReview({
+          rating: userRating,
+          type: CreateReviewRequestTypeEnum.Track,
+          targetId: trackId,
+          artistIds: track.artists.map(a => a.id)
+        });
+
+        console.log('✅ Review created successfully');
+      }
 
       setSubmitSuccess(true);
+
+      // 트랙 정보 새로고침 (새 reviewId 가져오기)
+      await refetch();
+
       // 3초 후 성공 메시지 숨기기
       setTimeout(() => setSubmitSuccess(false), 3000);
-    } catch (err) {
-      // 에러는 useCreateReview에서 처리됨
+    } catch (err: any) {
+      // 409 에러 (이미 리뷰 존재) - reviewId를 가져오기 위해 페이지 새로고침
+      if (err.response?.status === 409) {
+        console.warn('⚠️ 409 Conflict: Review already exists. Reloading page to fetch reviewId...');
+
+        // 페이지 새로고침하여 최신 데이터 (reviewId 포함) 가져오기
+        window.location.reload();
+        return;
+      }
       console.error('Review submission failed:', err);
+      throw err;
     }
   };
 
@@ -210,7 +273,9 @@ export function TrackDetailPage() {
                 {/* 성공 메시지 */}
                 {submitSuccess && (
                   <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                    <p className="text-sm text-green-600">✓ 평가가 등록되었습니다!</p>
+                    <p className="text-sm text-green-600">
+                      ✓ 평가가 {track?.isRated ? '수정' : '등록'}되었습니다!
+                    </p>
                   </div>
                 )}
 
@@ -222,10 +287,12 @@ export function TrackDetailPage() {
                   {reviewLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      제출 중...
+                      {track?.isRated ? '수정 중...' : '제출 중...'}
                     </>
                   ) : track?.userRating === userRating ? (
                     '기존 평점과 동일합니다'
+                  ) : track?.isRated ? (
+                    '평가 수정하기'
                   ) : (
                     '제출하기'
                   )}

@@ -331,7 +331,7 @@ export function RateRecordPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate('/collections/liked')}
+                  onClick={() => navigate('/liked-collections')}
                   className="text-primary hover:text-primary/80"
                 >
                   모두 보기
@@ -386,7 +386,7 @@ export function RateRecordPage() {
                   </p>
                   <Button
                     variant="outline"
-                    onClick={() => navigate('/collections/all')}
+                    onClick={() => navigate('/collections')}
                     className="h-10"
                   >
                     콜렉션 둘러보기
@@ -456,7 +456,7 @@ export function RateRecordPage() {
             items={data.recentAlbums}
             type="album"
             onItemClick={(id) => navigate(`/albums/${id}`)}
-            onViewAll={() => navigate('/rated/albums')}
+            onViewAll={() => navigate('/rated-albums')}
           />
 
           <HorizontalMusicSection
@@ -464,7 +464,7 @@ export function RateRecordPage() {
             items={data.recentTracks}
             type="track"
             onItemClick={(id) => navigate(`/tracks/${id}`)}
-            onViewAll={() => navigate('/rated/tracks')}
+            onViewAll={() => navigate('/rated-tracks')}
           />
         </div>
       </main>

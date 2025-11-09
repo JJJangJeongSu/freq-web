@@ -10,18 +10,24 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAlbumDetail } from "../hooks/useAlbumDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
+import { useUpdateReview } from "../hooks/useUpdateReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
 
 export function AlbumDetailPage() {
   const { albumId } = useParams();
   const navigate = useNavigate();
   // API 데이터 가져오기
-  const { data: album, loading, error } = useAlbumDetail(albumId);
-  const { createReview, loading: reviewLoading, error: reviewError } = useCreateReview();
+  const { data: album, loading, error, refetch } = useAlbumDetail(albumId);
+  const { createReview, loading: createLoading, error: createError } = useCreateReview();
+  const { updateReview, loading: updateLoading, error: updateError } = useUpdateReview();
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [trackListExpanded, setTrackListExpanded] = useState(false);
+
+  // 로딩과 에러를 통합
+  const reviewLoading = createLoading || updateLoading;
+  const reviewError = createError || updateError;
 
   // 이미 평가한 경우 서버 제공 사용자 평점으로 초기화
   useEffect(() => {
@@ -33,6 +39,26 @@ export function AlbumDetailPage() {
     }
   }, [album]);
 
+  // 페이지가 다시 포커스를 받을 때 데이터 새로고침 (리뷰 작성 후 돌아왔을 때 등)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('📱 Page focused, refreshing album data...');
+        refetch();
+      }
+    };
+
+    // 페이지 포커스 이벤트 리스너
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 컴포넌트가 다시 마운트될 때도 새로고침
+    refetch();
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [albumId]); // albumId가 변경될 때만 재설정
+
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
     setSubmitSuccess(false);
@@ -42,18 +68,56 @@ export function AlbumDetailPage() {
     if (!album || userRating === 0) return;
 
     try {
-      await createReview({
-        rating: userRating,
-        type: CreateReviewRequestTypeEnum.Album,
-        targetId: albumId,
-        artistIds: album.artists.map(a => a.artistId)
-      });
+      // 이미 리뷰가 있고 reviewId가 존재하면 수정 API 호출
+      if ((album as any).isRated && (album as any).reviewId) {
+        console.log('📝 Updating existing review:', {
+          reviewId: (album as any).reviewId,
+          rating: userRating,
+          type: 'album'
+        });
+
+        await updateReview((album as any).reviewId, {
+          rating: userRating,
+          type: CreateReviewRequestTypeEnum.Album
+        });
+
+        console.log('✅ Review updated successfully');
+      } else {
+        // 새 리뷰 작성
+        console.log('✨ Creating new review:', {
+          rating: userRating,
+          type: 'album',
+          targetId: albumId
+        });
+
+        await createReview({
+          rating: userRating,
+          type: CreateReviewRequestTypeEnum.Album,
+          targetId: albumId,
+          artistIds: album.artists.map(a => a.artistId)
+        });
+
+        console.log('✅ Review created successfully');
+      }
 
       setSubmitSuccess(true);
+
+      // 앨범 정보 새로고침 (새 reviewId 가져오기)
+      await refetch();
+
       // 3초 후 성공 메시지 숨기기
       setTimeout(() => setSubmitSuccess(false), 3000);
-    } catch (err) {
-      // 에러는 useCreateReview에서 처리됨
+    } catch (err: any) {
+      // 409 에러 (이미 리뷰 존재) - reviewId를 가져오기 위해 데이터 새로고침 후 재시도
+      if (err.response?.status === 409) {
+        console.warn('⚠️ 409 Conflict: Review already exists. Fetching reviewId and retrying...');
+
+        // 데이터 새로고침해서 reviewId 가져오기
+        await refetch();
+
+        // 잠시 후 다시 시도하도록 안내
+        throw new Error('이미 평가하셨습니다. 평점을 변경하려면 다시 제출 버튼을 눌러주세요.');
+      }
       console.error('Review submission failed:', err);
     }
   };
@@ -194,7 +258,9 @@ export function AlbumDetailPage() {
                 {/* 성공 메시지 */}
                 {submitSuccess && (
                   <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                    <p className="text-sm text-green-600">✓ 평가가 등록되었습니다!</p>
+                    <p className="text-sm text-green-600">
+                      ✓ 평가가 {(album as any).isRated ? '수정' : '등록'}되었습니다!
+                    </p>
                   </div>
                 )}
 
@@ -203,13 +269,17 @@ export function AlbumDetailPage() {
                     onClick={handleSubmitRating}
                     variant="outline"
                     className="flex-1 h-12"
-                    disabled={reviewLoading || submitSuccess}
+                    disabled={reviewLoading || submitSuccess || (album as any).userRating === userRating}
                   >
                     {reviewLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        제출 중...
+                        {(album as any).isRated ? '수정 중...' : '제출 중...'}
                       </>
+                    ) : (album as any).userRating === userRating ? (
+                      '기존 평점과 동일합니다'
+                    ) : (album as any).isRated ? (
+                      '평가 수정하기'
                     ) : (
                       '제출하기'
                     )}
@@ -271,27 +341,7 @@ export function AlbumDetailPage() {
 
           {/* Track List */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">수록곡</h3>
-              {album.tracks && album.tracks.length > 5 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setTrackListExpanded(!trackListExpanded)}
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  {trackListExpanded ? (
-                    <>
-                      접기 <ChevronUp className="w-4 h-4 ml-1" />
-                    </>
-                  ) : (
-                    <>
-                      전체보기 ({album.tracks.length}곡) <ChevronDown className="w-4 h-4 ml-1" />
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
+            <h3 className="text-lg font-semibold">수록곡</h3>
             <div className="space-y-2">
               {album.tracks?.slice(0, trackListExpanded ? undefined : 5).map((track, index) => (
                 <div
@@ -313,6 +363,26 @@ export function AlbumDetailPage() {
                 </div>
               ))}
             </div>
+            {/* 트랙 리스트 하단 전체보기/접기 버튼 */}
+            {album.tracks && album.tracks.length > 5 && (
+              <div className="flex justify-center pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setTrackListExpanded(!trackListExpanded)}
+                  className="w-full max-w-xs"
+                >
+                  {trackListExpanded ? (
+                    <>
+                      접기 <ChevronUp className="w-4 h-4 ml-2" />
+                    </>
+                  ) : (
+                    <>
+                      전체보기 ({album.tracks.length}곡) <ChevronDown className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
 
           <Separator />
@@ -328,7 +398,11 @@ export function AlbumDetailPage() {
             {(album as any).reviews && (album as any).reviews.length > 0 ? (
               <div className="space-y-3">
                 {(album as any).reviews.map((review: any) => (
-                  <div key={review.reviewId} className="flex gap-3 p-3 rounded-lg border border-border/50">
+                  <div
+                    key={review.reviewId}
+                    className="flex gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/50 cursor-pointer transition-colors"
+                    onClick={() => navigate(`/reviews/${review.reviewId}`)}
+                  >
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={review.userProfileImage} />
                       <AvatarFallback>{(review.username || '?').charAt(0)}</AvatarFallback>

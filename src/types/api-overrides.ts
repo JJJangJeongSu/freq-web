@@ -6,7 +6,7 @@
  */
 
 import type { ReviewDetail as GeneratedReviewDetail } from '@/api/models';
-import type { AlbumDetail as GeneratedAlbumDetail, ReviewSummary } from '@/api/models';
+import type { AlbumDetail as GeneratedAlbumDetail, ReviewSummary, TrackDetail as GeneratedTrackDetail } from '@/api/models';
 
 /**
  * ReviewDetail Type Override
@@ -53,11 +53,20 @@ export type ExtractData<T> = T extends ApiResponse<infer D> ? D : T;
 export type UnwrapApiData<T> = ExtractData<UnwrapAxiosResponse<T>>;
 
 /**
- * AlbumDetail type with reviews (contentful reviews) added per latest API spec.
+ * AlbumDetail type with reviews (contentful reviews) and reviewId added per latest API spec.
  * The generated model may lag the spec, so we extend it here to avoid breaking changes
  * when the generator is updated later.
  */
 export interface AlbumDetailWithReviews extends GeneratedAlbumDetail {
   reviews: ReviewSummary[];
   reviewCount: number;
+  reviewId?: string; // 사용자가 이미 작성한 리뷰의 ID (isRated가 true일 때 존재)
+}
+
+/**
+ * TrackDetail type with reviewId added
+ * Used for updating existing reviews instead of creating new ones
+ */
+export interface TrackDetailWithReviewId extends GeneratedTrackDetail {
+  reviewId?: string; // 사용자가 이미 작성한 리뷰의 ID (isRated가 true일 때 존재)
 }

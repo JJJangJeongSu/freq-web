@@ -6,10 +6,10 @@
 
 import { useState, useEffect } from 'react';
 import { apiService } from '@/services/api.service';
-import { TrackDetail } from '@/api/models';
+import type { TrackDetailWithReviewId } from '@/types/api-overrides';
 
 interface UseTrackDetailReturn {
-  data: TrackDetail | null;
+  data: TrackDetailWithReviewId | null;
   loading: boolean;
   error: Error | null;
   refetch: () => void;
@@ -21,7 +21,7 @@ interface UseTrackDetailReturn {
  * @param trackId - Spotify Track ID
  */
 export const useTrackDetail = (trackId: string): UseTrackDetailReturn => {
-  const [data, setData] = useState<TrackDetail | null>(null);
+  const [data, setData] = useState<TrackDetailWithReviewId | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -43,7 +43,7 @@ export const useTrackDetail = (trackId: string): UseTrackDetailReturn => {
       const responseData = response.data;
 
       if (responseData.success && responseData.data) {
-        setData(responseData.data as unknown as TrackDetail);
+        setData(responseData.data as unknown as TrackDetailWithReviewId);
       } else {
         throw new Error('Failed to fetch track detail');
       }
