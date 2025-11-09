@@ -176,7 +176,7 @@ export function UserPage() {
         <div className="px-6 py-6">
           <div className="flex items-center gap-5 mb-8">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={apiProfile.profileImageUrl} />
+              <AvatarImage src={apiProfile.profileImageUrl || undefined} />
               <AvatarFallback className="text-xl">
                 {apiProfile.username.substring(0, 2).toUpperCase()}
               </AvatarFallback>
@@ -302,7 +302,7 @@ export function UserPage() {
                           <div className="flex justify-center py-4">
                             <div className="relative">
                               <Avatar className="w-32 h-32 border-2 border-border">
-                                <AvatarImage src={previewUrl || apiProfile.profileImageUrl} />
+                                <AvatarImage src={previewUrl || apiProfile.profileImageUrl || undefined} />
                                 <AvatarFallback className="text-4xl">
                                   {apiProfile.username.substring(0, 2).toUpperCase()}
                                 </AvatarFallback>

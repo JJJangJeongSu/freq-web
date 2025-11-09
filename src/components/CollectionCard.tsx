@@ -58,7 +58,7 @@ export function CollectionCard({
           {/* Creator */}
           <div className="flex items-center gap-2">
             <Avatar className="w-8 h-8">
-              <AvatarImage src={creator.avatar} alt={creator.name} />
+              <AvatarImage src={creator.avatar || undefined} alt={creator.name} />
               <AvatarFallback>{creator.name.substring(0, 1)}</AvatarFallback>
             </Avatar>
             <span className="text-sm font-medium text-foreground">{creator.name}</span>

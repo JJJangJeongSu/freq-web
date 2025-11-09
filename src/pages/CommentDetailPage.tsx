@@ -10,6 +10,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useReviewDetail } from "../hooks/useReviewDetail";
 import { useToggleReviewLike } from "../hooks/useToggleReviewLike";
 import { useToggleCommentLike } from "../hooks/useToggleCommentLike";
+import { useCreateComment } from "../hooks/useCreateComment";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 export function CommentDetailPage() {
@@ -18,6 +19,7 @@ export function CommentDetailPage() {
   const { data: review, loading, error, refetch } = useReviewDetail(reviewId || '');
   const { toggleLike: toggleReviewLike } = useToggleReviewLike();
   const { toggleLike: toggleCommentLike } = useToggleCommentLike();
+  const { createComment, loading: createCommentLoading } = useCreateComment();
 
   const [replyText, setReplyText] = useState('');
   const [isReviewLiked, setIsReviewLiked] = useState(false);
@@ -88,11 +90,29 @@ export function CommentDetailPage() {
     }
   };
 
-  const handleSubmitReply = () => {
-    if (replyText.trim()) {
-      console.log('댓글 제출:', replyText);
-      // TODO: API 호출로 댓글 작성
+  const handleSubmitReply = async () => {
+    if (!replyText.trim() || !reviewId) return;
+
+    // 댓글 작성 API 호출
+    const result = await createComment({
+      type: 'review',
+      targetId: Number(reviewId),
+      content: replyText.trim()
+    });
+
+    if (result.success) {
+      console.log('✅ 댓글 작성 성공, 리뷰 데이터 새로고침...');
+
+      // 댓글 작성 성공 시 입력 필드 초기화
       setReplyText('');
+
+      // 리뷰 데이터 새로고침하여 새 댓글 표시
+      await refetch();
+
+      console.log('✅ 리뷰 데이터 새로고침 완료');
+    } else {
+      console.error('❌ 댓글 작성 실패:', result.error?.message);
+      // TODO: 사용자에게 에러 알림 (토스트 등)
     }
   };
 
@@ -269,15 +289,25 @@ export function CommentDetailPage() {
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="댓글을 작성해보세요..."
                 className="min-h-[80px] resize-none"
+                disabled={createCommentLoading}
               />
               <div className="flex justify-end">
                 <Button
                   onClick={handleSubmitReply}
-                  disabled={!replyText.trim()}
+                  disabled={!replyText.trim() || createCommentLoading}
                   size="sm"
                 >
-                  <Send className="w-4 h-4 mr-2" />
-                  댓글 작성
+                  {createCommentLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      작성 중...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      댓글 작성
+                    </>
+                  )}
                 </Button>
               </div>
             </div>

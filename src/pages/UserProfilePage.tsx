@@ -81,7 +81,7 @@ export function UserProfilePage() {
         <div className="p-6">
           <div className="flex items-center gap-4 mb-4">
             <Avatar className="w-20 h-20">
-              <AvatarImage src={userProfile.profileImageUrl} />
+              <AvatarImage src={userProfile.profileImageUrl || undefined} />
               <AvatarFallback className="text-2xl">
                 {userProfile.username.substring(0, 2).toUpperCase()}
               </AvatarFallback>
