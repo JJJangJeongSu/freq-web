@@ -2,17 +2,15 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
 import { Button } from "../components/ui/button";
 import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Textarea } from "../components/ui/textarea";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
 import { Separator } from "../components/ui/separator";
 
-interface WriteReviewPageProps {
-  albumId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function WriteReviewPage({ albumId, onNavigate }: WriteReviewPageProps) {
+export function WriteReviewPage() {
+  const { albumId } = useParams();
+  const navigate = useNavigate();
   // 앨범 메타데이터: 앨범 상세에서 세션 스토리지로 전달됨
   const [album, setAlbum] = useState<{ id: string; title: string; artist: string; imageUrl: string }>({
     id: albumId,
@@ -42,7 +40,7 @@ export function WriteReviewPage({ albumId, onNavigate }: WriteReviewPageProps) {
   const [reviewText, setReviewText] = useState('');
 
   const handleSubmit = () => {
-    if (rating > 0 && reviewText.trim()) {
+    if (rating > 0 && reviewText.trim() && albumId) {
       console.log('리뷰 제출:', {
         albumId,
         rating,
@@ -50,7 +48,7 @@ export function WriteReviewPage({ albumId, onNavigate }: WriteReviewPageProps) {
       });
       // TODO: 리뷰 등록 API 호출
       // 성공 후 앨범 상세 페이지로 돌아가기
-      onNavigate('album-detail', albumId);
+      navigate(`/albums/${albumId}`);
     }
   };
 
@@ -60,7 +58,7 @@ export function WriteReviewPage({ albumId, onNavigate }: WriteReviewPageProps) {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('album-detail', albumId)}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="text-lg font-semibold">리뷰 작성</h1>

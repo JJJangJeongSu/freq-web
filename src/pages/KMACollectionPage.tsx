@@ -6,12 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Separator } from "../components/ui/separator";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { MusicCard } from "../components/MusicCard";
+import { useNavigate } from "react-router-dom";
 
-interface KMACollectionPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function KMACollectionPage({ onNavigate }: KMACollectionPageProps) {
+export function KMACollectionPage() {
+  const navigate = useNavigate();
   // 2024 한국대중음악상 수상작 데이터
   const awardCategories = [
     {
@@ -123,7 +121,7 @@ export function KMACollectionPage({ onNavigate }: KMACollectionPageProps) {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/home')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">컬렉션</h1>
@@ -182,7 +180,7 @@ export function KMACollectionPage({ onNavigate }: KMACollectionPageProps) {
             <div className="flex items-center gap-3">
               <Avatar 
                 className="w-12 h-12 cursor-pointer"
-                onClick={() => onNavigate('user-profile', 'korean-music-awards')}
+                onClick={() => navigate('/users/korean-music-awards')}
               >
                 <AvatarImage src="https://images.unsplash.com/photo-1512352036558-e6fb1f0c8340?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrb3JlYW4lMjBtdXNpYyUyMGF3YXJkJTIwY2VyZW1vbnl8ZW58MXx8fHwxNzU4NzAyNjUyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />
                 <AvatarFallback>한음</AvatarFallback>
@@ -191,7 +189,7 @@ export function KMACollectionPage({ onNavigate }: KMACollectionPageProps) {
                 <div className="flex items-center gap-2">
                   <span 
                     className="font-medium cursor-pointer hover:underline"
-                    onClick={() => onNavigate('user-profile', 'korean-music-awards')}
+                    onClick={() => navigate('/users/korean-music-awards')}
                   >
                     한국대중음악상
                   </span>
@@ -252,7 +250,7 @@ export function KMACollectionPage({ onNavigate }: KMACollectionPageProps) {
                 <CardContent className="pt-0">
                   <div 
                     className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                    onClick={() => onNavigate('album-detail', category.winner.id)}
+                    onClick={() => navigate(`/albums/${category.winner.id}`)}
                   >
                     <div className="relative">
                       <ImageWithFallback
