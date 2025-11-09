@@ -1,14 +1,12 @@
 import { ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { useParams, useNavigate } from "react-router-dom";
 import { useUserProfile } from "../hooks/useUserProfile";
 
-interface UserProfilePageProps {
-  userId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function UserProfilePage({ userId, onNavigate }: UserProfilePageProps) {
+export function UserProfilePage() {
+  const { userId } = useParams();
+  const navigate = useNavigate();
   // API에서 프로필 데이터 가져오기 (캐싱 적용)
   const { data: userProfile, isLoading, error } = useUserProfile(userId);
 
@@ -17,7 +15,7 @@ export function UserProfilePage({ userId, onNavigate }: UserProfilePageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="font-semibold">프로필</h1>
@@ -38,7 +36,7 @@ export function UserProfilePage({ userId, onNavigate }: UserProfilePageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="font-semibold">프로필</h1>
@@ -51,7 +49,7 @@ export function UserProfilePage({ userId, onNavigate }: UserProfilePageProps) {
             <Button
               variant="outline"
               className="mt-4"
-              onClick={() => onNavigate('home')}
+              onClick={() => navigate('/home')}
             >
               돌아가기
             </Button>
@@ -70,7 +68,7 @@ export function UserProfilePage({ userId, onNavigate }: UserProfilePageProps) {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">프로필</h1>

@@ -5,15 +5,13 @@ import { Card, CardContent } from "../components/ui/card";
 import { Separator } from "../components/ui/separator";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useArtistDetail } from "../hooks/useArtistDetail";
 import { useToggleArtistLike } from "../hooks/useToggleArtistLike";
 
-interface ArtistDetailPageProps {
-  artistId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps) {
+export function ArtistDetailPage() {
+  const { artistId } = useParams();
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { data: artist, loading, error, refetch } = useArtistDetail(artistId);
 
@@ -78,7 +76,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('search')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">아티스트</h1>
@@ -181,7 +179,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                 <Card
                   key={album.id}
                   className="flex-shrink-0 w-32 cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => onNavigate('album-detail', album.id)}
+                  onClick={() => navigate(`/albums/${album.id}`)}
                 >
                   <div className="aspect-square relative">
                     <ImageWithFallback
@@ -222,7 +220,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                 <Card
                   key={track.id}
                   className="cursor-pointer hover:shadow-sm transition-shadow"
-                  onClick={() => onNavigate('track-detail', track.id)}
+                  onClick={() => navigate(`/tracks/${track.id}`)}
                 >
                   <CardContent className="p-3">
                     <div className="flex items-center gap-3">

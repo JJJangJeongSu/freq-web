@@ -12,19 +12,14 @@ import { StarRating } from "../components/StarRating";
 import { Progress } from "../components/ui/progress";
 
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTrackDetail } from "../hooks/useTrackDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
 
-interface TrackDetailPageProps {
-  trackId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function TrackDetailPage({
-  trackId,
-  onNavigate,
-}: TrackDetailPageProps) {
+export function TrackDetailPage() {
+  const { trackId } = useParams();
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { data: track, loading, error } = useTrackDetail(trackId);
   const { createReview, loading: reviewLoading, error: reviewError } = useCreateReview();
@@ -141,7 +136,7 @@ export function TrackDetailPage({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => onNavigate("home")}
+          onClick={() => navigate(-1)}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -166,7 +161,7 @@ export function TrackDetailPage({
               <p
                 className="text-lg text-muted-foreground hover:text-primary cursor-pointer transition-colors"
                 onClick={() =>
-                  primaryArtistId && onNavigate("artist-detail", primaryArtistId)
+                  primaryArtistId && navigate(`/artists/${primaryArtistId}`)
                 }
               >
                 {artistNames}
@@ -174,7 +169,7 @@ export function TrackDetailPage({
               <p
                 className="text-sm text-muted-foreground hover:text-primary cursor-pointer transition-colors"
                 onClick={() =>
-                  onNavigate("album-detail", track.album.id)
+                  navigate(`/albums/${track.album.id}`)
                 }
               >
                 {track.album.title}
@@ -287,7 +282,7 @@ export function TrackDetailPage({
           <div
             className="bg-card rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors"
             onClick={() =>
-              onNavigate("album-detail", track.album.id)
+              navigate(`/albums/${track.album.id}`)
             }
           >
             <div className="flex items-center gap-3">
@@ -303,9 +298,8 @@ export function TrackDetailPage({
                     className="hover:text-primary cursor-pointer transition-colors"
                     onClick={(e) => {
                       e.stopPropagation(); // 부모 div의 클릭 이벤트 중단
-                      primaryArtistId && onNavigate(
-                        "artist-detail",
-                        primaryArtistId,
+                      primaryArtistId && navigate(
+                        `/artists/${primaryArtistId}`
                       );
                     }}
                   >
@@ -332,7 +326,7 @@ export function TrackDetailPage({
                     key={collection.collectionId}
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer"
                     onClick={() =>
-                      onNavigate("curation-detail", collection.collectionId)
+                      navigate(`/collections/${collection.collectionId}`)
                     }
                   >
                     <div className="w-12 h-12 rounded bg-muted flex items-center justify-center overflow-hidden">

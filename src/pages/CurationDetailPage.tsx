@@ -7,16 +7,15 @@ import { StarRating } from "../components/StarRating";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Textarea } from "../components/ui/textarea";
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCollectionDetail } from "@/hooks/useCollectionDetail";
 import { apiService } from "@/services/api.service";
 import { useToast } from "@/hooks/use-toast";
 
-interface CurationDetailPageProps {
-  curationId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function CurationDetailPage({ curationId, onNavigate }: CurationDetailPageProps) {
+export function CurationDetailPage() {
+  const { collectionId } = useParams();
+  const navigate = useNavigate();
+  const curationId = collectionId; // Using collectionId
   const { toast } = useToast();
 
   // API 데이터 가져오기
@@ -92,9 +91,9 @@ export function CurationDetailPage({ curationId, onNavigate }: CurationDetailPag
 
   const handleItemClick = (item: any) => {
     if (item.type === 'album') {
-      onNavigate('album-detail', String(item.id));
+      navigate(`/albums/${item.id}`);
     } else {
-      onNavigate('track-detail', String(item.id));
+      navigate(`/tracks/${item.id}`);
     }
   };
 
@@ -113,7 +112,7 @@ export function CurationDetailPage({ curationId, onNavigate }: CurationDetailPag
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="font-semibold">컬렉션</h1>
@@ -124,7 +123,7 @@ export function CurationDetailPage({ curationId, onNavigate }: CurationDetailPag
           <Button
             variant="outline"
             className="mt-4"
-            onClick={() => onNavigate('home')}
+            onClick={() => navigate('/home')}
           >
             홈으로 돌아가기
           </Button>
@@ -137,7 +136,7 @@ export function CurationDetailPage({ curationId, onNavigate }: CurationDetailPag
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">컬렉션</h1>

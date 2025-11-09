@@ -7,16 +7,14 @@ import { Progress } from "../components/ui/progress";
 import { Separator } from "../components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAlbumDetail } from "../hooks/useAlbumDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
 
-interface AlbumDetailPageProps {
-  albumId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
+export function AlbumDetailPage() {
+  const { albumId } = useParams();
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { data: album, loading, error } = useAlbumDetail(albumId);
   const { createReview, loading: reviewLoading, error: reviewError } = useCreateReview();
@@ -127,7 +125,7 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('home')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
       </header>
@@ -146,7 +144,7 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
               <h1 className="text-2xl font-bold">{album.title}</h1>
               <p
                 className="text-lg text-muted-foreground hover:text-primary cursor-pointer transition-colors"
-                onClick={() => primaryArtistId && onNavigate('artist-detail', primaryArtistId)}
+                onClick={() => primaryArtistId && navigate(`/artists/${primaryArtistId}`)}
               >
                 {artistNames}
               </p>
@@ -226,7 +224,7 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
                         };
                         sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
                       } catch {}
-                      onNavigate('write-review', albumId);
+                      navigate(`/reviews/new?albumId=${albumId}`);
                     }}
                     className="flex-1 h-12"
                   >
@@ -327,7 +325,7 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
                 <div
                   key={track.id}
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent cursor-pointer"
-                  onClick={() => onNavigate('track-detail', track.id)}
+                  onClick={() => navigate(`/tracks/${track.id}`)}
                 >
                   <span className="text-sm text-muted-foreground w-6">{index + 1}</span>
                   <div className="flex-1">
@@ -355,7 +353,7 @@ export function AlbumDetailPage({ albumId, onNavigate }: AlbumDetailPageProps) {
                   <div
                     key={collection.collectionId}
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer"
-                    onClick={() => onNavigate('curation-detail', collection.collectionId)}
+                    onClick={() => navigate(`/collections/${collection.collectionId}`)}
                   >
                     <div className="w-12 h-12 rounded bg-muted flex items-center justify-center overflow-hidden">
                       <ImageWithFallback

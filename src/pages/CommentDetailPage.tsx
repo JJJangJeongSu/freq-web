@@ -6,13 +6,12 @@ import { Textarea } from "../components/ui/textarea";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 import { Separator } from "../components/ui/separator";
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-interface CommentDetailPageProps {
-  commentId: string;
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function CommentDetailPage({ commentId, onNavigate }: CommentDetailPageProps) {
+export function CommentDetailPage() {
+  const { reviewId } = useParams();
+  const navigate = useNavigate();
+  const commentId = reviewId; // Using reviewId as commentId for backwards compatibility
   const [comment] = useState({
     id: commentId,
     user: {
@@ -92,7 +91,7 @@ export function CommentDetailPage({ commentId, onNavigate }: CommentDetailPagePr
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('my-reviews')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">코멘트</h1>
@@ -103,9 +102,9 @@ export function CommentDetailPage({ commentId, onNavigate }: CommentDetailPagePr
       <main className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-6">
           {/* Album Info */}
-          <div 
+          <div
             className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg cursor-pointer hover:bg-muted transition-colors"
-            onClick={() => onNavigate('album-detail', comment.album?.id)}
+            onClick={() => navigate(`/albums/${comment.album?.id}`)}
           >
             <img
               src={comment.album?.imageUrl}
