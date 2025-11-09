@@ -197,7 +197,7 @@ export function HomePage({ onNavigate }: Props) {
 `.env` 파일에서 API 서버 URL 설정:
 
 ```env
-VITE_API_BASE_URL=https://your-api-server.com/api
+
 VITE_ENV=development
 ```
 
