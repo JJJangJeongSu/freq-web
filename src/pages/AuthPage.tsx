@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Music, Mail, Lock, Eye, EyeOff, Bug, User, Check, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -8,11 +9,8 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useLogin, useSignup, useCheckEmail, useCheckNickname } from "../hooks/useAuth";
 
-interface AuthPageProps {
-  onLogin: () => void;
-}
-
-export function AuthPage({ onLogin }: AuthPageProps) {
+export function AuthPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -73,8 +71,8 @@ export function AuthPage({ onLogin }: AuthPageProps) {
     // 실제 로그인 API 호출
     try {
       await loginMutation.mutateAsync({ email, password });
-      // 성공 시 onLogin 콜백 호출
-      onLogin();
+      // 성공 시 홈으로 이동
+      navigate('/home');
     } catch (err: any) {
       // 에러 처리
       const errorMessage = err.response?.data?.error?.message || "로그인에 실패했습니다.";
@@ -85,8 +83,8 @@ export function AuthPage({ onLogin }: AuthPageProps) {
   const handleDebugToggle = (checked: boolean) => {
     setDebugMode(checked);
     if (checked) {
-      // 디버그 모드 켜지면 바로 로그인
-      onLogin();
+      // 디버그 모드 켜지면 바로 홈으로 이동
+      navigate('/home');
     }
   };
 
@@ -136,7 +134,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
       });
       // 회원가입 성공 후 자동 로그인
       await loginMutation.mutateAsync({ email, password });
-      onLogin();
+      navigate('/home');
     } catch (err: any) {
       const errorMessage = err.response?.data?.error?.message || "회원가입에 실패했습니다.";
       setError(errorMessage);
