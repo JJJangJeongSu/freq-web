@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Filter, Plus, MoreVertical, Music, Heart, Share2 } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
 import { EnhancedCard } from "../components/EnhancedCard";
@@ -19,11 +20,8 @@ interface Collection {
   likes: number;
 }
 
-interface MyCollectionsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function MyCollectionsPage({ onNavigate }: MyCollectionsPageProps) {
+export function MyCollectionsPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "name" | "items" | "likes">("recent");
   
@@ -96,7 +94,7 @@ export function MyCollectionsPage({ onNavigate }: MyCollectionsPageProps) {
   });
 
   const handleCollectionClick = (collectionId: string) => {
-    onNavigate('curation-detail', collectionId);
+    navigate(`/collections/${collectionId}`);
   };
 
   return (
@@ -107,7 +105,7 @@ export function MyCollectionsPage({ onNavigate }: MyCollectionsPageProps) {
           <EnhancedButton
             variant="ghost"
             size="icon"
-            onClick={() => onNavigate('rate-record')}
+            onClick={() => navigate(-1)}
             className="shrink-0"
           >
             <ArrowLeft className="size-6" />
@@ -121,7 +119,7 @@ export function MyCollectionsPage({ onNavigate }: MyCollectionsPageProps) {
           <EnhancedButton
             variant="filled"
             size="icon"
-            onClick={() => onNavigate('create-collection')}
+            onClick={() => navigate('/collections/new')}
             className="shrink-0"
           >
             <Plus className="size-6" />
@@ -177,7 +175,7 @@ export function MyCollectionsPage({ onNavigate }: MyCollectionsPageProps) {
             {!searchQuery && (
               <EnhancedButton
                 variant="filled"
-                onClick={() => onNavigate('create-collection')}
+                onClick={() => navigate('/collections/new')}
               >
                 <Plus className="size-4 mr-2" />
                 컬렉션 만들기

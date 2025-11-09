@@ -1,15 +1,13 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "lucide-react";
 import { useAllCollections } from "../hooks/useAllCollections";
 import { CollectionCard } from "../components/CollectionCard";
 
-interface AllCollectionsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
+export function AllCollectionsPage() {
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { data: apiData, loading, error, refetch } = useAllCollections();
 
@@ -80,14 +78,14 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onNavigate('home')}
+                onClick={() => navigate('/home')}
                 className="h-10 w-10 rounded-full"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <h1 className="text-xl font-bold">모든 컬렉션</h1>
             </div>
-            <Button onClick={() => onNavigate('create-collection')}>
+            <Button onClick={() => navigate('/collections/new')}>
               <Plus className="w-4 h-4 mr-2" />
               컬렉션 만들기
             </Button>
@@ -123,7 +121,7 @@ export function AllCollectionsPage({ onNavigate }: AllCollectionsPageProps) {
               <CollectionCard
                 key={collection.id}
                 {...collection}
-                onClick={() => onNavigate('curation-detail', collection.id)}
+                onClick={() => navigate(`/collections/${collection.id}`)}
               />
             ))}
           </div>

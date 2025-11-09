@@ -4,14 +4,12 @@ import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLikedArtists } from "../hooks/useLikedArtists";
 import { useToggleArtistLike } from "../hooks/useToggleArtistLike";
 
-interface LikedArtistsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function LikedArtistsPage({ onNavigate }: LikedArtistsPageProps) {
+export function LikedArtistsPage() {
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { data: apiData, loading, error, refetch } = useLikedArtists();
   const { toggleLike } = useToggleArtistLike();
@@ -59,7 +57,7 @@ export function LikedArtistsPage({ onNavigate }: LikedArtistsPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="font-semibold">좋아요한 아티스트</h1>
@@ -80,7 +78,7 @@ export function LikedArtistsPage({ onNavigate }: LikedArtistsPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="font-semibold">좋아요한 아티스트</h1>
@@ -138,10 +136,10 @@ export function LikedArtistsPage({ onNavigate }: LikedArtistsPageProps) {
           {/* Artists Grid */}
           <div className="grid grid-cols-2 gap-3">
             {sortedArtists.map((artist) => (
-              <Card 
-                key={artist.id} 
+              <Card
+                key={artist.id}
                 className="cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => onNavigate('artist-detail', artist.id)}
+                onClick={() => navigate(`/artists/${artist.id}`)}
               >
                 <CardContent className="p-3">
                   <div className="space-y-2">

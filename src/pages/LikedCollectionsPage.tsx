@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Filter, Heart, Music, Share2, UserCheck, Loader2, RefreshCw } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
 import { EnhancedCard } from "../components/EnhancedCard";
@@ -21,11 +22,8 @@ interface LikedCollection {
   visibility?: 'public' | 'private';
 }
 
-interface LikedCollectionsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) {
+export function LikedCollectionsPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "name" | "items" | "likes" | "creator">("recent");
 
@@ -73,12 +71,12 @@ export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) 
   });
 
   const handleCollectionClick = (collectionId: string) => {
-    onNavigate('curation-detail', collectionId);
+    navigate(`/collections/${collectionId}`);
   };
 
   const handleCreatorClick = (creatorId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    onNavigate('user-profile', creatorId);
+    navigate(`/users/${creatorId}`);
   };
 
   // 로딩 상태
@@ -123,7 +121,7 @@ export function LikedCollectionsPage({ onNavigate }: LikedCollectionsPageProps) 
           <EnhancedButton
             variant="ghost"
             size="icon"
-            onClick={() => onNavigate('rate-record')}
+            onClick={() => navigate(-1)}
             className="shrink-0"
           >
             <ArrowLeft className="size-6" />

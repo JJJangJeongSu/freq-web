@@ -1,16 +1,14 @@
 import { ArrowLeft, Search, Filter, SortAsc } from "lucide-react";
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { MusicCard } from "../components/MusicCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { useRatedAlbums } from "../hooks/useRatedAlbums";
 
-interface RatedAlbumsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function RatedAlbumsPage({ onNavigate }: RatedAlbumsPageProps) {
+export function RatedAlbumsPage() {
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { albums, totalCount, loading, error } = useRatedAlbums();
 
@@ -52,7 +50,7 @@ export function RatedAlbumsPage({ onNavigate }: RatedAlbumsPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-lg font-semibold">평가한 앨범</h1>
@@ -73,7 +71,7 @@ export function RatedAlbumsPage({ onNavigate }: RatedAlbumsPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-lg font-semibold">평가한 앨범</h1>
@@ -176,7 +174,7 @@ export function RatedAlbumsPage({ onNavigate }: RatedAlbumsPageProps) {
                   imageUrl={album.imageUrl}
                   rating={album.rating}
                   type="album"
-                  onClick={() => onNavigate('album-detail', album.id)}
+                  onClick={() => navigate(`/albums/${album.id}`)}
                 />
                 <div className="text-xs text-muted-foreground text-center">
                   {new Date(album.ratedDate).toLocaleDateString('ko-KR', {

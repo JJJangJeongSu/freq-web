@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Heart, MessageCircle, MoreVertical } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -12,11 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 
-interface MyReviewsPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function MyReviewsPage({ onNavigate }: MyReviewsPageProps) {
+export function MyReviewsPage() {
+  const navigate = useNavigate();
   // 내가 작성한 리뷰 목록 (실제로는 API에서 가져와야 함)
   const [myReviews] = useState([
     {
@@ -110,7 +108,7 @@ export function MyReviewsPage({ onNavigate }: MyReviewsPageProps) {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="text-lg font-semibold">작성한 리뷰</h1>
@@ -126,7 +124,7 @@ export function MyReviewsPage({ onNavigate }: MyReviewsPageProps) {
             <p className="text-sm text-muted-foreground mb-4">
               앨범을 평가하고 리뷰를 작성해보세요
             </p>
-            <Button onClick={() => onNavigate('search')}>
+            <Button onClick={() => navigate('/search')}>
               음악 찾아보기
             </Button>
           </div>
@@ -144,7 +142,7 @@ export function MyReviewsPage({ onNavigate }: MyReviewsPageProps) {
               <Card
                 key={review.id}
                 className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => onNavigate('comment-detail', review.id)}
+                onClick={() => navigate(`/reviews/${review.id}`)}
               >
                 <CardContent className="p-4">
                   <div className="flex gap-4">

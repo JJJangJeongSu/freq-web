@@ -1,16 +1,14 @@
 import { ArrowLeft, Search, Filter, SortAsc } from "lucide-react";
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { MusicCard } from "../components/MusicCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { useRatedTracks } from "../hooks/useRatedTracks";
 
-interface RatedTracksPageProps {
-  onNavigate: (page: string, id?: string) => void;
-}
-
-export function RatedTracksPage({ onNavigate }: RatedTracksPageProps) {
+export function RatedTracksPage() {
+  const navigate = useNavigate();
   // API 데이터 가져오기
   const { tracks, loading, error } = useRatedTracks();
 
@@ -52,7 +50,7 @@ export function RatedTracksPage({ onNavigate }: RatedTracksPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-lg font-semibold">평가한 트랙</h1>
@@ -73,7 +71,7 @@ export function RatedTracksPage({ onNavigate }: RatedTracksPageProps) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('rate-record')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-lg font-semibold">평가한 트랙</h1>
@@ -173,7 +171,7 @@ export function RatedTracksPage({ onNavigate }: RatedTracksPageProps) {
                   imageUrl={track.imageUrl}
                   rating={track.rating}
                   type="track"
-                  onClick={() => onNavigate('track-detail', track.id)}
+                  onClick={() => navigate(`/tracks/${track.id}`)}
                 />
                 <div className="text-xs text-muted-foreground text-center">
                   {new Date(track.ratedDate).toLocaleDateString('ko-KR', {
