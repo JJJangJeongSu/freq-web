@@ -2,8 +2,13 @@
   command = "npm run build"
   publish = "build"
 
+[build.environment]
+  NETLIFY_SKIP_SECRET_CHECK = "true"
+
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
 

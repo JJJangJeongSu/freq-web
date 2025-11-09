@@ -8,34 +8,84 @@ import { Separator } from "../components/ui/separator";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useReviewDetail } from "../hooks/useReviewDetail";
+import { useToggleReviewLike } from "../hooks/useToggleReviewLike";
+import { useToggleCommentLike } from "../hooks/useToggleCommentLike";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 export function CommentDetailPage() {
   const { reviewId } = useParams();
   const navigate = useNavigate();
   const { data: review, loading, error, refetch } = useReviewDetail(reviewId || '');
+  const { toggleLike: toggleReviewLike } = useToggleReviewLike();
+  const { toggleLike: toggleCommentLike } = useToggleCommentLike();
 
   const [replyText, setReplyText] = useState('');
   const [isReviewLiked, setIsReviewLiked] = useState(false);
   const [reviewLikes, setReviewLikes] = useState(0);
+
+  // 댓글별 좋아요 상태 관리
+  const [commentLikes, setCommentLikes] = useState<Record<number, { isLiked: boolean; count: number }>>({});
 
   // Update likes when review data changes
   useEffect(() => {
     if (review) {
       setIsReviewLiked(review.isLiked || false);
       setReviewLikes(review.likeCount);
+
+      // 댓글 좋아요 상태 초기화
+      if (review.comments) {
+        const initialCommentLikes: Record<number, { isLiked: boolean; count: number }> = {};
+        review.comments.forEach(comment => {
+          initialCommentLikes[comment.commentId] = {
+            isLiked: comment.isLiked || false,
+            count: comment.likeCount
+          };
+        });
+        setCommentLikes(initialCommentLikes);
+      }
     }
   }, [review]);
 
-  const handleLikeReview = () => {
-    // TODO: API 호출로 좋아요 토글
-    setIsReviewLiked(!isReviewLiked);
-    setReviewLikes(prev => isReviewLiked ? prev - 1 : prev + 1);
+  const handleLikeReview = async () => {
+    if (!reviewId) return;
+
+    // 낙관적 업데이트: 즉시 UI 반영
+    const result = await toggleReviewLike(reviewId, isReviewLiked, reviewLikes);
+
+    // 결과 반영 (에러 시 롤백)
+    setIsReviewLiked(result.optimisticIsLiked);
+    setReviewLikes(result.optimisticLikeCount);
+
+    if (result.error) {
+      console.error('리뷰 좋아요 토글 실패:', result.error.message);
+      // TODO: 사용자에게 에러 알림 (토스트 등)
+    }
   };
 
-  const handleLikeComment = (commentId: number) => {
-    console.log('댓글 좋아요:', commentId);
-    // TODO: API 호출로 댓글 좋아요 토글
+  const handleLikeComment = async (commentId: number) => {
+    const currentState = commentLikes[commentId];
+    if (!currentState) return;
+
+    // 낙관적 업데이트: 즉시 UI 반영
+    const result = await toggleCommentLike(
+      commentId,
+      currentState.isLiked,
+      currentState.count
+    );
+
+    // 결과 반영 (에러 시 롤백)
+    setCommentLikes(prev => ({
+      ...prev,
+      [commentId]: {
+        isLiked: result.optimisticIsLiked,
+        count: result.optimisticLikeCount
+      }
+    }));
+
+    if (result.error) {
+      console.error('댓글 좋아요 토글 실패:', result.error.message);
+      // TODO: 사용자에게 에러 알림 (토스트 등)
+    }
   };
 
   const handleSubmitReply = () => {
@@ -265,8 +315,8 @@ export function CommentDetailPage() {
                           className="p-0 h-auto text-muted-foreground hover:text-foreground"
                           onClick={() => handleLikeComment(comment.commentId)}
                         >
-                          <Heart className={`w-3 h-3 mr-1 ${comment.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                          <span className="text-xs">{comment.likeCount}</span>
+                          <Heart className={`w-3 h-3 mr-1 ${commentLikes[comment.commentId]?.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                          <span className="text-xs">{commentLikes[comment.commentId]?.count ?? comment.likeCount}</span>
                         </Button>
 
                         {comment.commentCount !== undefined && comment.commentCount > 0 && (
