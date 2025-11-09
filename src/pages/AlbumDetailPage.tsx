@@ -24,40 +24,21 @@ export function AlbumDetailPage() {
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [trackListExpanded, setTrackListExpanded] = useState(false);
+  const [reviewId, setReviewId] = useState<string | null>(null); // ⭐ 로컬 reviewId 상태
 
   // 로딩과 에러를 통합
   const reviewLoading = createLoading || updateLoading;
   const reviewError = createError || updateError;
 
-  // 이미 평가한 경우 서버 제공 사용자 평점으로 초기화
+  // 초기 별점 및 reviewId 설정
   useEffect(() => {
-    if (album && (album as any).isRated && typeof (album as any).userRating === 'number') {
-      const initial = (album as any).userRating as number;
-      if (initial > 0) {
-        setUserRating(initial);
-      }
+    if (album && typeof (album as any).userRating === 'number') {
+      setUserRating((album as any).userRating);
+    }
+    if (album && (album as any).reviewId) {
+      setReviewId((album as any).reviewId);
     }
   }, [album]);
-
-  // 페이지가 다시 포커스를 받을 때 데이터 새로고침 (리뷰 작성 후 돌아왔을 때 등)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log('📱 Page focused, refreshing album data...');
-        refetch();
-      }
-    };
-
-    // 페이지 포커스 이벤트 리스너
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // 컴포넌트가 다시 마운트될 때도 새로고침
-    refetch();
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [albumId]); // albumId가 변경될 때만 재설정
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
@@ -68,57 +49,38 @@ export function AlbumDetailPage() {
     if (!album || userRating === 0) return;
 
     try {
-      // 이미 리뷰가 있고 reviewId가 존재하면 수정 API 호출
-      if ((album as any).isRated && (album as any).reviewId) {
-        console.log('📝 Updating existing review:', {
-          reviewId: (album as any).reviewId,
-          rating: userRating,
-          type: 'album'
-        });
+      if (reviewId) {
+        // ⭐ 리뷰 수정 - PATCH
+        console.log('📝 Updating review:', reviewId);
 
-        await updateReview((album as any).reviewId, {
+        await updateReview(reviewId, {
           rating: userRating,
           type: CreateReviewRequestTypeEnum.Album
         });
 
-        console.log('✅ Review updated successfully');
+        console.log('✅ Review updated');
       } else {
-        // 새 리뷰 작성
-        console.log('✨ Creating new review:', {
-          rating: userRating,
-          type: 'album',
-          targetId: albumId
-        });
+        // ⭐ 리뷰 생성 - POST
+        console.log('✨ Creating new review');
 
-        await createReview({
+        const result = await createReview({
           rating: userRating,
           type: CreateReviewRequestTypeEnum.Album,
           targetId: albumId,
           artistIds: album.artists.map(a => a.artistId)
         });
 
-        console.log('✅ Review created successfully');
+        // 생성된 reviewId 저장
+        setReviewId(result.reviewId);
+        console.log('✅ Review created, reviewId:', result.reviewId);
       }
 
       setSubmitSuccess(true);
 
-      // 앨범 정보 새로고침 (새 reviewId 가져오기)
-      await refetch();
-
       // 3초 후 성공 메시지 숨기기
       setTimeout(() => setSubmitSuccess(false), 3000);
     } catch (err: any) {
-      // 409 에러 (이미 리뷰 존재) - reviewId를 가져오기 위해 데이터 새로고침 후 재시도
-      if (err.response?.status === 409) {
-        console.warn('⚠️ 409 Conflict: Review already exists. Fetching reviewId and retrying...');
-
-        // 데이터 새로고침해서 reviewId 가져오기
-        await refetch();
-
-        // 잠시 후 다시 시도하도록 안내
-        throw new Error('이미 평가하셨습니다. 평점을 변경하려면 다시 제출 버튼을 눌러주세요.');
-      }
-      console.error('Review submission failed:', err);
+      console.error('❌ Review submission failed:', err);
     }
   };
 
@@ -259,7 +221,7 @@ export function AlbumDetailPage() {
                 {submitSuccess && (
                   <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
                     <p className="text-sm text-green-600">
-                      ✓ 평가가 {(album as any).isRated ? '수정' : '등록'}되었습니다!
+                      ✓ 평가가 {reviewId ? '수정' : '등록'}되었습니다!
                     </p>
                   </div>
                 )}
@@ -274,11 +236,11 @@ export function AlbumDetailPage() {
                     {reviewLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        {(album as any).isRated ? '수정 중...' : '제출 중...'}
+                        {reviewId ? '수정 중...' : '제출 중...'}
                       </>
                     ) : (album as any).userRating === userRating ? (
                       '기존 평점과 동일합니다'
-                    ) : (album as any).isRated ? (
+                    ) : reviewId ? (
                       '평가 수정하기'
                     ) : (
                       '제출하기'

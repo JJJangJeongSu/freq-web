@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Settings, Edit, Camera, Shield, Palette, Volume2, Download, Info, LogOut, FolderOpen, Plus, Loader2 } from "lucide-react";
+import { ArrowLeft, Settings, Edit, Camera, Shield, Palette, Volume2, Download, Info, LogOut, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Switch } from "../components/ui/switch";
@@ -195,40 +195,6 @@ export function UserPage() {
 
           {/* Settings Sections */}
           <div className="space-y-8 mt-8">
-            {/* 계정 설정 */}
-            <div className="space-y-5">
-              <h3 className="font-semibold text-lg">계정</h3>
-              <div className="space-y-3">
-
-                
-                
-
-                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={() => navigate('/collections/new')}>
-                  <div className="flex items-center gap-4">
-                    <Plus className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">새 컬렉션 만들기</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">나만의 음악 컬렉션 제작</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors">
-                  <div className="flex items-center gap-4">
-                    <FolderOpen className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">나의 컬렉션 관리</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">만든 컬렉션 편집 및 삭제</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            
-
             {/* 앱 설정 */}
             <div className="space-y-5">
               <h3 className="font-semibold text-lg">앱 설정</h3>

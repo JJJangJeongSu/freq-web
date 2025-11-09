@@ -42,6 +42,15 @@ export const useTrackDetail = (trackId: string): UseTrackDetailReturn => {
       // 응답 unwrap
       const responseData = response.data;
 
+      console.log('📦 Track detail API response:', {
+        success: responseData.success,
+        hasData: !!responseData.data,
+        reviewId: responseData.data?.reviewId,
+        userRating: responseData.data?.userRating,
+        isRated: responseData.data?.isRated,
+        fullData: responseData.data
+      });
+
       if (responseData.success && responseData.data) {
         setData(responseData.data as unknown as TrackDetailWithReviewId);
       } else {
