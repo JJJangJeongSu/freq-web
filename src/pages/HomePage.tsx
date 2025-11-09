@@ -96,8 +96,8 @@ export function HomePage() {
     }
   }));
 
-  // Map popular reviews to comment format (filter out reviews without album data)
-  const popularComments = (homeData?.popularReviews || [])
+  // Map popular reviews (filter out reviews without album data)
+  const popularReviews = (homeData?.popularReviews || [])
     .filter(review => review.album) // Only include reviews with album data
     .map(review => ({
       id: String(review.reviewId),
@@ -117,8 +117,8 @@ export function HomePage() {
       commentCount: review.commentCount
     }));
 
-  // Map recent reviews to comment format with timeAgo (filter out reviews without album data)
-  const recentComments = (homeData?.recentReviews || [])
+  // Map recent reviews with timeAgo (filter out reviews without album data)
+  const recentReviews = (homeData?.recentReviews || [])
     .filter(review => review.album) // Only include reviews with album data
     .map(review => ({
       id: String(review.reviewId),
@@ -361,85 +361,85 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Material 3 인기 댓글 섹션 */}
+          {/* Material 3 인기 리뷰 섹션 */}
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4 md:px-6">
               <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>
-                인기 댓글
+                인기 리뷰
               </h2>
             </div>
             <div className="flex gap-3 md:gap-4 px-4 md:px-6 overflow-x-auto scrollbar-hide">
-              {popularComments.map((comment) => (
+              {popularReviews.map((review) => (
                 <div
-                  key={comment.id}
+                  key={review.id}
                   className="flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[500px] lg:w-[550px] cursor-pointer transition-all rounded-2xl p-4 border hover:shadow-md"
                   style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                onClick={() => navigate(`/reviews/${comment.id}`)}
+                onClick={() => navigate(`/reviews/${review.id}`)}
                 >
                   {/* 상단: 프로필 & 별점 */}
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <Avatar className="w-10 h-10">
-                        <AvatarImage src={comment.user.avatar} />
-                        <AvatarFallback className="text-label-large">{comment.user.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={review.user.avatar} />
+                        <AvatarFallback className="text-label-large">{review.user.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <p className="text-title-medium" style={{ color: 'var(--on-surface)' }}>
-                        {comment.user.name}
+                        {review.user.name}
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`w-4 h-4 ${i < comment.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
                         />
                       ))}
                     </div>
                   </div>
 
-                  {/* 하단: 좌측(앨범 커버 + 정보) + 우측(댓글 내용 + 좋아요/댓글) */}
+                  {/* 하단: 좌측(앨범 커버 + 정보) + 우측(리뷰 내용 + 좋아요/댓글) */}
                   <div className="flex gap-3">
                     {/* 좌측: 앨범 커버 + 정보 */}
-                    <div 
+                    <div
                       className="flex flex-col gap-2 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                      navigate(`/albums/${comment.album.id}`);
+                      navigate(`/albums/${review.album.id}`);
                       }}
                     >
                       <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
                         <ImageWithFallback
-                          src={comment.album.imageUrl}
-                          alt={comment.album.title}
+                          src={review.album.imageUrl}
+                          alt={review.album.title}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="text-center w-24">
                         <div className="text-body-medium truncate" style={{ color: 'var(--on-surface)' }}>
-                          {comment.album.title}
+                          {review.album.title}
                         </div>
                         <div className="text-body-small truncate" style={{ color: 'var(--on-surface-variant)' }}>
-                          {comment.album.artist}
+                          {review.album.artist}
                         </div>
                       </div>
                     </div>
 
-                    {/* 우측: 댓글 내용 + 좋아요/댓글 */}
+                    {/* 우측: 리뷰 내용 + 좋아요/댓글 */}
                     <div className="flex-1 flex flex-col justify-between">
                       <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
-                        {comment.content}
+                        {review.content}
                       </p>
                       <div className="flex items-center gap-4 mt-2 justify-end">
                         <div className="flex items-center gap-2">
                           <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {comment.likes}
+                            {review.likes}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {comment.commentCount}
+                            {review.commentCount}
                           </span>
                         </div>
                       </div>
@@ -450,90 +450,90 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Material 3 최근 댓글 섹션 */}
+          {/* Material 3 최근 리뷰 섹션 */}
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4 md:px-6">
               <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>
-                최근 댓글
+                최근 리뷰
               </h2>
             </div>
             <div className="flex gap-3 md:gap-4 px-4 md:px-6 overflow-x-auto scrollbar-hide">
-              {recentComments.map((comment) => (
+              {recentReviews.map((review) => (
                 <div
-                  key={comment.id}
+                  key={review.id}
                   className="flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[500px] lg:w-[550px] cursor-pointer transition-all rounded-2xl p-4 border hover:shadow-md"
                   style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                onClick={() => navigate(`/reviews/${comment.id}`)}
+                onClick={() => navigate(`/reviews/${review.id}`)}
                 >
                   {/* 상단: 프로필 & 별점 */}
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <Avatar className="w-10 h-10">
-                        <AvatarImage src={comment.user.avatar} />
-                        <AvatarFallback className="text-label-large">{comment.user.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={review.user.avatar} />
+                        <AvatarFallback className="text-label-large">{review.user.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="text-title-medium" style={{ color: 'var(--on-surface)' }}>
-                          {comment.user.name}
+                          {review.user.name}
                         </p>
                         <span className="text-label-small" style={{ color: 'var(--on-surface-variant)' }}>
-                          {comment.timeAgo}
+                          {review.timeAgo}
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`w-4 h-4 ${i < comment.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
                         />
                       ))}
                     </div>
                   </div>
 
-                  {/* 하단: 좌측(앨범 커버 + 정보) + 우측(댓글 내용 + 좋아요/댓글) */}
+                  {/* 하단: 좌측(앨범 커버 + 정보) + 우측(리뷰 내용 + 좋아요/댓글) */}
                   <div className="flex gap-3">
                     {/* 좌측: 앨범 커버 + 정보 */}
-                    <div 
+                    <div
                       className="flex flex-col gap-2 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                      navigate(`/albums/${comment.album.id}`);
+                      navigate(`/albums/${review.album.id}`);
                       }}
                     >
                       <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
                         <ImageWithFallback
-                          src={comment.album.imageUrl}
-                          alt={comment.album.title}
+                          src={review.album.imageUrl}
+                          alt={review.album.title}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="text-center w-24">
                         <div className="text-body-medium truncate" style={{ color: 'var(--on-surface)' }}>
-                          {comment.album.title}
+                          {review.album.title}
                         </div>
                         <div className="text-body-small truncate" style={{ color: 'var(--on-surface-variant)' }}>
-                          {comment.album.artist}
+                          {review.album.artist}
                         </div>
                       </div>
                     </div>
 
-                    {/* 우측: 댓글 내용 + 좋아요/댓글 */}
+                    {/* 우측: 리뷰 내용 + 좋아요/댓글 */}
                     <div className="flex-1 flex flex-col justify-between">
                       <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
-                        {comment.content}
+                        {review.content}
                       </p>
                       <div className="flex items-center gap-4 mt-2">
                         <div className="flex items-center gap-2">
                           <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {comment.likes}
+                            {review.likes}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
                           <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {comment.commentCount}
+                            {review.commentCount}
                           </span>
                         </div>
                       </div>
