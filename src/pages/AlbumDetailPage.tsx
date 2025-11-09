@@ -224,7 +224,7 @@ export function AlbumDetailPage() {
                         };
                         sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
                       } catch {}
-                      navigate(`/reviews/new?albumId=${albumId}`);
+                      navigate(`/albums/${albumId}/review`);
                     }}
                     className="flex-1 h-12"
                   >
