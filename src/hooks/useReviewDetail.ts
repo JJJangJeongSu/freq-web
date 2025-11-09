@@ -35,9 +35,20 @@ export function useReviewDetail(reviewId: string): UseReviewDetailReturn {
       console.log('✅ Review detail response:', response);
       console.log('📦 Response data:', response.data);
 
+      // API 응답이 이중으로 래핑되어 있음: response.data.data.data
       if (response.data.success && response.data.data) {
-        console.log('✅ Review detail fetched successfully:', response.data.data);
-        setData(response.data.data);
+        const reviewData = response.data.data;
+
+        console.log('📦 Nested data:', reviewData);
+
+        // 이중 래핑 체크
+        if (reviewData.success && reviewData.data) {
+          console.log('✅ Review detail fetched (double wrapped):', reviewData.data);
+          setData(reviewData.data);
+        } else {
+          console.log('✅ Review detail fetched (single wrapped):', reviewData);
+          setData(reviewData);
+        }
       } else {
         console.error('❌ Invalid response structure:', response.data);
         throw new Error('Failed to fetch review detail: Invalid response');
