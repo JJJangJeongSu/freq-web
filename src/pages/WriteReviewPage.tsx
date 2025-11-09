@@ -1,22 +1,36 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Textarea } from "../components/ui/textarea";
+import { Input } from "../components/ui/input";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
 import { Separator } from "../components/ui/separator";
+import { useCreateReview } from "../hooks/useCreateReview";
+import { CreateReviewRequestTypeEnum } from "../api/models";
 
 export function WriteReviewPage() {
   const { albumId } = useParams();
   const navigate = useNavigate();
+  const { createReview, loading, error } = useCreateReview();
+
   // 앨범 메타데이터: 앨범 상세에서 세션 스토리지로 전달됨
-  const [album, setAlbum] = useState<{ id: string; title: string; artist: string; imageUrl: string }>({
-    id: albumId,
+  const [album, setAlbum] = useState<{
+    id: string;
+    title: string;
+    artist: string;
+    imageUrl: string;
+    artistIds: string[];
+    rating: number;
+  }>({
+    id: albumId || '',
     title: '',
     artist: '',
-    imageUrl: ''
+    imageUrl: '',
+    artistIds: [],
+    rating: 0
   });
 
   useEffect(() => {
@@ -29,30 +43,53 @@ export function WriteReviewPage() {
             id: meta.id,
             title: meta.title || '',
             artist: meta.artist || '',
-            imageUrl: meta.imageUrl || ''
+            imageUrl: meta.imageUrl || '',
+            artistIds: meta.artistIds || [],
+            rating: meta.rating || 0
           });
+          // 전달받은 별점으로 초기화
+          if (meta.rating > 0) {
+            setRating(meta.rating);
+          }
         }
       }
     } catch {}
   }, [albumId]);
 
-  const [rating, setRating] = useState(4); // 앨범 상세 페이지에서 선택한 별점이 전달됨
+  const [rating, setRating] = useState(0);
+  const [title, setTitle] = useState('');
   const [reviewText, setReviewText] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleSubmit = () => {
-    if (rating > 0 && reviewText.trim() && albumId) {
-      console.log('리뷰 제출:', {
-        albumId,
+  const handleSubmit = async () => {
+    if (!albumId || rating === 0 || !reviewText.trim()) {
+      return;
+    }
+
+    try {
+      const result = await createReview({
         rating,
-        reviewText
+        title: title.trim() || undefined,
+        content: reviewText.trim(),
+        type: CreateReviewRequestTypeEnum.Album,
+        targetId: albumId,
+        artistIds: album.artistIds
       });
-      // TODO: 리뷰 등록 API 호출
-      // 성공 후 앨범 상세 페이지로 돌아가기
-      navigate(`/albums/${albumId}`);
+
+      console.log('✅ 리뷰 제출 성공:', result);
+      setSubmitSuccess(true);
+
+      // 성공 메시지 표시 후 앨범 상세 페이지로 이동
+      setTimeout(() => {
+        navigate(`/albums/${albumId}`, { replace: true });
+      }, 1500);
+    } catch (err) {
+      console.error('❌ 리뷰 제출 실패:', err);
+      // 에러는 useCreateReview에서 처리됨
     }
   };
 
-  const canSubmit = rating > 0 && reviewText.trim().length > 0;
+  const canSubmit = rating > 0 && reviewText.trim().length > 0 && !loading && !submitSuccess;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -91,11 +128,12 @@ export function WriteReviewPage() {
                 별을 터치하여 평점을 수정할 수 있습니다
               </p>
             </div>
-            
+
             <div className="flex justify-center">
               <StarRating
                 rating={rating}
-                onRatingChange={setRating}
+                onRatingChange={loading || submitSuccess ? undefined : setRating}
+                readonly={loading || submitSuccess}
                 size="lg"
               />
             </div>
@@ -111,10 +149,36 @@ export function WriteReviewPage() {
 
           <Separator />
 
+          {/* Review Title (Optional) */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-semibold mb-2">
+                리뷰 제목 <span className="text-sm text-muted-foreground font-normal">(선택)</span>
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                리뷰를 요약할 수 있는 짧은 제목을 작성해주세요
+              </p>
+            </div>
+
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="예: 올해 최고의 앨범!"
+              maxLength={100}
+              disabled={loading || submitSuccess}
+            />
+
+            <div className="text-sm text-muted-foreground text-right">
+              {title.length}/100자
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Review Text */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold mb-2">리뷰</h3>
+              <h3 className="font-semibold mb-2">리뷰 내용</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 이 앨범에 대한 당신의 생각을 자유롭게 작성해주세요
               </p>
@@ -125,12 +189,29 @@ export function WriteReviewPage() {
               onChange={(e) => setReviewText(e.target.value)}
               placeholder="앨범에 대한 리뷰를 작성해주세요..."
               className="min-h-[200px] resize-none"
+              maxLength={2000}
+              disabled={loading || submitSuccess}
             />
 
             <div className="text-sm text-muted-foreground text-right">
-              {reviewText.length}자
+              {reviewText.length}/2000자
             </div>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <p className="text-sm text-destructive font-medium">{error.message}</p>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {submitSuccess && (
+            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+              <p className="text-sm text-green-600 font-medium">✓ 리뷰가 성공적으로 등록되었습니다!</p>
+              <p className="text-xs text-green-600/80 mt-1">잠시 후 앨범 페이지로 이동합니다...</p>
+            </div>
+          )}
         </div>
       </main>
 
@@ -141,8 +222,21 @@ export function WriteReviewPage() {
           disabled={!canSubmit}
           className="w-full h-12"
         >
-          <Send className="w-4 h-4 mr-2" />
-          리뷰 제출하기
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              제출 중...
+            </>
+          ) : submitSuccess ? (
+            <>
+              ✓ 제출 완료
+            </>
+          ) : (
+            <>
+              <Send className="w-4 h-4 mr-2" />
+              리뷰 제출하기
+            </>
+          )}
         </Button>
       </div>
     </div>

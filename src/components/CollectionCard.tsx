@@ -28,11 +28,11 @@ export function CollectionCard({
 }: CollectionCardProps) {
   return (
     <div
-      className="group w-[300px] bg-card rounded-2xl shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 cursor-pointer overflow-hidden border border-border"
+      className="group w-full bg-card rounded-2xl shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 cursor-pointer overflow-hidden border border-border"
       onClick={onClick}
     >
       {/* Thumbnail Area */}
-      <div className="relative h-[200px]">
+      <div className="relative h-36 md:h-40">
         <img
           src={imageUrl}
           alt={title}
@@ -47,7 +47,7 @@ export function CollectionCard({
       </div>
 
       {/* Content Area */}
-      <div className="p-4">
+      <div className="p-3">
         {/* Description */}
         <p className="text-sm text-muted-foreground mb-4 line-clamp-2 h-[2.5em]">
           {description}

@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2, MessageCircle } from "lucide-react";
+import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import React from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -21,6 +21,7 @@ export function AlbumDetailPage() {
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [trackListExpanded, setTrackListExpanded] = useState(false);
 
   // 이미 평가한 경우 서버 제공 사용자 평점으로 초기화
   useEffect(() => {
@@ -221,10 +222,12 @@ export function AlbumDetailPage() {
                           title: album.title,
                           artist: album.artists?.map(a => a.name).join(', ') || '',
                           imageUrl: album.imageUrl,
+                          artistIds: album.artists?.map(a => a.artistId) || [],
+                          rating: userRating,
                         };
                         sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
                       } catch {}
-                      navigate(`/albums/${albumId}/review`);
+                      navigate(`/albums/${albumId}/write-review`);
                     }}
                     className="flex-1 h-12"
                   >
@@ -266,13 +269,63 @@ export function AlbumDetailPage() {
 
           <Separator />
 
+          {/* Track List */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">수록곡</h3>
+              {album.tracks && album.tracks.length > 5 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setTrackListExpanded(!trackListExpanded)}
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {trackListExpanded ? (
+                    <>
+                      접기 <ChevronUp className="w-4 h-4 ml-1" />
+                    </>
+                  ) : (
+                    <>
+                      전체보기 ({album.tracks.length}곡) <ChevronDown className="w-4 h-4 ml-1" />
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+            <div className="space-y-2">
+              {album.tracks?.slice(0, trackListExpanded ? undefined : 5).map((track, index) => (
+                <div
+                  key={track.id}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent cursor-pointer"
+                  onClick={() => navigate(`/tracks/${track.id}`)}
+                >
+                  <span className="text-sm text-muted-foreground w-6">{index + 1}</span>
+                  <div className="flex-1">
+                    <p className="font-medium">{track.title}</p>
+                    <p className="text-xs text-muted-foreground">{track.artists.join(', ')}</p>
+                  </div>
+                  {track.rating != null && (
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm text-muted-foreground">{track.rating.toFixed(1)}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Reviews */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">리뷰</h3>
-              <span className="text-sm text-muted-foreground">총 {('reviewCount' in album ? (album as any).reviewCount : (album as any).reviews?.length || 0)}개</span>
+              <span className="text-sm text-muted-foreground">
+                총 {((album as any).reviewCount ?? (album as any).reviews?.length ?? 0)}개
+              </span>
             </div>
-            {('reviews' in album && (album as any).reviews && (album as any).reviews.length > 0) ? (
+            {(album as any).reviews && (album as any).reviews.length > 0 ? (
               <div className="space-y-3">
                 {(album as any).reviews.map((review: any) => (
                   <div key={review.reviewId} className="flex gap-3 p-3 rounded-lg border border-border/50">
@@ -311,36 +364,9 @@ export function AlbumDetailPage() {
             ) : (
               <div className="text-center py-8 bg-muted/30 rounded-lg">
                 <p className="text-sm text-muted-foreground">아직 리뷰가 없어요</p>
+                <p className="text-xs text-muted-foreground mt-2">이 앨범에 대한 첫 리뷰를 작성해보세요!</p>
               </div>
             )}
-          </div>
-
-          <Separator />
-
-          {/* Track List */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">수록곡</h3>
-            <div className="space-y-2">
-              {album.tracks?.map((track, index) => (
-                <div
-                  key={track.id}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent cursor-pointer"
-                  onClick={() => navigate(`/tracks/${track.id}`)}
-                >
-                  <span className="text-sm text-muted-foreground w-6">{index + 1}</span>
-                  <div className="flex-1">
-                    <p className="font-medium">{track.title}</p>
-                    <p className="text-xs text-muted-foreground">{track.artists.join(', ')}</p>
-                  </div>
-                  {track.rating != null && (
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm text-muted-foreground">{track.rating.toFixed(1)}</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* 관련 컬렉션 */}
