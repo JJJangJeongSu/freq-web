@@ -1,43 +1,48 @@
-import { useState, useEffect } from "react";
-import { BottomNavigation } from "./components/BottomNavigation";
-import { Toaster } from "./components/ui/toaster";
-import { getAuthToken, clearAuthToken } from "./api/client";
-import { HomePage } from "./pages/HomePage";
-import { SearchPage } from "./pages/SearchPage";
-import { RateRecordPage } from "./pages/RateRecordPage";
-import { UserPage } from "./pages/UserPage";
-import { AuthPage } from "./pages/AuthPage";
-import { AlbumDetailPage } from "./pages/AlbumDetailPage";
-import { TrackDetailPage } from "./pages/TrackDetailPage";
-import { ArtistDetailPage } from "./pages/ArtistDetailPage";
-import { RatedAlbumsPage } from "./pages/RatedAlbumsPage";
-import { RatedTracksPage } from "./pages/RatedTracksPage";
-import { CommentDetailPage } from "./pages/CommentDetailPage";
-import { CurationDetailPage } from "./pages/CurationDetailPage";
-import { UserProfilePage } from "./pages/UserProfilePage";
-import { LikedArtistsPage } from "./pages/LikedArtistsPage";
-import { CreateCollectionPage } from "./pages/CreateCollectionPage";
-import { KMACollectionPage } from "./pages/KMACollectionPage";
-import { MyCollectionsPage } from "./pages/MyCollectionsPage";
-import { LikedCollectionsPage } from "./pages/LikedCollectionsPage";
-import { AllCollectionsPage } from "./pages/AllCollectionsPage";
-import { WriteReviewPage } from "./pages/WriteReviewPage";
-import { MyReviewsPage } from "./pages/MyReviewsPage";
-import { NotificationsPage } from "./pages/NotificationsPage";
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Toaster } from './components/ui/toaster';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { Layout } from './components/Layout';
+import { clearAuthToken } from './api/client';
 
-type Page = 'auth' | 'home' | 'search' | 'rate-record' | 'user' | 'album-detail' | 'track-detail' | 'artist-detail' | 'rated-albums' | 'rated-tracks' | 'comment-detail' | 'curation-detail' | 'user-profile' | 'liked-artists' | 'create-collection' | 'kma-collection' | 'my-collections' | 'liked-collections' | 'all-collections' | 'write-review' | 'my-reviews' | 'notifications';
+// Pages
+import { AuthPage } from './pages/AuthPage';
+import { HomePage } from './pages/HomePage';
+import { SearchPage } from './pages/SearchPage';
+import { RateRecordPage } from './pages/RateRecordPage';
+import { UserPage } from './pages/UserPage';
+import { NotificationsPage } from './pages/NotificationsPage';
+import { AlbumDetailPage } from './pages/AlbumDetailPage';
+import { TrackDetailPage } from './pages/TrackDetailPage';
+import { ArtistDetailPage } from './pages/ArtistDetailPage';
+import { CommentDetailPage } from './pages/CommentDetailPage';
+import { CurationDetailPage } from './pages/CurationDetailPage';
+import { UserProfilePage } from './pages/UserProfilePage';
+import { RatedAlbumsPage } from './pages/RatedAlbumsPage';
+import { RatedTracksPage } from './pages/RatedTracksPage';
+import { LikedArtistsPage } from './pages/LikedArtistsPage';
+import { MyCollectionsPage } from './pages/MyCollectionsPage';
+import { LikedCollectionsPage } from './pages/LikedCollectionsPage';
+import { AllCollectionsPage } from './pages/AllCollectionsPage';
+import { MyReviewsPage } from './pages/MyReviewsPage';
+import { CreateCollectionPage } from './pages/CreateCollectionPage';
+import { WriteReviewPage } from './pages/WriteReviewPage';
+import { KMACollectionPage } from './pages/KMACollectionPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
-export default function App() {
-  // Check for existing token on mount
-  const token = getAuthToken();
-  const [currentPage, setCurrentPage] = useState<Page>(token ? 'home' : 'auth');
-  const [isLoggedIn, setIsLoggedIn] = useState(!!token);
-  const [selectedId, setSelectedId] = useState<string>('');
+/**
+ * UnauthorizedListener Component
+ *
+ * 전역 auth:unauthorized 이벤트를 감지하여 로그아웃 처리
+ */
+function UnauthorizedListener() {
+  const navigate = useNavigate();
 
-  // Listen for unauthorized events
   useEffect(() => {
     const handleUnauthorized = () => {
-      handleLogout();
+      clearAuthToken();
+      localStorage.clear();
+      navigate('/auth', { replace: true });
     };
 
     window.addEventListener('auth:unauthorized', handleUnauthorized);
@@ -45,103 +50,64 @@ export default function App() {
     return () => {
       window.removeEventListener('auth:unauthorized', handleUnauthorized);
     };
-  }, []);
+  }, [navigate]);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    setCurrentPage('home');
-  };
+  return null;
+}
 
-  const handleLogout = () => {
-    clearAuthToken();
-    localStorage.clear();
-    setIsLoggedIn(false);
-    setCurrentPage('auth');
-  };
-
-  const handleNavigate = (page: string, id?: string) => {
-    setCurrentPage(page as Page);
-    if (id) {
-      setSelectedId(id);
-    }
-  };
-
-  const handleTabChange = (tab: string) => {
-    setCurrentPage(tab as Page);
-  };
-
-  // 인증되지 않은 상태에서는 AuthPage만 표시
-  if (!isLoggedIn) {
-    return (
-      <div className="size-full">
-        <AuthPage onLogin={handleLogin} />
-        <Toaster />
-      </div>
-    );
-  }
-
-  // 메인 앱 렌더링
-  const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <HomePage onNavigate={handleNavigate} onLogout={handleLogout} />;
-      case 'search':
-        return <SearchPage onNavigate={handleNavigate} />;
-      case 'rate-record':
-        return <RateRecordPage onNavigate={handleNavigate} />;
-      case 'notifications':
-        return <NotificationsPage onNavigate={handleNavigate} />;
-      case 'user':
-        return <UserPage onNavigate={handleNavigate} />;
-      case 'album-detail':
-        return <AlbumDetailPage albumId={selectedId} onNavigate={handleNavigate} />;
-      case 'track-detail':
-        return <TrackDetailPage trackId={selectedId} onNavigate={handleNavigate} />;
-      case 'artist-detail':
-        return <ArtistDetailPage artistId={selectedId} onNavigate={handleNavigate} />;
-      case 'rated-albums':
-        return <RatedAlbumsPage onNavigate={handleNavigate} />;
-      case 'rated-tracks':
-        return <RatedTracksPage onNavigate={handleNavigate} />;
-      case 'comment-detail':
-        return <CommentDetailPage commentId={selectedId} onNavigate={handleNavigate} />;
-      case 'curation-detail':
-        return <CurationDetailPage curationId={selectedId} onNavigate={handleNavigate} />;
-      case 'user-profile':
-        return <UserProfilePage userId={selectedId} onNavigate={handleNavigate} />;
-      case 'liked-artists':
-        return <LikedArtistsPage onNavigate={handleNavigate} />;
-      case 'create-collection':
-        return <CreateCollectionPage onNavigate={handleNavigate} />;
-      case 'kma-collection':
-        return <KMACollectionPage onNavigate={handleNavigate} />;
-      case 'my-collections':
-        return <MyCollectionsPage onNavigate={handleNavigate} />;
-      case 'liked-collections':
-        return <LikedCollectionsPage onNavigate={handleNavigate} />;
-      case 'all-collections':
-        return <AllCollectionsPage onNavigate={handleNavigate} />;
-      case 'write-review':
-        return <WriteReviewPage albumId={selectedId} onNavigate={handleNavigate} />;
-      case 'my-reviews':
-        return <MyReviewsPage onNavigate={handleNavigate} />;
-      default:
-        return <HomePage onNavigate={handleNavigate} onLogout={handleLogout} />;
-    }
-  };
-
-  const showBottomNavigation = !['album-detail', 'track-detail', 'artist-detail', 'rated-albums', 'rated-tracks', 'comment-detail', 'curation-detail', 'user-profile', 'liked-artists', 'create-collection', 'kma-collection', 'my-collections', 'liked-collections', 'all-collections', 'write-review', 'my-reviews'].includes(currentPage);
-
+/**
+ * App Component
+ *
+ * React Router 기반 라우팅 설정
+ */
+export default function App() {
   return (
-    <div className="size-full relative">
-      {renderCurrentPage()}
-      {showBottomNavigation && (
-        <BottomNavigation
-          activeTab={['album-detail', 'track-detail', 'artist-detail', 'rated-albums', 'rated-tracks', 'comment-detail', 'curation-detail', 'user-profile', 'liked-artists', 'create-collection', 'kma-collection', 'my-collections', 'liked-collections', 'all-collections', 'write-review', 'my-reviews'].includes(currentPage) ? 'rate-record' : currentPage}
-          onTabChange={handleTabChange}
-        />
-      )}
+    <BrowserRouter>
+      <UnauthorizedListener />
+      <Routes>
+        {/* Public Route */}
+        <Route path="/auth" element={<AuthPage />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            {/* Main Navigation Routes */}
+            <Route index element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/rate-record" element={<RateRecordPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/user" element={<UserPage />} />
+
+            {/* Detail Pages */}
+            <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
+            <Route path="/tracks/:trackId" element={<TrackDetailPage />} />
+            <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
+            <Route path="/reviews/:reviewId" element={<CommentDetailPage />} />
+            <Route path="/collections/:collectionId" element={<CurationDetailPage />} />
+            <Route path="/users/:userId" element={<UserProfilePage />} />
+
+            {/* List Pages */}
+            <Route path="/rated-albums" element={<RatedAlbumsPage />} />
+            <Route path="/rated-tracks" element={<RatedTracksPage />} />
+            <Route path="/liked-artists" element={<LikedArtistsPage />} />
+            <Route path="/my-collections" element={<MyCollectionsPage />} />
+            <Route path="/liked-collections" element={<LikedCollectionsPage />} />
+            <Route path="/collections" element={<AllCollectionsPage />} />
+            <Route path="/my-reviews" element={<MyReviewsPage />} />
+
+            {/* Action Pages - More specific routes first */}
+            <Route path="/collections/new" element={<CreateCollectionPage />} />
+            <Route path="/collections/kma" element={<KMACollectionPage />} />
+            <Route path="/albums/:albumId/write-review" element={<WriteReviewPage />} />
+          </Route>
+        </Route>
+
+        {/* 404 Not Found */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+
       <Toaster />
-    </div>
+    </BrowserRouter>
   );
 }
