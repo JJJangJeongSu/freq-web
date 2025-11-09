@@ -149,11 +149,11 @@ export function CommentDetailPage() {
             <div className="flex items-start gap-3">
               <Avatar className="w-12 h-12">
                 <AvatarImage src={review.userImageUrl} />
-                <AvatarFallback>{String(review.username).charAt(0)}</AvatarFallback>
+                <AvatarFallback>{review.username.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <p className="font-medium">{String(review.username)}</p>
+                  <p className="font-medium">{review.username}</p>
                   <span className="text-xs text-muted-foreground">
                     {formatDate(review.createdAt)}
                   </span>

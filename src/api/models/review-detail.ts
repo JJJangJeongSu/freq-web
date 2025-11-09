@@ -91,10 +91,10 @@ export interface ReviewDetail {
     'userId': number;
     /**
      * 작성자 닉네임
-     * @type {number}
+     * @type {string}
      * @memberof ReviewDetail
      */
-    'username': number;
+    'username': string;
     /**
      * 작성자 프로필 이미지
      * @type {string}
