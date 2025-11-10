@@ -21,6 +21,7 @@ import { NotificationsApi } from '@/api/apis/notifications-api';
 import { ReviewsApi } from '@/api/apis/reviews-api';
 import { SearchApi } from '@/api/apis/search-api';
 import { UsersApi } from '@/api/apis/users-api';
+import { UsersSocialApi } from '@/api/apis/users-social-api';
 import { UtilitiesApi } from '@/api/apis/utilities-api';
 
 /**
@@ -58,6 +59,7 @@ export const apiService = {
 
   // User APIs
   users: new UsersApi(configuration, API_CONFIG.baseURL, apiClient),
+  usersSocial: new UsersSocialApi(configuration, API_CONFIG.baseURL, apiClient),
 
   // Notifications API
   notifications: new NotificationsApi(configuration, API_CONFIG.baseURL, apiClient),

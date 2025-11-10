@@ -1,5 +1,4 @@
 import { MusicCard } from "./MusicCard";
-import { ScrollArea } from "./ui/scroll-area";
 
 interface MusicItem {
   id: string;
@@ -20,11 +19,11 @@ interface HorizontalMusicSectionProps {
 export function HorizontalMusicSection({ title, items, type, onItemClick, onViewAll }: HorizontalMusicSectionProps) {
   if (items.length === 0) {
     return (
-      <div className="mb-10">
+      <div className="mb-8">
         <div className="flex items-center justify-between mb-5 px-6">
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-xl font-semibold">{title}</h2>
           {onViewAll && (
-            <button 
+            <button
               onClick={onViewAll}
               className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
@@ -42,11 +41,11 @@ export function HorizontalMusicSection({ title, items, type, onItemClick, onView
   }
 
   return (
-    <div className="mb-10">
+    <div className="mb-8">
       <div className="flex items-center justify-between mb-5 px-6">
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-xl font-semibold">{title}</h2>
         {onViewAll && (
-          <button 
+          <button
             onClick={onViewAll}
             className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
           >
@@ -54,7 +53,7 @@ export function HorizontalMusicSection({ title, items, type, onItemClick, onView
           </button>
         )}
       </div>
-      <ScrollArea className="w-full whitespace-nowrap">
+      <div className="w-full overflow-x-auto scrollbar-hide">
         <div className="flex space-x-6 px-6 pb-4">
           {items.map((item) => (
             <MusicCard
@@ -69,7 +68,7 @@ export function HorizontalMusicSection({ title, items, type, onItemClick, onView
             />
           ))}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }

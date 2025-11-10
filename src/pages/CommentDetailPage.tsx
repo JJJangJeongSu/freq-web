@@ -258,13 +258,21 @@ export function CommentDetailPage() {
           {/* Original Review */}
           <div className="space-y-4">
             <div className="flex items-start gap-3">
-              <Avatar className="w-12 h-12">
+              <Avatar
+                className="w-12 h-12 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigate(`/users/${review.userId}`)}
+              >
                 <AvatarImage src={review.userImageUrl || undefined} />
                 <AvatarFallback>{review.username?.charAt(0) || 'U'}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <p className="font-medium">{review.username || 'Unknown'}</p>
+                  <p
+                    className="font-medium cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => navigate(`/users/${review.userId}`)}
+                  >
+                    {review.username || 'Unknown'}
+                  </p>
                   <span className="text-xs text-muted-foreground">
                     {formatDate(review.createdAt)}
                   </span>
@@ -363,13 +371,21 @@ export function CommentDetailPage() {
               <div className="space-y-4">
                 {review.comments.map((comment) => (
                   <div key={comment.commentId} className="flex items-start gap-3">
-                    <Avatar className="w-10 h-10">
+                    <Avatar
+                      className="w-10 h-10 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => navigate(`/users/${comment.userId}`)}
+                    >
                       <AvatarImage src={comment.profileImageUrl} />
                       <AvatarFallback>{comment.userName.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium text-sm">{comment.userName}</p>
+                        <p
+                          className="font-medium text-sm cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => navigate(`/users/${comment.userId}`)}
+                        >
+                          {comment.userName}
+                        </p>
                         <span className="text-xs text-muted-foreground">
                           {formatDate(comment.createdAt)}
                         </span>

@@ -8,6 +8,8 @@ import { LogOut, Music, Search, Heart, MessageCircle, Clock, Star, Sparkles, Tre
 import { Input } from "../components/ui/input";
 import { useHomeData } from "../hooks/useHomeData";
 import { StarRating } from "../components/StarRating";
+import { HorizontalMusicSection } from "../components/HorizontalMusicSection";
+import { CollectionCard } from "../components/CollectionCard";
 import { clearAuthToken } from "../api/client";
 
 export function HomePage() {
@@ -76,25 +78,8 @@ export function HomePage() {
     return `${diffDays}일 전`;
   };
 
-  // Map API data to UI format
-  const collections = (homeData?.recommandedCollections || []).map(collection => ({
-    id: String(collection.collectionId),
-    title: collection.title,
-    description: collection.description,
-    type: 'mixed' as const, // API doesn't specify type, default to mixed
-    creator: {
-      name: collection.author.username,
-      avatar: collection.author.imageUrl,
-      isVerified: false, // API doesn't provide verification status
-      isOfficial: false
-    },
-    imageUrl: collection.coverImageUrl,
-    tags: [], // API doesn't provide tags
-    stats: {
-      likes: collection.likeCount,
-      comments: 0 // API doesn't provide comment count for collections
-    }
-  }));
+  // Collections data - use API structure directly
+  const collections = homeData?.recommandedCollections || [];
 
   // Map popular reviews (filter out reviews without album data)
   const popularReviews = (homeData?.popularReviews || [])
@@ -112,6 +97,7 @@ export function HomePage() {
         id: review.album.id,
         imageUrl: review.album.imageUrl
       },
+      timeAgo: getTimeAgo(review.createdAt),
       likes: review.likeCount,
       rating: review.rating,
       commentCount: review.commentCount
@@ -139,6 +125,24 @@ export function HomePage() {
       commentCount: review.commentCount
     }));
 
+  // Map popular albums
+  const popularAlbums = (homeData?.popularAlbums || []).map(album => ({
+    id: album.id,
+    title: album.title,
+    artist: album.artists.join(', '),
+    imageUrl: album.imageUrl,
+    rating: album.averageRating
+  }));
+
+  // Map popular tracks
+  const popularTracks = (homeData?.popularTracks || []).map(track => ({
+    id: track.id,
+    title: track.title,
+    artist: track.artists.join(', '),
+    imageUrl: track.imageUrl,
+    rating: track.averageRating
+  }));
+
 
 
 
@@ -163,9 +167,9 @@ export function HomePage() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-24">
-        <div className="space-y-8">
+        <div className="space-y-4">
           {/* Hero Section with Primary Actions */}
-          <div className="px-4 md:px-6 pt-8 space-y-6">
+          <div className="px-4 md:px-6 pt-4 space-y-6">
             {/* Main Search - Minimal Border Style */}
             <div 
               className="w-full h-16 rounded-xl flex items-center px-6 cursor-pointer transition-all border"
@@ -180,41 +184,13 @@ export function HomePage() {
                 요즘 듣는 음악을 찾아보세요
               </span>
             </div>
-            
-            {/* Material 3 Action Buttons */}
-            <div className="flex gap-3">
-              <Button
-                className="flex-1 h-14 rounded-xl state-layer-hover"
-                style={{ 
-                  backgroundColor: 'var(--primary)', 
-                  color: 'var(--on-primary)' 
-                }}
-              onClick={() => navigate('/rate-record')}
-              >
-                <Star className="w-5 h-5 mr-3" />
-                <span className="text-label-large">평가하기</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 h-14 rounded-xl border-2 state-layer-hover"
-                style={{ 
-                  borderColor: 'var(--outline)',
-                  backgroundColor: 'transparent',
-                  color: 'var(--primary)' 
-                }}
-              onClick={() => navigate('/collections/new')}
-              >
-                <Plus className="w-5 h-5 mr-3" />
-                <span className="text-label-large">컬렉션 만들기</span>
-              </Button>
-            </div>
           </div>
 
 
           {/* Material 3 컬렉션 섹션 */}
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4 md:px-6">
-              <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>추천 컬렉션</h2>
+              <h2 className="text-xl font-semibold">추천 컬렉션</h2>
               <div className="flex items-center gap-2 md:gap-3">
                 <Button 
                   variant="outline"
@@ -243,128 +219,46 @@ export function HomePage() {
             </div>
             <div className="flex gap-3 md:gap-6 px-4 md:px-6 overflow-x-auto scrollbar-hide">
               {collections.map((collection) => (
-                <div
-                  key={collection.id}
-                  className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-80 lg:w-96 cursor-pointer transition-all rounded-xl overflow-hidden border hover:shadow-md"
-                  style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                onClick={() => collection.id === 'kma-2024' ? navigate('/collections/kma') : navigate(`/collections/${collection.id}`)}
-                >
-                  <div className="relative h-48">
-                    <ImageWithFallback
-                      src={collection.imageUrl}
-                      alt={collection.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <div className="flex flex-wrap gap-2">
-                        {collection.tags.slice(0, 2).map((tag) => (
-                          <div
-                            key={tag}
-                            className="px-3 py-1 rounded-full text-label-small"
-                            style={{
-                              backgroundColor: 'var(--surface-container)',
-                              color: 'var(--on-surface)'
-                            }}
-                          >
-                            {tag}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 md:p-6">
-                    {/* 제목과 타입 */}
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-title-medium line-clamp-1 flex-1" style={{ color: 'var(--on-surface)' }}>
-                        {collection.title}
-                      </h3>
-                      <div
-                        className="ml-3 px-2 py-1 rounded-md text-label-small flex-shrink-0"
-                        style={{
-                          backgroundColor: 'var(--secondary-container)',
-                          color: 'var(--on-secondary-container)'
-                        }}
-                      >
-                        {collection.type === 'albums' ? '앨범' : 
-                         collection.type === 'tracks' ? '트랙' : '믹스'}
-                      </div>
-                    </div>
-                    
-                    {/* 설명 */}
-                    <p className="text-body-medium line-clamp-2 mb-4" style={{ color: 'var(--on-surface-variant)' }}>
-                      {collection.description}
-                    </p>
-                    
-                    {/* 크리에이터 정보 */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Avatar 
-                          className="w-6 h-6 cursor-pointer" 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (collection.creator.isOfficial) {
-                            navigate('/users/korean-music-awards');
-                            } else {
-                            navigate('/users/user-1');
-                            }
-                          }}
-                        >
-                          <AvatarImage src={collection.creator.avatar} />
-                          <AvatarFallback className="text-label-small">{collection.creator.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <span 
-                          className="text-label-medium cursor-pointer hover:underline"
-                          style={{ color: 'var(--on-surface-variant)' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (collection.creator.isOfficial) {
-                            navigate('/users/korean-music-awards');
-                            } else {
-                            navigate('/users/user-1');
-                            }
-                          }}
-                        >
-                          {collection.creator.name}
-                        </span>
-                        {collection.creator.isVerified && (
-                          <div 
-                            className="w-4 h-4 rounded-full flex items-center justify-center"
-                            style={{ 
-                              backgroundColor: collection.creator.isOfficial ? '#FFD700' : 'var(--primary)' 
-                            }}
-                          >
-                            <div className="w-2 h-2 bg-white rounded-full" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* 통계 */}
-                    <div className="flex items-center gap-4 mt-4">
-                      <div className="flex items-center gap-1">
-                        <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
-                        <span className="text-label-medium" style={{ color: 'var(--on-surface-variant)' }}>
-                          {collection.stats.likes}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
-                        <span className="text-label-medium" style={{ color: 'var(--on-surface-variant)' }}>
-                          {collection.stats.comments}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <CollectionCard
+                  key={collection.collectionId}
+                  collectionId={collection.collectionId}
+                  title={collection.title}
+                  description={collection.description}
+                  author={collection.author}
+                  itemCount={collection.itemCount}
+                  likeCount={collection.likeCount}
+                  coverImageUrl={collection.coverImageUrl}
+                  tags={collection.tags}
+                  variant="scroll"
+                  onClick={() => navigate(`/collections/${collection.collectionId}`)}
+                  onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
+                />
               ))}
             </div>
           </div>
 
+          {/* 인기 앨범 섹션 */}
+          <HorizontalMusicSection
+            title="인기 앨범"
+            items={popularAlbums}
+            type="album"
+            onItemClick={(id) => navigate(`/albums/${id}`)}
+            onViewAll={() => navigate('/popular-albums')}
+          />
+
+          {/* 인기 트랙 섹션 */}
+          <HorizontalMusicSection
+            title="인기 트랙"
+            items={popularTracks}
+            type="track"
+            onItemClick={(id) => navigate(`/tracks/${id}`)}
+            onViewAll={() => navigate('/popular-tracks')}
+          />
+
           {/* Material 3 인기 리뷰 섹션 */}
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4 md:px-6">
-              <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>
+              <h2 className="text-xl font-semibold">
                 인기 리뷰
               </h2>
             </div>
@@ -383,96 +277,7 @@ export function HomePage() {
                         <AvatarImage src={review.user.avatar} />
                         <AvatarFallback className="text-label-large">{review.user.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <p className="text-title-medium" style={{ color: 'var(--on-surface)' }}>
-                        {review.user.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 하단: 좌측(앨범 커버 + 정보) + 우측(리뷰 내용 + 좋아요/댓글) */}
-                  <div className="flex gap-3">
-                    {/* 좌측: 앨범 커버 + 정보 */}
-                    <div
-                      className="flex flex-col gap-2 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      navigate(`/albums/${review.album.id}`);
-                      }}
-                    >
-                      <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
-                        <ImageWithFallback
-                          src={review.album.imageUrl}
-                          alt={review.album.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="text-center w-24">
-                        <div className="text-body-medium truncate" style={{ color: 'var(--on-surface)' }}>
-                          {review.album.title}
-                        </div>
-                        <div className="text-body-small truncate" style={{ color: 'var(--on-surface-variant)' }}>
-                          {review.album.artist}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 우측: 리뷰 내용 + 좋아요/댓글 */}
-                    <div className="flex-1 flex flex-col justify-between">
-                      <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
-                        {review.content}
-                      </p>
-                      <div className="flex items-center gap-4 mt-2 justify-end">
-                        <div className="flex items-center gap-2">
-                          <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
-                          <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {review.likes}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
-                          <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
-                            {review.commentCount}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Material 3 최근 리뷰 섹션 */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between px-4 md:px-6">
-              <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>
-                최근 리뷰
-              </h2>
-            </div>
-            <div className="flex gap-3 md:gap-4 px-4 md:px-6 overflow-x-auto scrollbar-hide">
-              {recentReviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[500px] lg:w-[550px] cursor-pointer transition-all rounded-2xl p-4 border hover:shadow-md"
-                  style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
-                onClick={() => navigate(`/reviews/${review.id}`)}
-                >
-                  {/* 상단: 프로필 & 별점 */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage src={review.user.avatar} />
-                        <AvatarFallback className="text-label-large">{review.user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div>
+                      <div className="flex flex-col gap-0.5">
                         <p className="text-title-medium" style={{ color: 'var(--on-surface)' }}>
                           {review.user.name}
                         </p>
@@ -501,18 +306,18 @@ export function HomePage() {
                       navigate(`/albums/${review.album.id}`);
                       }}
                     >
-                      <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
+                      <div className="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
                         <ImageWithFallback
                           src={review.album.imageUrl}
                           alt={review.album.title}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="text-center w-24">
-                        <div className="text-body-medium truncate" style={{ color: 'var(--on-surface)' }}>
+                      <div className="text-center w-20">
+                        <div className="text-xs font-medium truncate" style={{ color: 'var(--on-surface)' }}>
                           {review.album.title}
                         </div>
-                        <div className="text-body-small truncate" style={{ color: 'var(--on-surface-variant)' }}>
+                        <div className="text-xs truncate" style={{ color: 'var(--on-surface-variant)' }}>
                           {review.album.artist}
                         </div>
                       </div>
@@ -523,16 +328,110 @@ export function HomePage() {
                       <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
                         {review.content}
                       </p>
-                      <div className="flex items-center gap-4 mt-2">
+                      <div className="flex items-center gap-4 mt-2 justify-end">
                         <div className="flex items-center gap-2">
-                          <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
-                          <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
+                          <Heart className="w-5 h-5" style={{ color: 'var(--on-surface)' }} />
+                          <span className="text-body-medium" style={{ color: 'var(--on-surface)' }}>
                             {review.likes}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <MessageCircle className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
-                          <span className="text-body-small" style={{ color: 'var(--on-surface-variant)' }}>
+                          <MessageCircle className="w-5 h-5" style={{ color: 'var(--on-surface)' }} />
+                          <span className="text-body-medium" style={{ color: 'var(--on-surface)' }}>
+                            {review.commentCount}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Material 3 최근 리뷰 섹션 */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-4 md:px-6">
+              <h2 className="text-xl font-semibold">
+                최근 리뷰
+              </h2>
+            </div>
+            <div className="flex gap-3 md:gap-4 px-4 md:px-6 overflow-x-auto scrollbar-hide">
+              {recentReviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[500px] lg:w-[550px] cursor-pointer transition-all rounded-2xl p-4 border hover:shadow-md"
+                  style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
+                onClick={() => navigate(`/reviews/${review.id}`)}
+                >
+                  {/* 상단: 프로필 & 별점 */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={review.user.avatar} />
+                        <AvatarFallback className="text-label-large">{review.user.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col gap-0.5">
+                        <p className="text-title-medium" style={{ color: 'var(--on-surface)' }}>
+                          {review.user.name}
+                        </p>
+                        <span className="text-label-small" style={{ color: 'var(--on-surface-variant)' }}>
+                          {review.timeAgo}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 하단: 좌측(앨범 커버 + 정보) + 우측(리뷰 내용 + 좋아요/댓글) */}
+                  <div className="flex gap-3">
+                    {/* 좌측: 앨범 커버 + 정보 */}
+                    <div
+                      className="flex flex-col gap-2 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      navigate(`/albums/${review.album.id}`);
+                      }}
+                    >
+                      <div className="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
+                        <ImageWithFallback
+                          src={review.album.imageUrl}
+                          alt={review.album.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="text-center w-20">
+                        <div className="text-xs font-medium truncate" style={{ color: 'var(--on-surface)' }}>
+                          {review.album.title}
+                        </div>
+                        <div className="text-xs truncate" style={{ color: 'var(--on-surface-variant)' }}>
+                          {review.album.artist}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 우측: 리뷰 내용 + 좋아요/댓글 */}
+                    <div className="flex-1 flex flex-col justify-between">
+                      <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
+                        {review.content}
+                      </p>
+                      <div className="flex items-center gap-4 mt-2 justify-end">
+                        <div className="flex items-center gap-2">
+                          <Heart className="w-5 h-5" style={{ color: 'var(--on-surface)' }} />
+                          <span className="text-body-medium" style={{ color: 'var(--on-surface)' }}>
+                            {review.likes}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MessageCircle className="w-5 h-5" style={{ color: 'var(--on-surface)' }} />
+                          <span className="text-body-medium" style={{ color: 'var(--on-surface)' }}>
                             {review.commentCount}
                           </span>
                         </div>

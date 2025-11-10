@@ -163,9 +163,9 @@ export function CurationDetailPage() {
           <ImageWithFallback
             src={collection.coverImgUrl}
             alt={collection.title}
-            className="w-full h-48 object-cover"
+            className="w-full h-32 object-cover"
           />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4 text-white">
             <h1 className="text-2xl font-bold mb-2">{collection.title}</h1>
             <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export function CurationDetailPage() {
 
           {/* Items List */}
           <div className="space-y-4">
-            <h3 className="font-semibold">수록 목록 ({collection.items.length})</h3>
+            <h3 className="text-lg font-bold">수록 목록 ({collection.items.length})</h3>
             <div className="space-y-4">
               {collection.items.map((item, index) => (
                 <div
@@ -224,7 +224,7 @@ export function CurationDetailPage() {
                     <ImageWithFallback
                       src={item.coverUrl}
                       alt={item.title}
-                      className="w-16 h-16 rounded object-cover"
+                      className="w-20 h-20 rounded object-cover"
                     />
                     <div className="absolute -top-1 -left-1 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
                       {index + 1}
@@ -261,7 +261,7 @@ export function CurationDetailPage() {
 
           {/* Comments */}
           <div className="space-y-4">
-            <h3 className="font-semibold">댓글 ({collection.commentCount})</h3>
+            <h3 className="text-lg font-bold">댓글 ({collection.commentCount})</h3>
             <div className="space-y-4">
               {collection.comments.map((comment) => (
                 <div key={comment.commentId} className="flex gap-3">
@@ -295,7 +295,7 @@ export function CurationDetailPage() {
 
           {/* Add Comment */}
           <div className="space-y-3">
-            <h3 className="font-semibold">댓글 남기기</h3>
+            <h3 className="text-lg font-bold">댓글 남기기</h3>
             <div className="flex gap-3 items-start">
               <Avatar className="w-8 h-8 flex-shrink-0">
                 <AvatarImage src="https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />

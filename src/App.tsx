@@ -17,9 +17,10 @@ import { TrackDetailPage } from './pages/TrackDetailPage';
 import { ArtistDetailPage } from './pages/ArtistDetailPage';
 import { CommentDetailPage } from './pages/CommentDetailPage';
 import { CurationDetailPage } from './pages/CurationDetailPage';
-import { UserProfilePage } from './pages/UserProfilePage';
 import { RatedAlbumsPage } from './pages/RatedAlbumsPage';
 import { RatedTracksPage } from './pages/RatedTracksPage';
+import { PopularAlbumsPage } from './pages/PopularAlbumsPage';
+import { PopularTracksPage } from './pages/PopularTracksPage';
 import { LikedArtistsPage } from './pages/LikedArtistsPage';
 import { MyCollectionsPage } from './pages/MyCollectionsPage';
 import { LikedCollectionsPage } from './pages/LikedCollectionsPage';
@@ -28,6 +29,7 @@ import { MyReviewsPage } from './pages/MyReviewsPage';
 import { CreateCollectionPage } from './pages/CreateCollectionPage';
 import { WriteReviewPage } from './pages/WriteReviewPage';
 import { KMACollectionPage } from './pages/KMACollectionPage';
+import { UserProfilePage } from './pages/UserProfilePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 /**
@@ -85,11 +87,12 @@ export default function App() {
             <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
             <Route path="/reviews/:reviewId" element={<CommentDetailPage />} />
             <Route path="/collections/:collectionId" element={<CurationDetailPage />} />
-            <Route path="/users/:userId" element={<UserProfilePage />} />
 
             {/* List Pages */}
             <Route path="/rated-albums" element={<RatedAlbumsPage />} />
             <Route path="/rated-tracks" element={<RatedTracksPage />} />
+            <Route path="/popular-albums" element={<PopularAlbumsPage />} />
+            <Route path="/popular-tracks" element={<PopularTracksPage />} />
             <Route path="/liked-artists" element={<LikedArtistsPage />} />
             <Route path="/my-collections" element={<MyCollectionsPage />} />
             <Route path="/liked-collections" element={<LikedCollectionsPage />} />

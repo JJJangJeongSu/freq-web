@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Search, Star, User, Bell } from "lucide-react";
+import { Home, Search, Star, Settings, Bell } from "lucide-react";
 
 /**
  * BottomNavigation Component
@@ -13,7 +13,7 @@ export function BottomNavigation() {
     { path: '/search', icon: Search, label: '검색' },
     { path: '/rate-record', icon: Star, label: '평가 기록' },
     { path: '/notifications', icon: Bell, label: '알림' },
-    { path: '/user', icon: User, label: '프로필' },
+    { path: '/user', icon: Settings, label: '설정' },
   ];
 
   return (

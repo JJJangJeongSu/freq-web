@@ -1,17 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Settings, Edit, Camera, Shield, Palette, Volume2, Download, Info, LogOut, Loader2 } from "lucide-react";
+import { ArrowLeft, Shield, Palette, Info, LogOut } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Switch } from "../components/ui/switch";
 import { Separator } from "../components/ui/separator";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import { Label } from "../components/ui/label";
-import { useState, useRef, useEffect } from "react";
 import { useTheme } from "../components/theme-provider";
-import { useUpdateBio } from "../hooks/useUpdateBio";
-import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
 import { useUserProfile } from "../hooks/useUserProfile";
 import { clearAuthToken } from "../api/client";
 
@@ -30,85 +22,6 @@ export function UserPage() {
 
   // API에서 프로필 데이터 가져오기 (캐싱 적용)
   const { data: apiProfile, isLoading: profileLoading, error: profileError, refetch } = useUserProfile(userId);
-
-  // API Hooks
-  const { updateBio, loading: bioLoading, error: bioError } = useUpdateBio();
-  const { updateProfileImage, loading: imageLoading, error: imageError } = useUpdateProfileImage();
-
-  // 프로필 편집 모달 상태
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editedBio, setEditedBio] = useState('');
-
-  // 이미지 업로드 상태
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  // API 프로필 데이터가 로드되면 editedBio 업데이트
-  useEffect(() => {
-    if (apiProfile) {
-      setEditedBio(apiProfile.bio);
-    }
-  }, [apiProfile]);
-
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // 파일 유효성 검사
-      if (!file.type.startsWith('image/')) {
-        alert('이미지 파일만 업로드할 수 있습니다.');
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert('이미지 파일은 5MB 이하여야 합니다.');
-        return;
-      }
-
-      setSelectedFile(file);
-
-      // 미리보기 생성
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleEditProfile = async () => {
-    try {
-      setSubmitSuccess(false);
-
-      // 이미지 업데이트
-      if (selectedFile) {
-        await updateProfileImage(selectedFile);
-      }
-
-      // 소개글 업데이트
-      if (apiProfile && editedBio !== apiProfile.bio) {
-        await updateBio(editedBio);
-      }
-
-      // 프로필 데이터 다시 가져오기 (캐시 업데이트)
-      await refetch();
-
-      // 성공 처리
-      setSubmitSuccess(true);
-      setTimeout(() => {
-        setSubmitSuccess(false);
-        setIsEditDialogOpen(false);
-        setSelectedFile(null);
-        setPreviewUrl(null);
-      }, 2000);
-    } catch (err) {
-      console.error('Profile update failed:', err);
-    }
-  };
 
   // Loading 상태
   if (profileLoading) {
@@ -172,29 +85,9 @@ export function UserPage() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-24">
-        {/* Profile Section */}
         <div className="px-6 py-6">
-          <div className="flex items-center gap-5 mb-8">
-            <Avatar className="w-24 h-24">
-              <AvatarImage src={apiProfile.profileImageUrl || undefined} />
-              <AvatarFallback className="text-xl">
-                {apiProfile.username.substring(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-2">{apiProfile.username}</h2>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">{apiProfile.bio}</p>
-              <Button variant="ghost" size="sm" className="p-0 h-auto" onClick={() => setIsEditDialogOpen(true)}>
-                <Edit className="w-4 h-4 mr-2" />
-                프로필 편집
-              </Button>
-            </div>
-          </div>
-
-          <Separator />
-
           {/* Settings Sections */}
-          <div className="space-y-8 mt-8">
+          <div className="space-y-8">
             {/* 앱 설정 */}
             <div className="space-y-5">
               <h3 className="font-semibold text-lg">앱 설정</h3>
@@ -253,103 +146,6 @@ export function UserPage() {
           </div>
         </div>
       </main>
-
-      {/* 프로필 편집 모달 */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>프로필 편집</DialogTitle>
-            <DialogDescription>이미지와 소개를 변경할 수 있습니다.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            {/* 프로필 이미지 업로드 */}
-                        <div className="space-y-2">
-                          <Label>프로필 이미지</Label>
-                          <div className="flex justify-center py-4">
-                            <div className="relative">
-                              <Avatar className="w-32 h-32 border-2 border-border">
-                                <AvatarImage src={previewUrl || apiProfile.profileImageUrl || undefined} />
-                                <AvatarFallback className="text-4xl">
-                                  {apiProfile.username.substring(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <Button
-                                size="icon"
-                                className="absolute bottom-0 right-0 w-9 h-9 rounded-full"
-                                variant="secondary"
-                                onClick={handleImageClick}
-                                disabled={bioLoading || imageLoading}
-                              >
-                                <Camera className="w-5 h-5" />
-                              </Button>
-                              <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="hidden"
-                                style={{ display: 'none' }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="bio">소개</Label>
-              <Textarea
-                id="bio"
-                value={editedBio}
-                onChange={(e) => setEditedBio(e.target.value)}
-                className="col-span-3"
-                disabled={bioLoading || imageLoading}
-              />
-            </div>
-
-            {/* 에러 메시지 */}
-            {(bioError || imageError) && (
-              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                <p className="text-sm text-destructive">
-                  {bioError?.message || imageError?.message}
-                </p>
-              </div>
-            )}
-
-            {/* 성공 메시지 */}
-            {submitSuccess && (
-              <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                <p className="text-sm text-green-600">✓ 프로필이 업데이트되었습니다!</p>
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              onClick={() => {
-                setIsEditDialogOpen(false);
-                setSelectedFile(null);
-                setPreviewUrl(null);
-              }}
-              disabled={bioLoading || imageLoading}
-            >
-              취소
-            </Button>
-            <Button
-              type="button"
-              onClick={handleEditProfile}
-              disabled={bioLoading || imageLoading || submitSuccess}
-            >
-              {bioLoading || imageLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  저장 중...
-                </>
-              ) : (
-                '저장'
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

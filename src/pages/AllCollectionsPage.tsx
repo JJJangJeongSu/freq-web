@@ -13,25 +13,9 @@ export function AllCollectionsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // API 데이터를 useMemo로 변환
+  // API 데이터를 그대로 사용
   const allCollections = useMemo(() => {
-    if (!apiData) return [];
-
-    return apiData.map(collection => ({
-      id: String(collection.collectionId),
-      title: collection.title,
-      description: collection.description,
-      creator: {
-        name: collection.author.username,
-        avatar: collection.author.imageUrl,
-        id: String(collection.author.id)
-      },
-      imageUrl: collection.coverImageUrl,
-      stats: {
-        likes: collection.likeCount,
-        itemCount: collection.itemCount
-      }
-    }));
+    return apiData || [];
   }, [apiData]);
 
   // 필터링 (검색어만)
@@ -119,9 +103,18 @@ export function AllCollectionsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             {filteredCollections.map((collection) => (
               <CollectionCard
-                key={collection.id}
-                {...collection}
-                onClick={() => navigate(`/collections/${collection.id}`)}
+                key={collection.collectionId}
+                collectionId={collection.collectionId}
+                title={collection.title}
+                description={collection.description}
+                author={collection.author}
+                itemCount={collection.itemCount}
+                likeCount={collection.likeCount}
+                coverImageUrl={collection.coverImageUrl}
+                tags={collection.tags}
+                variant="grid"
+                onClick={() => navigate(`/collections/${collection.collectionId}`)}
+                onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
               />
             ))}
           </div>
