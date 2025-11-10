@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { HorizontalMusicSection } from "../components/HorizontalMusicSection";
 import { Progress } from "../components/ui/progress";
 import { Badge } from "../components/ui/badge";
-import { Separator } from "../components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { ProfileEditDialog } from "../components/ProfileEditDialog";
 import { useState } from "react";
@@ -14,7 +13,7 @@ import { useMyActivity } from "../hooks/useMyActivity";
 export function RateRecordPage() {
   const navigate = useNavigate();
   // API 데이터 가져오기
-  const { data, loading, error } = useMyActivity();
+  const { data, loading, error, refetch } = useMyActivity();
 
   // 별점 분포 토글 상태
   const [ratingType, setRatingType] = useState<'album' | 'track'>('album');
@@ -84,9 +83,10 @@ export function RateRecordPage() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-24">
-        {/* Profile Header with Primary Actions */}
+        {/* Profile Header - Instagram Style */}
         <div className="px-6 py-4 border-b border-border">
-          <div className="flex items-center gap-5 mb-4">
+          {/* Profile Info */}
+          <div className="flex items-center gap-4 mb-4">
             <Avatar className="w-20 h-20">
               <AvatarImage src={data.userProfile.profileImageUrl} />
               <AvatarFallback className="text-xl">
@@ -94,10 +94,7 @@ export function RateRecordPage() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-2">{data.userProfile.username || '사용자'}</h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {data.userProfile.bio || '소개글이 없습니다.'}
-              </p>
+              <h2 className="text-xl font-semibold mb-1">{data.userProfile.username || '사용자'}</h2>
             </div>
             <Button
               variant="ghost"
@@ -109,63 +106,72 @@ export function RateRecordPage() {
             </Button>
           </div>
 
-          {/* Stats Section */}
-          <div className="grid grid-cols-3 gap-3 text-center">
+          {/* Follow Stats & Received Likes */}
+          <div className="flex items-center gap-4 mb-3 text-sm">
+            <div>
+              팔로워 <span className="font-semibold">0</span>
+            </div>
+            <div>
+              팔로잉 <span className="font-semibold">0</span>
+            </div>
+            <div className="flex items-center gap-1 text-red-500">
+              <Heart className="w-4 h-4 fill-red-500" />
+              <span className="font-semibold">{data.statistics.receivedLikes}</span>
+            </div>
+          </div>
+
+          {/* Bio */}
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+            {data.userProfile.bio || '소개글이 없습니다.'}
+          </p>
+
+          {/* Main Stats - 4 Column Grid */}
+          <div className="grid grid-cols-4 gap-2 text-center">
             {/* Rated Albums */}
             <div
-              className="cursor-pointer hover:bg-muted/50 rounded-lg p-4 transition-colors"
+              className="cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
               onClick={() => navigate('/rated-albums')}
             >
-              <Disc className="w-5 h-5 mx-auto text-primary mb-2" />
-              <div className="text-2xl font-bold mb-1">{data.statistics.albumReviews}</div>
-              <div className="text-sm text-muted-foreground">앨범</div>
+              <Disc className="w-5 h-5 mx-auto text-primary mb-1.5" />
+              <div className="text-xl font-bold mb-0.5">{data.statistics.albumReviews}</div>
+              <div className="text-xs text-muted-foreground">앨범</div>
             </div>
 
             {/* Rated Tracks */}
             <div
-              className="cursor-pointer hover:bg-muted/50 rounded-lg p-4 transition-colors"
+              className="cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
               onClick={() => navigate('/rated-tracks')}
             >
-              <Music className="w-5 h-5 mx-auto text-primary mb-2" />
-              <div className="text-2xl font-bold mb-1">{data.statistics.trackReviews}</div>
-              <div className="text-sm text-muted-foreground">트랙</div>
+              <Music className="w-5 h-5 mx-auto text-primary mb-1.5" />
+              <div className="text-xl font-bold mb-0.5">{data.statistics.trackReviews}</div>
+              <div className="text-xs text-muted-foreground">트랙</div>
             </div>
 
             {/* Liked Artists */}
             <div
-              className="cursor-pointer hover:bg-muted/50 rounded-lg p-4 transition-colors"
+              className="cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
               onClick={() => navigate('/liked-artists')}
             >
-              <Heart className="w-5 h-5 mx-auto text-primary mb-2" />
-              <div className="text-2xl font-bold mb-1">{data.statistics.likedArtists}</div>
-              <div className="text-sm text-muted-foreground">아티스트</div>
+              <Heart className="w-5 h-5 mx-auto text-primary mb-1.5" />
+              <div className="text-xl font-bold mb-0.5">{data.statistics.likedArtists}</div>
+              <div className="text-xs text-muted-foreground">아티스트</div>
             </div>
 
             {/* Written Reviews */}
             <div
-              className="cursor-pointer hover:bg-muted/50 rounded-lg p-4 transition-colors"
+              className="cursor-pointer hover:bg-muted/50 rounded-lg p-3 transition-colors"
               onClick={() => navigate('/my-reviews')}
             >
-              <MessageSquare className="w-5 h-5 mx-auto text-primary mb-2" />
-              <div className="text-2xl font-bold mb-1">{data.statistics.writtenReviews}</div>
-              <div className="text-sm text-muted-foreground">작성한 리뷰</div>
-            </div>
-
-            {/* Received Likes */}
-            <div className="rounded-lg p-4">
-              <ThumbsUp className="w-5 h-5 mx-auto text-primary mb-2" />
-              <div className="text-2xl font-bold mb-1">{data.statistics.receivedLikes}</div>
-              <div className="text-sm text-muted-foreground">받은 좋아요</div>
+              <MessageSquare className="w-5 h-5 mx-auto text-primary mb-1.5" />
+              <div className="text-xl font-bold mb-0.5">{data.statistics.writtenReviews}</div>
+              <div className="text-xs text-muted-foreground">리뷰</div>
             </div>
           </div>
         </div>
 
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5 px-6">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Star className="w-5 h-5" />
-              내 별점 분포
-            </h2>
+            <h2 className="text-xl font-semibold">내 별점 분포</h2>
             <Tabs value={ratingType} onValueChange={(value) => setRatingType(value as 'album' | 'track')}>
               <TabsList className="h-8">
                 <TabsTrigger value="album" className="text-xs px-3">
@@ -207,14 +213,9 @@ export function RateRecordPage() {
           </div>
         </div>
 
-        <Separator />
-
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5 px-6">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <FolderOpen className="w-5 h-5" />
-              내가 만든 콜렉션
-            </h2>
+            <h2 className="text-xl font-semibold">내가 만든 콜렉션</h2>
             <button
               onClick={() => navigate('/my-collections')}
               className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
@@ -279,15 +280,10 @@ export function RateRecordPage() {
           </div>
         </div>
 
-        <Separator />
-
         {/* 좋아요한 콜렉션 */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5 px-6">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Heart className="w-5 h-5" />
-              좋아요한 콜렉션
-            </h2>
+            <h2 className="text-xl font-semibold">좋아요한 콜렉션</h2>
             <button
               onClick={() => navigate('/liked-collections')}
               className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
@@ -353,15 +349,10 @@ export function RateRecordPage() {
           </div>
         </div>
 
-        <Separator />
-
         {/* 장르 키워드 맵 */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5 px-6">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Tag className="w-5 h-5" />
-              내가 좋아하는 장르
-            </h2>
+            <h2 className="text-xl font-semibold">내가 좋아하는 장르</h2>
           </div>
           <div className="px-6">
             {data.genreKeywords.length > 0 ? (
@@ -401,8 +392,6 @@ export function RateRecordPage() {
           </div>
         </div>
 
-        <Separator />
-
         {/* Recent Reviews */}
         <div className="pt-4">
           <HorizontalMusicSection
@@ -430,10 +419,7 @@ export function RateRecordPage() {
         profileImageUrl={data.userProfile.profileImageUrl}
         username={data.userProfile.username || '사용자'}
         bio={data.userProfile.bio || ''}
-        onSuccess={() => {
-          // 프로필 업데이트 후 데이터 다시 불러오기
-          window.location.reload();
-        }}
+        onSuccess={refetch}
       />
     </div>
   );
