@@ -11,7 +11,9 @@
       "Bash(git init:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Integrate APIdog-generated APIs with authentication and validation\n\n- Set up React Query with custom configuration and query keys\n- Integrate APIdog-generated API code with Axios client\n- Implement authentication flows (login, signup, logout)\n- Add token refresh mechanism with queue management for concurrent 401 requests\n- Implement email and nickname duplicate checking with real-time validation\n- Add comprehensive API logging with colored console output for development\n- Create centralized API service layer and hooks architecture\n- Add real-time form validation (nickname: 2+ chars, email: valid format)\n- Configure environment variables for API base URL\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

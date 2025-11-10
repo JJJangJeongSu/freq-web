@@ -1,98 +1,21 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Star, Heart, MessageCircle, MoreVertical } from "lucide-react";
+import { ArrowLeft, Star, Heart, MessageCircle, MoreVertical, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { Separator } from "../components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
+import { useMyReviews } from "../hooks/useMyReviews";
 
 export function MyReviewsPage() {
   const navigate = useNavigate();
-  // 내가 작성한 리뷰 목록 (실제로는 API에서 가져와야 함)
-  const [myReviews] = useState([
-    {
-      id: '1',
-      album: {
-        id: 'album-1',
-        title: 'Thriller',
-        artist: 'Michael Jackson',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      },
-      rating: 5,
-      content: '역사상 최고의 팝 앨범 중 하나입니다. 마이클 잭슨의 보컬과 프로덕션이 완벽하게 조화를 이룹니다.',
-      createdAt: '2024-01-15',
-      likes: 23,
-      comments: 5,
-      isLiked: false
-    },
-    {
-      id: '2',
-      album: {
-        id: 'album-2',
-        title: 'Abbey Road',
-        artist: 'The Beatles',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      },
-      rating: 5,
-      content: '비틀즈의 최고 걸작. Come Together부터 The End까지 완벽한 흐름을 보여줍니다.',
-      createdAt: '2024-01-10',
-      likes: 18,
-      comments: 3,
-      isLiked: true
-    },
-    {
-      id: '3',
-      album: {
-        id: 'album-3',
-        title: 'The Dark Side of the Moon',
-        artist: 'Pink Floyd',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      },
-      rating: 5,
-      content: '프로그레시브 록의 정점. Time과 Money는 지금 들어도 혁신적입니다.',
-      createdAt: '2024-01-05',
-      likes: 31,
-      comments: 7,
-      isLiked: false
-    },
-    {
-      id: '4',
-      album: {
-        id: 'album-4',
-        title: 'Kind of Blue',
-        artist: 'Miles Davis',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      },
-      rating: 5,
-      content: '재즈 입문자에게 강력 추천. 마일스 데이비스의 트럼펫 연주가 정말 아름답습니다.',
-      createdAt: '2023-12-28',
-      likes: 15,
-      comments: 2,
-      isLiked: true
-    },
-    {
-      id: '5',
-      album: {
-        id: 'album-5',
-        title: 'Rumours',
-        artist: 'Fleetwood Mac',
-        imageUrl: 'https://images.unsplash.com/photo-1629923759854-156b88c433aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbGJ1bSUyMGNvdmVyJTIwbXVzaWMlMjB2aW55bHxlbnwxfHx8fDE3NTg2ODUwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      },
-      rating: 4,
-      content: 'Dreams와 Go Your Own Way는 명곡입니다. 70년대 록의 정수를 보여주는 앨범.',
-      createdAt: '2023-12-20',
-      likes: 12,
-      comments: 1,
-      isLiked: false
-    }
-  ]);
+
+  // API에서 리뷰 목록 가져오기
+  const { reviews: myReviews, loading, error, refetch } = useMyReviews();
 
   const handleDeleteReview = (reviewId: string) => {
     console.log('리뷰 삭제:', reviewId);
@@ -103,6 +26,51 @@ export function MyReviewsPage() {
     console.log('리뷰 수정:', reviewId);
     // TODO: 리뷰 수정 페이지로 이동
   };
+
+  // Loading 상태
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <header className="flex items-center justify-between p-4 border-b border-border">
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-lg font-semibold">작성한 리뷰</h1>
+          <div className="w-8" />
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-muted-foreground">리뷰를 불러오는 중...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Error 상태
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <header className="flex items-center justify-between p-4 border-b border-border">
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-lg font-semibold">작성한 리뷰</h1>
+          <div className="w-8" />
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-destructive mb-2">리뷰를 불러오는데 실패했습니다</p>
+            <p className="text-sm text-muted-foreground mb-4">{error.message}</p>
+            <Button variant="outline" onClick={refetch}>
+              다시 시도
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -189,7 +157,7 @@ export function MyReviewsPage() {
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           <span>{review.createdAt}</span>
                           <div className="flex items-center gap-1">
-                            <Heart className={`w-4 h-4 ${review.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                            <Heart className="w-4 h-4" />
                             <span>{review.likes}</span>
                           </div>
                           <div className="flex items-center gap-1">

@@ -1,4 +1,4 @@
-import { ArrowLeft, Heart, Share2, MessageCircle, Send, Loader2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Send, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
@@ -11,6 +11,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCollectionDetail } from "@/hooks/useCollectionDetail";
 import { apiService } from "@/services/api.service";
 import { useToast } from "@/hooks/use-toast";
+import { getRelativeTime } from "@/utils/timeUtils";
 
 export function CurationDetailPage() {
   const { collectionId } = useParams();
@@ -19,19 +20,28 @@ export function CurationDetailPage() {
   const { toast } = useToast();
 
   // API 데이터 가져오기
-  const { data: collection, loading, error } = useCollectionDetail(curationId);
+  const { data: collection, loading, error, refetch } = useCollectionDetail(curationId);
 
   // 좋아요 상태 관리
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(0);
   const [commentText, setCommentText] = useState("");
   const [isLikeLoading, setIsLikeLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [commentLikeStates, setCommentLikeStates] = useState<Record<number, boolean>>({});
 
   // API 데이터가 로드되면 좋아요 상태 업데이트
   useEffect(() => {
     if (collection) {
       setIsLiked(collection.isLiked || false);
       setLikes(collection.likeCount);
+
+      // 댓글 좋아요 상태 초기화
+      const states: Record<number, boolean> = {};
+      collection.comments.forEach(comment => {
+        states[comment.commentId] = comment.isLiked;
+      });
+      setCommentLikeStates(states);
     }
   }, [collection]);
 
@@ -81,11 +91,58 @@ export function CurationDetailPage() {
     }
   };
 
-  const handleCommentSubmit = () => {
-    if (commentText.trim()) {
-      // 댓글 제출 로직 (시뮬레이션)
-      console.log("댓글 제출:", commentText);
+  const handleCommentLike = async (commentId: number) => {
+    const prevState = commentLikeStates[commentId];
+
+    // Optimistic update
+    setCommentLikeStates(prev => ({
+      ...prev,
+      [commentId]: !prevState
+    }));
+
+    try {
+      // API 호출 (commentId를 string으로 변환)
+      const response = await apiService.comments.toggleCommentLike(String(commentId));
+      const apiData = (response.data as any)?.data;
+
+      // API 응답으로 최종 상태 동기화
+      if (apiData) {
+        setCommentLikeStates(prev => ({
+          ...prev,
+          [commentId]: apiData.liked
+        }));
+      }
+    } catch (err: any) {
+      // 실패 시 롤백
+      setCommentLikeStates(prev => ({
+        ...prev,
+        [commentId]: prevState
+      }));
+      console.error('❌ 댓글 좋아요 실패:', err);
+    }
+  };
+
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim() || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+
+      // API 호출: 댓글 작성
+      await apiService.comments.createComment({
+        type: 'collection',
+        targetId: Number(curationId),
+        content: commentText.trim()
+      });
+
       setCommentText("");
+
+      // 댓글 목록 새로고침
+      await refetch();
+    } catch (err: any) {
+      console.error('❌ 댓글 등록 실패:', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -140,20 +197,15 @@ export function CurationDetailPage() {
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">컬렉션</h1>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLike}
-            disabled={isLikeLoading}
-            className={isLiked ? "text-red-500" : ""}
-          >
-            <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500' : ''} ${isLikeLoading ? 'opacity-50' : ''}`} />
-          </Button>
-          <Button variant="ghost" size="sm">
-            <Share2 className="w-4 h-4" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleLike}
+          disabled={isLikeLoading}
+          className={isLiked ? "text-red-500" : ""}
+        >
+          <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500' : ''} ${isLikeLoading ? 'opacity-50' : ''}`} />
+        </Button>
       </header>
 
       {/* Main Content */}
@@ -163,9 +215,9 @@ export function CurationDetailPage() {
           <ImageWithFallback
             src={collection.coverImgUrl}
             alt={collection.title}
-            className="w-full h-32 object-cover"
+            className="w-full h-48 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/30" />
           <div className="absolute bottom-4 left-4 right-4 text-white">
             <h1 className="text-2xl font-bold mb-2">{collection.title}</h1>
             <div className="flex items-center gap-2">
@@ -262,59 +314,86 @@ export function CurationDetailPage() {
           {/* Comments */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold">댓글 ({collection.commentCount})</h3>
-            <div className="space-y-4">
-              {collection.comments.map((comment) => (
-                <div key={comment.commentId} className="flex gap-3">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={comment.profileImageUrl} />
-                    <AvatarFallback>{comment.userName.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium text-sm">{comment.userName}</p>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(comment.createdAt).toLocaleDateString('ko-KR')}
-                      </span>
+            {collection.comments.length > 0 ? (
+              <div className="space-y-4">
+                {collection.comments.map((comment) => (
+                  <div key={comment.commentId} className="flex gap-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={comment.profileImageUrl} />
+                      <AvatarFallback>{comment.userName.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-medium text-sm">{comment.userName}</p>
+                        <span className="text-xs text-muted-foreground">
+                          {getRelativeTime(comment.createdAt)}
+                        </span>
+                      </div>
+                      <p className="text-sm leading-relaxed mb-2">{comment.content}</p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-0 h-auto text-muted-foreground hover:text-foreground"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCommentLike(comment.commentId);
+                        }}
+                      >
+                        <Heart className={`w-3 h-3 mr-1 ${commentLikeStates[comment.commentId] ? 'fill-red-500 text-red-500' : ''}`} />
+                        <span className="text-xs">{comment.likeCount}</span>
+                      </Button>
                     </div>
-                    <p className="text-sm leading-relaxed mb-2">{comment.content}</p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="p-0 h-auto text-muted-foreground hover:text-foreground"
-                    >
-                      <Heart className={`w-3 h-3 mr-1 ${comment.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                      <span className="text-xs">{comment.likeCount}</span>
-                    </Button>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center bg-muted/30 rounded-xl">
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                  <MessageCircle className="w-8 h-8 text-muted-foreground" />
                 </div>
-              ))}
-            </div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  아직 댓글이 없습니다
+                </p>
+                <p className="text-xs text-muted-foreground/70">
+                  이 컬렉션에 첫 댓글을 남겨보세요
+                </p>
+              </div>
+            )}
           </div>
 
           <Separator />
 
           {/* Add Comment */}
-          <div className="space-y-3">
+          <div className="space-y-3 sticky bottom-0 bg-background pt-4 pb-2 border-t">
             <h3 className="text-lg font-bold">댓글 남기기</h3>
-            <div className="flex gap-3 items-start">
-              <Avatar className="w-8 h-8 flex-shrink-0">
-                <AvatarImage src="https://images.unsplash.com/photo-1707944789575-3a4735380a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1lciUyMHN0YWdlfGVufDF8fHx8MTc1ODcwMDE5OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 flex gap-2">
-                <Textarea
-                  placeholder="댓글을 남겨주세요..."
-                  className="flex-1 min-h-[80px] resize-none"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                />
+            <div className="space-y-3">
+              <Textarea
+                placeholder="댓글을 남겨주세요..."
+                className="w-full min-h-[100px] resize-none"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                disabled={isSubmitting}
+              />
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">
+                  {commentText.length > 0 && `${commentText.length}자`}
+                </span>
                 <Button
-                  size="sm"
                   onClick={handleCommentSubmit}
-                  disabled={!commentText.trim()}
-                  className="h-10"
+                  disabled={!commentText.trim() || isSubmitting}
+                  className="min-w-[100px]"
                 >
-                  <Send className="w-4 h-4" />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      등록 중...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      등록
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
