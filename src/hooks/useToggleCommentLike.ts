@@ -39,6 +39,12 @@ export function useToggleCommentLike() {
       const response = await apiService.comments.toggleCommentLike(String(commentId));
 
       console.log('✅ Comment like toggle response:', response.data);
+      console.log('🔍 Response structure:', {
+        success: response.data?.success,
+        data: response.data?.data,
+        liked: response.data?.data?.liked,
+        fullResponse: response
+      });
 
       // 3. API 응답 성공 - 낙관적 업데이트 유지
       return {

@@ -44,9 +44,11 @@ export function useReviewDetail(reviewId: string): UseReviewDetailReturn {
         // 이중 래핑 체크
         if (reviewData.success && reviewData.data) {
           console.log('✅ Review detail fetched (double wrapped):', reviewData.data);
+          console.log('❤️ isLiked status (double wrapped):', reviewData.data.isLiked);
           setData(reviewData.data);
         } else {
           console.log('✅ Review detail fetched (single wrapped):', reviewData);
+          console.log('❤️ isLiked status (single wrapped):', reviewData.isLiked);
           setData(reviewData);
         }
       } else {

@@ -25,12 +25,21 @@ export function CommentDetailPage() {
   const [isReviewLiked, setIsReviewLiked] = useState(false);
   const [reviewLikes, setReviewLikes] = useState(0);
 
+  // 로딩 상태 (중복 클릭 방지)
+  const [isReviewLikeLoading, setIsReviewLikeLoading] = useState(false);
+  const [commentLikeLoading, setCommentLikeLoading] = useState<Record<number, boolean>>({});
+
   // 댓글별 좋아요 상태 관리
   const [commentLikes, setCommentLikes] = useState<Record<number, { isLiked: boolean; count: number }>>({});
 
   // Update likes when review data changes
   useEffect(() => {
     if (review) {
+      console.log('🔄 Review data changed, updating like state:', {
+        reviewId: review.reviewId,
+        isLiked: review.isLiked,
+        likeCount: review.likeCount
+      });
       setIsReviewLiked(review.isLiked || false);
       setReviewLikes(review.likeCount);
 
@@ -38,6 +47,10 @@ export function CommentDetailPage() {
       if (review.comments) {
         const initialCommentLikes: Record<number, { isLiked: boolean; count: number }> = {};
         review.comments.forEach(comment => {
+          console.log(`❤️ Comment ${comment.commentId} like state:`, {
+            isLiked: comment.isLiked,
+            likeCount: comment.likeCount
+          });
           initialCommentLikes[comment.commentId] = {
             isLiked: comment.isLiked || false,
             count: comment.likeCount
@@ -49,7 +62,7 @@ export function CommentDetailPage() {
   }, [review]);
 
   const handleLikeReview = async () => {
-    if (!reviewId) return;
+    if (!reviewId || isReviewLikeLoading) return; // 로딩 중이면 무시
 
     // 낙관적 업데이트: 즉시 UI 반영
     const newIsLiked = !isReviewLiked;
@@ -57,9 +70,12 @@ export function CommentDetailPage() {
 
     setIsReviewLiked(newIsLiked);
     setReviewLikes(newLikeCount);
+    setIsReviewLikeLoading(true); // 로딩 시작
 
     // 백그라운드에서 API 호출
     const result = await toggleReviewLike(reviewId, isReviewLiked, reviewLikes);
+
+    setIsReviewLikeLoading(false); // 로딩 종료
 
     // 에러 발생 시 롤백
     if (result.error) {
@@ -72,7 +88,7 @@ export function CommentDetailPage() {
 
   const handleLikeComment = async (commentId: number) => {
     const currentState = commentLikes[commentId];
-    if (!currentState) return;
+    if (!currentState || commentLikeLoading[commentId]) return; // 로딩 중이면 무시
 
     // 낙관적 업데이트: 즉시 UI 반영
     const newIsLiked = !currentState.isLiked;
@@ -88,12 +104,18 @@ export function CommentDetailPage() {
       }
     }));
 
+    // 로딩 시작
+    setCommentLikeLoading(prev => ({ ...prev, [commentId]: true }));
+
     // 백그라운드에서 API 호출
     const result = await toggleCommentLike(
       commentId,
       currentState.isLiked,
       currentState.count
     );
+
+    // 로딩 종료
+    setCommentLikeLoading(prev => ({ ...prev, [commentId]: false }));
 
     // 에러 발생 시 롤백
     if (result.error) {
@@ -267,8 +289,9 @@ export function CommentDetailPage() {
                     size="sm"
                     className="p-0 h-auto text-muted-foreground hover:text-foreground"
                     onClick={handleLikeReview}
+                    disabled={isReviewLikeLoading}
                   >
-                    <Heart className={`w-4 h-4 mr-1 ${isReviewLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                    <Heart className={`w-4 h-4 mr-1 ${isReviewLiked ? 'fill-red-500 text-red-500' : ''} ${isReviewLikeLoading ? 'opacity-50' : ''}`} />
                     <span className="text-sm">{reviewLikes}</span>
                   </Button>
 
@@ -363,8 +386,9 @@ export function CommentDetailPage() {
                           size="sm"
                           className="p-0 h-auto text-muted-foreground hover:text-foreground"
                           onClick={() => handleLikeComment(comment.commentId)}
+                          disabled={commentLikeLoading[comment.commentId]}
                         >
-                          <Heart className={`w-3 h-3 mr-1 ${commentLikes[comment.commentId]?.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                          <Heart className={`w-3 h-3 mr-1 ${commentLikes[comment.commentId]?.isLiked ? 'fill-red-500 text-red-500' : ''} ${commentLikeLoading[comment.commentId] ? 'opacity-50' : ''}`} />
                           <span className="text-xs">{commentLikes[comment.commentId]?.count ?? comment.likeCount}</span>
                         </Button>
 
