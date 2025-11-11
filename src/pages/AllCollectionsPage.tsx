@@ -3,22 +3,34 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { CollectionCard } from "../components/CollectionCard";
+import { InfiniteScrollTrigger } from "../components/InfiniteScrollTrigger";
 import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "lucide-react";
-import { useAllCollections } from "../hooks/useAllCollections";
+import { useAllCollectionsPaginated } from "../hooks/useAllCollectionsPaginated";
 import { apiService } from "../services/api.service";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 
 export function AllCollectionsPage() {
   const navigate = useNavigate();
-  // API 데이터 가져오기 (전체 컬렉션)
-  const { data: apiData, loading: allLoading, error: allError, refetch } = useAllCollections();
 
+  // Paginated hook (infinite scroll)
+  const {
+    collections,
+    pagination,
+    loading: allLoading,
+    error: allError,
+    sortBy,
+    setSortBy,
+    loadMore,
+    refresh,
+    hasMore
+  } = useAllCollectionsPaginated('infinite');
+
+  // 검색 관련 상태
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const [sortBy, setSortBy] = useState<"recent" | "popularity" | "old">("recent");
 
   // 검색 API 호출
   const handleSearch = async () => {
@@ -68,12 +80,12 @@ export function AllCollectionsPage() {
   };
 
   // 표시할 컬렉션 결정
-  const displayCollections = isSearchMode ? searchResults : (apiData || []);
+  const displayCollections = isSearchMode ? searchResults : collections;
   const loading = isSearchMode ? isSearching : allLoading;
   const error = isSearchMode ? searchError : allError?.message;
 
-  // 로딩 상태
-  if (loading) {
+  // 초기 로딩 상태 (데이터가 없을 때만)
+  if (loading && displayCollections.length === 0) {
     return (
       <div className="min-h-screen pb-20 flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
@@ -84,14 +96,14 @@ export function AllCollectionsPage() {
     );
   }
 
-  // 에러 상태
-  if (error && !searchQuery.trim()) {
+  // 에러 상태 (데이터가 없을 때만)
+  if (error && !searchQuery.trim() && displayCollections.length === 0) {
     return (
       <div className="min-h-screen pb-20 flex items-center justify-center p-6 bg-background">
         <div className="text-center space-y-4">
           <p className="font-semibold text-destructive">컬렉션을 불러올 수 없습니다</p>
           <p className="text-sm text-muted-foreground">{error}</p>
-          <Button onClick={() => refetch()} variant="outline">
+          <Button onClick={() => refresh()} variant="outline">
             <RefreshCw className="w-4 h-4 mr-2" />
             다시 시도
           </Button>
@@ -215,7 +227,12 @@ export function AllCollectionsPage() {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
-            {isSearchMode ? `'${searchQuery}' 검색 결과: ` : '총 '}{displayCollections.length}개의 컬렉션
+            {isSearchMode
+              ? `'${searchQuery}' 검색 결과: ${displayCollections.length}개의 컬렉션`
+              : pagination
+              ? `총 ${pagination.totalItems}개의 컬렉션 (${displayCollections.length}개 표시)`
+              : `${displayCollections.length}개의 컬렉션`
+            }
           </p>
         </div>
 
@@ -228,27 +245,39 @@ export function AllCollectionsPage() {
 
         {/* Collections Grid */}
         {displayCollections.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-            {displayCollections.map((collection) => (
-              <CollectionCard
-                key={collection.collectionId}
-                collectionId={collection.collectionId}
-                title={collection.title}
-                description={collection.description}
-                author={{
-                  id: collection.author.id,
-                  username: collection.author.username,
-                  imageUrl: collection.author.imageUrl
-                }}
-                itemCount={collection.itemCount}
-                likeCount={collection.likeCount}
-                coverImageUrl={collection.coverImageUrl}
-                tags={collection.tags}
-                onClick={() => navigate(`/collections/${collection.collectionId}`)}
-                onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+              {displayCollections.map((collection) => (
+                <CollectionCard
+                  key={collection.collectionId}
+                  collectionId={collection.collectionId}
+                  title={collection.title}
+                  description={collection.description}
+                  author={{
+                    id: collection.author.id,
+                    username: collection.author.username,
+                    imageUrl: collection.author.imageUrl
+                  }}
+                  itemCount={collection.itemCount}
+                  likeCount={collection.likeCount}
+                  coverImageUrl={collection.coverImageUrl}
+                  tags={collection.tags}
+                  onClick={() => navigate(`/collections/${collection.collectionId}`)}
+                  onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
+                />
+              ))}
+            </div>
+
+            {/* Infinite Scroll Trigger (검색 모드가 아닐 때만) */}
+            {!isSearchMode && (
+              <InfiniteScrollTrigger
+                onLoadMore={loadMore}
+                loading={loading}
+                hasMore={hasMore}
+                threshold={200}
               />
-            ))}
-          </div>
+            )}
+          </>
         ) : (
           /* Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center">
