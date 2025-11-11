@@ -414,9 +414,21 @@ export function AlbumDetailPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">리뷰</h3>
-              <span className="text-sm text-muted-foreground">
-                총 {((album as any).reviewCount ?? (album as any).reviews?.length ?? 0)}개
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">
+                  총 {((album as any).reviewCount ?? (album as any).reviews?.length ?? 0)}개
+                </span>
+                {((album as any).reviewCount ?? (album as any).reviews?.length ?? 0) > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(`/albums/${albumId}/reviews`)}
+                    className="text-primary hover:text-primary"
+                  >
+                    전체보기
+                  </Button>
+                )}
+              </div>
             </div>
             {(album as any).reviews && (album as any).reviews.length > 0 ? (
               <div className="space-y-3">

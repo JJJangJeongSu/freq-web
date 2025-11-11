@@ -109,10 +109,10 @@ export function RateRecordPage() {
           {/* Follow Stats & Received Likes */}
           <div className="flex items-center gap-4 mb-3 text-sm">
             <div>
-              팔로워 <span className="font-semibold">0</span>
+              팔로워 <span className="font-semibold">{data.statistics.followerCount}</span>
             </div>
             <div>
-              팔로잉 <span className="font-semibold">0</span>
+              팔로잉 <span className="font-semibold">{data.statistics.followingCount}</span>
             </div>
             <div className="flex items-center gap-1 text-red-500">
               <Heart className="w-4 h-4 fill-red-500" />

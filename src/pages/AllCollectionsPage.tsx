@@ -18,7 +18,7 @@ export function AllCollectionsPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const [sortBy, setSortBy] = useState<"recent" | "popularity">("recent");
+  const [sortBy, setSortBy] = useState<"recent" | "popularity" | "old">("recent");
 
   // 검색 API 호출
   const handleSearch = async () => {
@@ -129,14 +129,44 @@ export function AllCollectionsPage() {
         {/* Search Section - Material 3 Style */}
         <div className="mb-8 space-y-4">
           <div className="flex gap-2">
+            {/* Combined Search Bar */}
             <div
-              className="flex-1 h-14 rounded-full flex items-center px-6 border"
+              className="flex-1 h-14 rounded-full flex items-center px-4 border"
               style={{
                 backgroundColor: 'var(--surface-container)',
                 borderColor: 'var(--outline)'
               }}
             >
+              {/* Sort Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="rounded-full px-3 flex-shrink-0">
+                    <SlidersHorizontal className="w-4 h-4 mr-1.5" />
+                    <span className="text-sm">
+                      {sortBy === "recent" ? "최신순" : sortBy === "popularity" ? "인기순" : "오래된순"}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem onClick={() => setSortBy("recent")}>
+                    최신순
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("popularity")}>
+                    인기순
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("old")}>
+                    오래된순
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Divider */}
+              <div className="w-px h-6 mx-2 flex-shrink-0" style={{ backgroundColor: 'var(--outline)' }} />
+
+              {/* Search Icon */}
               <Search className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: 'var(--on-surface-variant)' }} />
+
+              {/* Search Input */}
               <Input
                 placeholder="컬렉션 제목으로 검색..."
                 value={searchQuery}
@@ -146,10 +176,12 @@ export function AllCollectionsPage() {
                 style={{ color: 'var(--on-surface)' }}
               />
             </div>
+
+            {/* Search Button */}
             <Button
               onClick={handleSearch}
               disabled={isSearching}
-              className="h-14 px-6 rounded-full"
+              className="h-14 px-6 rounded-full flex-shrink-0"
             >
               {isSearching ? (
                 <>
@@ -166,36 +198,18 @@ export function AllCollectionsPage() {
           </div>
 
           {/* Filter Bar */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {isSearchMode && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleClearSearch}
-                  className="rounded-full"
-                >
-                  검색 초기화
-                </Button>
-              )}
+          {isSearchMode && (
+            <div className="flex items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClearSearch}
+                className="rounded-full"
+              >
+                검색 초기화
+              </Button>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-full">
-                  <SlidersHorizontal className="w-4 h-4 mr-2" />
-                  정렬: {sortBy === "recent" ? "최신순" : "인기순"}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setSortBy("recent")}>
-                  최신순
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy("popularity")}>
-                  인기순
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          )}
         </div>
 
         {/* Results Count */}

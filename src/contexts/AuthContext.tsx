@@ -10,9 +10,14 @@ import { apiService } from '@/services/api.service';
 interface User {
   userId: number;
   username: string;
-  email: string;
+  email?: string; // 이메일은 더 이상 필수가 아님
   profileImage?: string;
   nickname?: string;
+  followInfo?: {
+    followerCount: number;
+    followingCount: number;
+  };
+  bio?: string;
 }
 
 interface AuthContextType {
@@ -37,7 +42,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const fetchUser = async () => {
     const token = localStorage.getItem('authToken');
 
-    // 토큰이 없으면 로그인하지 않은 상태
     if (!token) {
       setUser(null);
       setLoading(false);
@@ -48,17 +52,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true);
       setError(null);
 
-      // GET /users/me API 호출
-      const response = await apiService.users.getUsersMe();
+      // GET /users/me/activity API 호출로 변경
+      const response = await apiService.users.getMyActivity();
       const userData = (response.data as any)?.data;
 
       if (userData) {
         setUser({
           userId: userData.userId,
           username: userData.username,
-          email: userData.email,
-          profileImage: userData.profileImage,
-          nickname: userData.nickname,
+          profileImage: userData.profileImageUrl,
+          nickname: userData.nickname, // API 응답에 nickname이 있다면 사용
+          followInfo: userData.followInfo,
+          bio: userData.bio,
         });
       }
     } catch (err: any) {

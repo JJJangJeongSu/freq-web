@@ -32,6 +32,8 @@ export interface MyActivityData {
     writtenReviews: number;
     receivedLikes: number;
     likedArtists: number;
+    followerCount: number;
+    followingCount: number;
   };
   ratingDistribution: {
     album: Array<{ rating: number; count: number; percentage: number }>;
@@ -154,7 +156,9 @@ export function useMyActivity() {
           trackReviews: apiData.trackReviewCount || 0,
           writtenReviews: apiData.contentReviewCount || 0,
           receivedLikes: apiData.likeCount || 0,
-          likedArtists: apiData.likedArtistCount || 0
+          likedArtists: apiData.likedArtistCount || 0,
+          followerCount: apiData.followInfo?.followerCount || 0,
+          followingCount: apiData.followInfo?.followingCount || 0,
         },
         ratingDistribution: {
           // rateDistributions.album, rateDistributions.track 구조인지 확인

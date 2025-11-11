@@ -32,6 +32,7 @@ import { WriteReviewPage } from './pages/WriteReviewPage';
 import { KMACollectionPage } from './pages/KMACollectionPage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { CollectionCommentsPage } from './pages/CollectionCommentsPage';
+import { AllReviewsPage } from './pages/AllReviewsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 /**
@@ -107,6 +108,7 @@ export default function App() {
             <Route path="/collections/new" element={<CreateCollectionPage />} />
             <Route path="/collections/kma" element={<KMACollectionPage />} />
             <Route path="/collections/:collectionId/comments" element={<CollectionCommentsPage />} />
+            <Route path="/albums/:albumId/reviews" element={<AllReviewsPage />} />
             <Route path="/albums/:albumId/write-review/:reviewId?" element={<WriteReviewPage />} />
           </Route>
         </Route>
