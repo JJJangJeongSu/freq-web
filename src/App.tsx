@@ -4,6 +4,7 @@ import { Toaster } from './components/ui/toaster';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { clearAuthToken } from './api/client';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Pages
 import { AuthPage } from './pages/AuthPage';
@@ -66,10 +67,11 @@ function UnauthorizedListener() {
 export default function App() {
   return (
     <BrowserRouter>
-      <UnauthorizedListener />
-      <Routes>
-        {/* Public Route */}
-        <Route path="/auth" element={<AuthPage />} />
+      <AuthProvider>
+        <UnauthorizedListener />
+        <Routes>
+          {/* Public Route */}
+          <Route path="/auth" element={<AuthPage />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
@@ -114,6 +116,7 @@ export default function App() {
       </Routes>
 
       <Toaster />
+      </AuthProvider>
     </BrowserRouter>
   );
 }
