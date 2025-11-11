@@ -16,6 +16,7 @@ import { CollectionsApi } from '@/api/apis/collections-api';
 import { CommentsApi } from '@/api/apis/comments-api';
 import { DetailPagesApi } from '@/api/apis/detail-pages-api';
 import { FastAPIApi } from '@/api/apis/fast-apiapi';
+import { FollowsApi } from '@/api/apis/follows-api';
 import { HomeApi } from '@/api/apis/home-api';
 import { NotificationsApi } from '@/api/apis/notifications-api';
 import { ReviewsApi } from '@/api/apis/reviews-api';
@@ -60,6 +61,9 @@ export const apiService = {
   // User APIs
   users: new UsersApi(configuration, API_CONFIG.baseURL, apiClient),
   usersSocial: new UsersSocialApi(configuration, API_CONFIG.baseURL, apiClient),
+
+  // Follow API
+  follows: new FollowsApi(configuration, API_CONFIG.baseURL, apiClient),
 
   // Notifications API
   notifications: new NotificationsApi(configuration, API_CONFIG.baseURL, apiClient),

@@ -8,10 +8,13 @@ import { Badge } from "../components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserActivity } from "../hooks/useUserActivity";
+import { apiService } from "../services/api.service";
+import { useToast } from "../hooks/use-toast";
 
 export function UserProfilePage() {
   const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
+  const { toast } = useToast();
 
   // API 데이터 가져오기
   const { data, loading, error, refetch } = useUserActivity(userId);
@@ -19,8 +22,11 @@ export function UserProfilePage() {
   // 별점 분포 토글 상태
   const [ratingType, setRatingType] = useState<'album' | 'track'>('album');
 
-  // 팔로우 상태 (TODO: API 연동)
+  // 팔로우 상태
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   // 본인 프로필인 경우 평가 기록 페이지로 리다이렉트
   useEffect(() => {
@@ -86,11 +92,52 @@ export function UserProfilePage() {
   // 실제 평가 개수 계산 (모든 count의 합)
   const totalRatings = currentRatingDistribution.reduce((sum, item) => sum + item.count, 0);
 
-  // 팔로우 버튼 핸들러 (TODO: API 연동)
-  const handleFollowToggle = () => {
+  // 팔로우 버튼 핸들러
+  const handleFollowToggle = async () => {
+    if (!userId || isFollowLoading) return;
+
+    // Optimistic update
+    const previousIsFollowing = isFollowing;
+    const previousFollowerCount = followerCount;
+
     setIsFollowing(!isFollowing);
-    // TODO: API 호출
-    // await apiService.usersSocial.toggleFollow(userId);
+    setFollowerCount(prev => isFollowing ? prev - 1 : prev + 1);
+
+    try {
+      setIsFollowLoading(true);
+
+      // API 호출
+      const response = await apiService.follows.toggleFollow(Number(userId));
+
+      console.log('✅ Follow toggle response:', response);
+
+      // API 응답에서 실제 상태 확인
+      const apiData = (response.data as any)?.data;
+
+      if (apiData) {
+        const newIsFollowing = apiData.action === 'FOLLOWED';
+        setIsFollowing(newIsFollowing);
+
+        toast({
+          description: newIsFollowing ? "팔로우 했습니다" : "언팔로우 했습니다",
+        });
+      }
+
+    } catch (err: any) {
+      // 에러 발생 시 이전 상태로 롤백
+      setIsFollowing(previousIsFollowing);
+      setFollowerCount(previousFollowerCount);
+
+      console.error('❌ 팔로우 토글 실패:', err);
+
+      toast({
+        variant: "destructive",
+        title: "팔로우 처리 실패",
+        description: err.response?.data?.error?.message || "다시 시도해주세요.",
+      });
+    } finally {
+      setIsFollowLoading(false);
+    }
   };
 
   return (
@@ -123,9 +170,15 @@ export function UserProfilePage() {
               variant={isFollowing ? "outline" : "default"}
               size="sm"
               onClick={handleFollowToggle}
+              disabled={isFollowLoading}
               className="h-8 px-4"
             >
-              {isFollowing ? (
+              {isFollowLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current mr-1" />
+                  처리 중...
+                </>
+              ) : isFollowing ? (
                 <>
                   <UserCheck className="w-4 h-4 mr-1" />
                   팔로잉
@@ -142,10 +195,10 @@ export function UserProfilePage() {
           {/* Follow Stats & Received Likes */}
           <div className="flex items-center gap-4 mb-3 text-sm">
             <div>
-              팔로워 <span className="font-semibold">0</span>
+              팔로워 <span className="font-semibold">{followerCount}</span>
             </div>
             <div>
-              팔로잉 <span className="font-semibold">0</span>
+              팔로잉 <span className="font-semibold">{followingCount}</span>
             </div>
             <div className="flex items-center gap-1 text-red-500">
               <Heart className="w-4 h-4 fill-red-500" />
