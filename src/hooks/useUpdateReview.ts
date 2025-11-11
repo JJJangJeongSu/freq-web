@@ -9,7 +9,7 @@ import { apiService } from '@/services/api.service';
 import { UpdateReviewRequest } from '@/api/models';
 
 interface UseUpdateReviewReturn {
-  updateReview: (reviewId: string, data: UpdateReviewRequest) => Promise<{ message: string }>;
+  updateReview: (itemId: string | number, data: UpdateReviewRequest) => Promise<{ message: string }>;
   loading: boolean;
   error: Error | null;
 }
@@ -19,7 +19,7 @@ interface UseUpdateReviewReturn {
  *
  * @example
  * const { updateReview, loading, error } = useUpdateReview();
- * await updateReview('reviewId123', {
+ * await updateReview('albumId123', {
  *   rating: 4.5,
  *   type: 'album',
  *   title: '수정된 제목',
@@ -30,15 +30,22 @@ export const useUpdateReview = (): UseUpdateReviewReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const updateReview = async (reviewId: string, data: UpdateReviewRequest): Promise<{ message: string }> => {
+  const updateReview = async (itemId: string | number, data: UpdateReviewRequest): Promise<{ message: string }> => {
     try {
       setLoading(true);
       setError(null);
 
-      console.log('🔄 Updating review:', { reviewId, data });
+      // itemId를 number로 변환
+      const numericItemId = typeof itemId === 'string' ? Number(itemId) : itemId;
 
-      // API 호출
-      const response = await apiService.reviews.updateReview(reviewId, data);
+      if (isNaN(numericItemId)) {
+        throw new Error('Invalid itemId format');
+      }
+
+      console.log('🔄 Updating review:', { itemId: numericItemId, data });
+
+      // API 호출 - PATCH /reviews/{itemId}
+      const response = await apiService.reviews.updateReview(numericItemId, data);
 
       // 응답 unwrap
       const responseData = response.data;

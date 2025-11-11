@@ -102,7 +102,10 @@ export function WriteReviewPage() {
     try {
       if (isEditMode && reviewId) {
         // 수정 모드: updateReview 호출
-        const result = await updateReview(reviewId, {
+        // ⚠️ PATCH /reviews/{itemId} - itemId는 앨범 ID
+        if (!albumId) return;
+
+        const result = await updateReview(albumId, {
           rating,
           title: title.trim() || undefined,
           content: reviewText.trim(),

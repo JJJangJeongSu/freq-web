@@ -69,14 +69,15 @@ export function AlbumDetailPage() {
   };
 
   const handleSubmitRating = async () => {
-    if (!album || userRating === 0) return;
+    if (!album || userRating === 0 || !albumId) return;
 
     try {
       if (reviewId) {
-        // ⭐ 리뷰 수정 - PATCH
-        console.log('📝 Updating review:', reviewId);
+        // ⭐ 리뷰 수정 - PATCH /reviews/{itemId}
+        // itemId는 앨범 ID
+        console.log('📝 Updating review for album:', albumId);
 
-        await updateReview(reviewId, {
+        await updateReview(albumId, {
           rating: userRating,
           type: CreateReviewRequestTypeEnum.Album
         });
