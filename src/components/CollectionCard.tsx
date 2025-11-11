@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Heart, Music } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -20,7 +21,7 @@ interface CollectionCardProps {
   onAuthorClick?: (authorId: number) => void;
 }
 
-export function CollectionCard({
+export const CollectionCard = memo(function CollectionCard({
   collectionId,
   title,
   description,
@@ -120,4 +121,4 @@ export function CollectionCard({
       </div>
     </div>
   );
-}
+});

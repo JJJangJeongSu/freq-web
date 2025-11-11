@@ -149,10 +149,9 @@ export function useMyCollectionsPaginated(
    */
   const loadMore = useCallback(() => {
     if (pagination?.hasNext && !loading) {
-      console.log('📄 Loading next page:', page + 1);
       nextPage();
     }
-  }, [pagination?.hasNext, loading, nextPage, page]);
+  }, [pagination?.hasNext, loading, nextPage]);
 
   /**
    * 새로고침 (첫 페이지부터 다시 로드)

@@ -3,9 +3,11 @@
  *
  * Intersection Observer를 사용한 무한 스크롤 트리거
  * 화면 하단에 도달하면 자동으로 다음 페이지 로드
+ *
+ * Performance: React.memo로 최적화됨
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { Loader2 } from 'lucide-react';
 
 interface InfiniteScrollTriggerProps {
@@ -48,7 +50,7 @@ interface InfiniteScrollTriggerProps {
  * />
  * ```
  */
-export function InfiniteScrollTrigger({
+export const InfiniteScrollTrigger = memo(function InfiniteScrollTrigger({
   onLoadMore,
   loading,
   hasMore,
@@ -105,4 +107,4 @@ export function InfiniteScrollTrigger({
       )}
     </div>
   );
-}
+});

@@ -137,10 +137,9 @@ export function useRatedTracksPaginated(
 
   const loadMore = useCallback(() => {
     if (pagination?.hasNext && !loading) {
-      console.log('📄 Loading next page:', page + 1);
       nextPage();
     }
-  }, [pagination?.hasNext, loading, nextPage, page]);
+  }, [pagination?.hasNext, loading, nextPage]);
 
   const refresh = useCallback(() => {
     console.log('🔄 Refreshing rated tracks');

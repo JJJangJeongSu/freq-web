@@ -1,7 +1,7 @@
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Star, Heart, Plus } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 interface MusicCardProps {
   id: string;
@@ -18,13 +18,13 @@ interface MusicCardProps {
   genre?: string;
 }
 
-export function MusicCard({ 
-  title, 
-  artist, 
-  imageUrl, 
-  rating, 
-  type, 
-  onClick, 
+export const MusicCard = memo(function MusicCard({
+  title,
+  artist,
+  imageUrl,
+  rating,
+  type,
+  onClick,
   onQuickRate,
   onQuickLike,
   showQuickActions = false,
@@ -144,4 +144,4 @@ export function MusicCard({
       </div>
     </div>
   );
-}
+});
