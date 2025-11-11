@@ -1,35 +1,54 @@
-import { ArrowLeft, Search, Filter, SortAsc } from "lucide-react";
+import { ArrowLeft, Search, Filter, SortAsc, Loader2 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { MusicCard } from "../components/MusicCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { useRatedAlbums } from "../hooks/useRatedAlbums";
+import { InfiniteScrollTrigger } from "../components/InfiniteScrollTrigger";
+import { useRatedAlbumsPaginated } from "../hooks/useRatedAlbumsPaginated";
 
 export function RatedAlbumsPage() {
   const navigate = useNavigate();
-  // API 데이터 가져오기
-  const { albums, totalCount, loading, error } = useRatedAlbums();
 
+  // Client-side sort and filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("recent");
+  const [clientSortBy, setClientSortBy] = useState("recent");
   const [filterRating, setFilterRating] = useState("all");
 
+  // Determine server-side sort (recent/old only)
+  const serverSortBy = (clientSortBy === 'recent' || clientSortBy === 'old')
+    ? clientSortBy as 'recent' | 'old'
+    : 'recent';
+
+  // Paginated hook (infinite scroll)
+  const {
+    albums,
+    pagination,
+    loading,
+    error,
+    loadMore,
+    refresh,
+    hasMore
+  } = useRatedAlbumsPaginated('infinite');
+
   // 필터링 및 정렬 로직 (useMemo로 최적화)
+  // Server handles recent/old, client handles other sorts and filters
   const filteredAndSortedAlbums = useMemo(() => {
-    return albums
-      .filter(album => {
-        const matchesSearch = album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             album.artist.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesRating = filterRating === 'all' ||
-                             (filterRating === '5' && album.rating === 5) ||
-                             (filterRating === '4' && album.rating >= 4 && album.rating < 5) ||
-                             (filterRating === '3' && album.rating >= 3 && album.rating < 4);
-        return matchesSearch && matchesRating;
-      })
-      .sort((a, b) => {
-        switch (sortBy) {
+    let result = albums.filter(album => {
+      const matchesSearch = album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           album.artist.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesRating = filterRating === 'all' ||
+                           (filterRating === '5' && album.rating === 5) ||
+                           (filterRating === '4' && album.rating >= 4 && album.rating < 5) ||
+                           (filterRating === '3' && album.rating >= 3 && album.rating < 4);
+      return matchesSearch && matchesRating;
+    });
+
+    // Client-side sort (for non-server sorts)
+    if (clientSortBy !== 'recent' && clientSortBy !== 'old') {
+      result = result.sort((a, b) => {
+        switch (clientSortBy) {
           case 'rating-high':
             return b.rating - a.rating;
           case 'rating-low':
@@ -38,15 +57,17 @@ export function RatedAlbumsPage() {
             return a.title.localeCompare(b.title);
           case 'artist':
             return a.artist.localeCompare(b.artist);
-          case 'recent':
           default:
-            return new Date(b.ratedDate).getTime() - new Date(a.ratedDate).getTime();
+            return 0;
         }
       });
-  }, [albums, searchQuery, filterRating, sortBy]);
+    }
 
-  // Loading 상태
-  if (loading) {
+    return result;
+  }, [albums, searchQuery, filterRating, clientSortBy]);
+
+  // 초기 로딩 상태 (데이터가 없을 때만)
+  if (loading && albums.length === 0) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
@@ -58,7 +79,7 @@ export function RatedAlbumsPage() {
         </header>
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-primary" />
             <p className="text-muted-foreground">로딩 중...</p>
           </div>
         </main>
@@ -66,8 +87,8 @@ export function RatedAlbumsPage() {
     );
   }
 
-  // Error 상태
-  if (error) {
+  // 에러 상태 (데이터가 없을 때만)
+  if (error && albums.length === 0) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center justify-between p-4 border-b border-border">
@@ -80,7 +101,10 @@ export function RatedAlbumsPage() {
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="text-destructive mb-2">데이터를 불러오는데 실패했습니다</p>
-            <p className="text-sm text-muted-foreground">{error.message}</p>
+            <p className="text-sm text-muted-foreground">{error?.message || '평가한 앨범을 불러오는 중 오류가 발생했습니다.'}</p>
+            <Button variant="outline" onClick={() => refresh()} className="mt-4">
+              다시 시도
+            </Button>
           </div>
         </main>
       </div>
@@ -96,7 +120,12 @@ export function RatedAlbumsPage() {
         </Button>
         <div className="text-center">
           <h1 className="text-lg font-semibold">평가한 앨범</h1>
-          <p className="text-xs text-muted-foreground">총 {totalCount}개</p>
+          <p className="text-xs text-muted-foreground">
+            {pagination
+              ? `총 ${pagination.totalItems}개 (${albums.length}개 표시)`
+              : `${albums.length}개`
+            }
+          </p>
         </div>
         <div className="w-8" />
       </header>
@@ -116,7 +145,7 @@ export function RatedAlbumsPage() {
 
         {/* Filters */}
         <div className="flex gap-2">
-          <Select value={sortBy} onValueChange={setSortBy}>
+          <Select value={clientSortBy} onValueChange={setClientSortBy}>
             <SelectTrigger className="flex-1">
               <div className="flex items-center gap-2">
                 <SortAsc className="w-4 h-4" />
@@ -125,6 +154,7 @@ export function RatedAlbumsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="recent">최근 평가순</SelectItem>
+              <SelectItem value="old">오래된 평가순</SelectItem>
               <SelectItem value="rating-high">평점 높은순</SelectItem>
               <SelectItem value="rating-low">평점 낮은순</SelectItem>
               <SelectItem value="title">제목순</SelectItem>
@@ -164,27 +194,39 @@ export function RatedAlbumsPage() {
             <p className="text-sm text-muted-foreground">다른 검색어나 필터를 시도해보세요</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
-            {filteredAndSortedAlbums.map((album) => (
-              <div key={album.id} className="space-y-2">
-                <MusicCard
-                  id={album.id}
-                  title={album.title}
-                  artist={album.artist}
-                  imageUrl={album.imageUrl}
-                  rating={album.rating}
-                  type="album"
-                  onClick={() => navigate(`/albums/${album.id}`)}
-                />
-                <div className="text-xs text-muted-foreground text-center">
-                  {new Date(album.ratedDate).toLocaleDateString('ko-KR', {
-                    month: 'short',
-                    day: 'numeric'
-                  })} 평가
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
+              {filteredAndSortedAlbums.map((album) => (
+                <div key={album.albumId} className="space-y-2">
+                  <MusicCard
+                    id={album.albumId}
+                    title={album.title}
+                    artist={album.artist}
+                    imageUrl={album.coverUrl}
+                    rating={album.rating}
+                    type="album"
+                    onClick={() => navigate(`/albums/${album.albumId}`)}
+                  />
+                  <div className="text-xs text-muted-foreground text-center">
+                    {new Date(album.ratedDate).toLocaleDateString('ko-KR', {
+                      month: 'short',
+                      day: 'numeric'
+                    })} 평가
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Infinite Scroll Trigger (검색/필터 없을 때만) */}
+            {!searchQuery && filterRating === 'all' && (clientSortBy === 'recent' || clientSortBy === 'old') && (
+              <InfiniteScrollTrigger
+                onLoadMore={loadMore}
+                loading={loading}
+                hasMore={hasMore}
+                threshold={200}
+              />
+            )}
+          </>
         )}
       </main>
     </div>
