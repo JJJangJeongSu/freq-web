@@ -276,9 +276,7 @@ export function CommentDetailPage() {
                   <span className="text-xs text-muted-foreground">
                     {formatDate(review.createdAt)}
                   </span>
-                  {review.updatedAt && review.updatedAt !== review.createdAt && (
-                    <span className="text-xs text-muted-foreground">(수정됨)</span>
-                  )}
+                  
                 </div>
                 <div className="mb-3">
                   <StarRating rating={review.rating} readonly size="sm" />
@@ -321,7 +319,6 @@ export function CommentDetailPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>신고하기</DropdownMenuItem>
                   <DropdownMenuItem>공유하기</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -389,9 +386,7 @@ export function CommentDetailPage() {
                         <span className="text-xs text-muted-foreground">
                           {formatDate(comment.createdAt)}
                         </span>
-                        {comment.updatedAt && (
-                          <span className="text-xs text-muted-foreground">(수정됨)</span>
-                        )}
+                        
                       </div>
                       <p className="text-sm leading-relaxed mb-2">{comment.content}</p>
 
@@ -421,16 +416,7 @@ export function CommentDetailPage() {
                       </div>
                     </div>
 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1">
-                          <MoreVertical className="w-3 h-3" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>신고하기</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    
                   </div>
                 ))}
               </div>

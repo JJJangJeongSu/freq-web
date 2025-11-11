@@ -4,13 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { LogOut, Music, Search, Heart, MessageCircle, Clock, Star, Sparkles, TrendingUp, Plus, Loader2, RefreshCw } from "lucide-react";
+import { Music, Search, Heart, MessageCircle, Clock, Star, Sparkles, TrendingUp, Plus, Loader2, RefreshCw } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { useHomeData } from "../hooks/useHomeData";
 import { StarRating } from "../components/StarRating";
 import { HorizontalMusicSection } from "../components/HorizontalMusicSection";
-import { clearAuthToken } from "../api/client";
-import { userCache } from "../utils/userCache";
+// Logout removed from app bar; handled in Settings
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -18,12 +17,7 @@ export function HomePage() {
   // Fetch home page data from API
   const { data: homeData, loading, error, refetch } = useHomeData();
 
-  const handleLogout = () => {
-    clearAuthToken();
-    userCache.clear();
-    localStorage.clear();
-    navigate('/auth');
-  };
+  // Logout moved to Settings tab
 
   // Loading state
   if (loading) {
@@ -154,16 +148,32 @@ export function HomePage() {
       {/* Minimal White Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--primary-container)' }}>
-            <Music className="w-5 h-5" style={{ color: 'var(--primary)' }} />
-          </div>
-          <h1 className="text-title-large" style={{ color: 'var(--on-surface)' }}>뮤직레이트</h1>
+          <img
+            src="/logo.png"
+            alt="FREQ"
+            className="h-12 md:h-14 w-auto rounded-md select-none"
+            draggable={false}
+            onError={(e) => {
+              const el = e.currentTarget as HTMLImageElement;
+              if (!el.src.includes('/favicon.svg')) {
+                el.src = '/favicon.svg';
+              }
+            }}
+          />
+          <span
+            className="text-2xl md:text-3xl select-none"
+            style={{
+              fontFamily: "'Poppins','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif",
+              fontWeight: 700,
+              fontStyle: 'italic',
+              letterSpacing: '-0.02em',
+              color: 'var(--on-surface)'
+            }}
+          >
+            freq
+          </span>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="w-10 h-10 p-0 rounded-full">
-            <LogOut className="w-5 h-5" />
-          </Button>
-        </div>
+        <div className="flex items-center gap-2" />
       </header>
 
       {/* Main Content */}

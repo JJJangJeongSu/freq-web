@@ -29,7 +29,7 @@ export function useUserProfile(userId: string, enabled: boolean = true) {
     queryKey: queryKeys.users.profile(userId),
     queryFn: async (): Promise<UserProfile> => {
       const response: AxiosResponse<UserProfileResponse> = await apiClient.get(
-        `/users/${userId}/profile`
+        `/users/me/profile`
       );
       return response.data.data;
     },

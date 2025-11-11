@@ -1,6 +1,6 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Music, Mail, Lock, Eye, EyeOff, User, Check, X } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, Check, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -225,16 +225,23 @@ export function AuthPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-6">
           {/* Logo Section */}
-          <div className="text-center space-y-2">
+          <div className="text-center space-y-3">
             <div className="flex justify-center">
-              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center">
-                <Music className="w-10 h-10 text-primary-foreground" />
-              </div>
+              <img
+                src="/logo.png"
+                alt="FREQ"
+                className="h-48 w-48 md:h-48 md:w-48 select-none"
+                draggable={false}
+                onError={(e) => {
+                  const el = e.currentTarget as HTMLImageElement;
+                  if (!el.src.includes('/favicon.svg')) {
+                    el.src = '/favicon.svg';
+                  }
+                }}
+              />
             </div>
-            <h1 className="text-2xl font-bold">음악 평가 플랫폼</h1>
-            <p className="text-muted-foreground">
-              좋아하는 음악을 평가하고 공유해보세요
-            </p>
+            <h1 className="text-7xl md:text-7xl" style={{ fontFamily: "'Poppins','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif", fontWeight: 700, fontStyle: 'italic', letterSpacing: '-0.02em', color: 'var(--on-surface)' }}>freq</h1>
+            <p className="text-m md:text-base">당신의 음악 취향을 기록하세요</p>
           </div>
 
           {/* Auth Tabs */}

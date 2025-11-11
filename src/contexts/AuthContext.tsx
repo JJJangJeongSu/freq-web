@@ -6,7 +6,7 @@
  */
 
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { apiService } from '@/services/api.service';
+import { apiClient } from '@/api/client';
 import { userCache } from '@/utils/userCache';
 
 interface User {
@@ -67,10 +67,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       console.log('🔄 Fetching user profile from API...');
 
-      // GET /users/{userId}/profile API 호출
-      // 'me'를 userId로 사용 (현재 로그인한 사용자)
-      const response = await apiService.users.getUserProfile('me' as any);
-      const userData = (response.data as any)?.data;
+      // GET /users/me/profile API 호출
+      // APIdog에서 아직 생성되지 않은 엔드포인트이므로 직접 호출
+      const response = await apiClient.get('/users/me/profile');
+      const userData = response.data?.data;
 
       if (userData) {
         const user: User = {
