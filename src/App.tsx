@@ -88,6 +88,7 @@ export default function App() {
             <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
             <Route path="/reviews/:reviewId" element={<CommentDetailPage />} />
             <Route path="/collections/:collectionId" element={<CurationDetailPage />} />
+            <Route path="/users/:userId" element={<UserProfilePage />} />
 
             {/* List Pages */}
             <Route path="/rated-albums" element={<RatedAlbumsPage />} />
