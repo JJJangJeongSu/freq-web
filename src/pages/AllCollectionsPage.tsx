@@ -128,7 +128,7 @@ export function AllCollectionsPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-6 pt-8 pb-8">
         {/* Search Section - Material 3 Style */}
         <div className="mb-8 space-y-4">
           <div className="flex gap-2">
@@ -227,7 +227,7 @@ export function AllCollectionsPage() {
               >
                 <CardContent className="p-0">
                   {/* Collection Image */}
-                  <div className="relative aspect-square">
+                  <div className="relative aspect-video">
                     <ImageWithFallback
                       src={collection.coverImageUrl}
                       alt={collection.title}
@@ -236,7 +236,7 @@ export function AllCollectionsPage() {
                   </div>
 
                   {/* Collection Info */}
-                  <div className="p-4 space-y-3">
+                  <div className="p-6 space-y-3">
                     {/* Title & Description */}
                     <div>
                       <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: 'var(--on-surface)' }}>
