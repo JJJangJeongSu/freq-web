@@ -9,12 +9,21 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { StarRating } from "../components/StarRating";
 import { Separator } from "../components/ui/separator";
 import { useCreateReview } from "../hooks/useCreateReview";
-import { CreateReviewRequestTypeEnum } from "../api/models";
+import { useUpdateReview } from "../hooks/useUpdateReview";
+import { useReviewDetail } from "../hooks/useReviewDetail";
+import { CreateReviewRequestTypeEnum, UpdateReviewRequestTypeEnum } from "../api/models";
 
 export function WriteReviewPage() {
-  const { albumId } = useParams();
+  const { albumId, reviewId } = useParams();
   const navigate = useNavigate();
-  const { createReview, loading, error } = useCreateReview();
+  const isEditMode = !!reviewId;
+
+  const { createReview, loading: creating, error: createError } = useCreateReview();
+  const { updateReview, loading: updating, error: updateError } = useUpdateReview();
+  const { data: existingReview, loading: loadingReview, error: loadError } = useReviewDetail(reviewId);
+
+  const loading = creating || updating;
+  const error = createError || updateError || loadError;
 
   // 앨범 메타데이터: 앨범 상세에서 세션 스토리지로 전달됨
   const [album, setAlbum] = useState<{
@@ -33,7 +42,10 @@ export function WriteReviewPage() {
     rating: 0
   });
 
+  // 앨범 메타데이터 로드 (작성 모드)
   useEffect(() => {
+    if (isEditMode) return; // 수정 모드에서는 sessionStorage 사용 안 함
+
     try {
       const raw = sessionStorage.getItem('review:albumMeta');
       if (raw) {
@@ -54,7 +66,28 @@ export function WriteReviewPage() {
         }
       }
     } catch {}
-  }, [albumId]);
+  }, [albumId, isEditMode]);
+
+  // 기존 리뷰 데이터 로드 (수정 모드)
+  useEffect(() => {
+    if (isEditMode && existingReview) {
+      setRating(existingReview.rating || 0);
+      setTitle(existingReview.title || '');
+      setReviewText(existingReview.content || '');
+
+      // 앨범 정보도 리뷰 데이터에서 가져오기
+      if (existingReview.album) {
+        setAlbum({
+          id: existingReview.album.albumId || albumId || '',
+          title: existingReview.album.title || '',
+          artist: existingReview.album.artists?.join(', ') || '',
+          imageUrl: existingReview.album.imageUrl || '',
+          artistIds: existingReview.album.artistIds || [],
+          rating: existingReview.rating || 0
+        });
+      }
+    }
+  }, [isEditMode, existingReview, albumId]);
 
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState('');
@@ -62,21 +95,37 @@ export function WriteReviewPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleSubmit = async () => {
-    if (!albumId || rating === 0 || !reviewText.trim()) {
+    if (rating === 0 || !reviewText.trim()) {
       return;
     }
 
     try {
-      const result = await createReview({
-        rating,
-        title: title.trim() || undefined,
-        content: reviewText.trim(),
-        type: CreateReviewRequestTypeEnum.Album,
-        targetId: albumId,
-        artistIds: album.artistIds
-      });
+      if (isEditMode && reviewId) {
+        // 수정 모드: updateReview 호출
+        const result = await updateReview(reviewId, {
+          rating,
+          title: title.trim() || undefined,
+          content: reviewText.trim(),
+          type: UpdateReviewRequestTypeEnum.Album
+        });
 
-      console.log('✅ 리뷰 제출 성공:', result);
+        console.log('✅ 리뷰 수정 성공:', result);
+      } else {
+        // 작성 모드: createReview 호출
+        if (!albumId) return;
+
+        const result = await createReview({
+          rating,
+          title: title.trim() || undefined,
+          content: reviewText.trim(),
+          type: CreateReviewRequestTypeEnum.Album,
+          targetId: albumId,
+          artistIds: album.artistIds
+        });
+
+        console.log('✅ 리뷰 작성 성공:', result);
+      }
+
       setSubmitSuccess(true);
 
       // 성공 메시지 표시 후 앨범 상세 페이지로 이동
@@ -84,12 +133,22 @@ export function WriteReviewPage() {
         navigate(`/albums/${albumId}`, { replace: true });
       }, 1500);
     } catch (err) {
-      console.error('❌ 리뷰 제출 실패:', err);
-      // 에러는 useCreateReview에서 처리됨
+      console.error(`❌ 리뷰 ${isEditMode ? '수정' : '작성'} 실패:`, err);
+      // 에러는 hook에서 처리됨
     }
   };
 
   const canSubmit = rating > 0 && reviewText.trim().length > 0 && !loading && !submitSuccess;
+
+  // 로딩 중일 때
+  if (isEditMode && loadingReview) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="mt-4 text-sm text-muted-foreground">리뷰를 불러오는 중...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -98,7 +157,7 @@ export function WriteReviewPage() {
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
-        <h1 className="text-lg font-semibold">리뷰 작성</h1>
+        <h1 className="text-lg font-semibold">{isEditMode ? '리뷰 수정' : '리뷰 작성'}</h1>
         <div className="w-8" />
       </header>
 
@@ -208,7 +267,9 @@ export function WriteReviewPage() {
           {/* Success Message */}
           {submitSuccess && (
             <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-              <p className="text-sm text-green-600 font-medium">✓ 리뷰가 성공적으로 등록되었습니다!</p>
+              <p className="text-sm text-green-600 font-medium">
+                ✓ 리뷰가 성공적으로 {isEditMode ? '수정' : '등록'}되었습니다!
+              </p>
               <p className="text-xs text-green-600/80 mt-1">잠시 후 앨범 페이지로 이동합니다...</p>
             </div>
           )}
@@ -225,16 +286,16 @@ export function WriteReviewPage() {
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              제출 중...
+              {isEditMode ? '수정 중...' : '제출 중...'}
             </>
           ) : submitSuccess ? (
             <>
-              ✓ 제출 완료
+              ✓ {isEditMode ? '수정 완료' : '제출 완료'}
             </>
           ) : (
             <>
               <Send className="w-4 h-4 mr-2" />
-              리뷰 제출하기
+              {isEditMode ? '리뷰 수정하기' : '리뷰 제출하기'}
             </>
           )}
         </Button>

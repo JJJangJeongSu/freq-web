@@ -107,7 +107,7 @@ export default function App() {
             <Route path="/collections/new" element={<CreateCollectionPage />} />
             <Route path="/collections/kma" element={<KMACollectionPage />} />
             <Route path="/collections/:collectionId/comments" element={<CollectionCommentsPage />} />
-            <Route path="/albums/:albumId/write-review" element={<WriteReviewPage />} />
+            <Route path="/albums/:albumId/write-review/:reviewId?" element={<WriteReviewPage />} />
           </Route>
         </Route>
 
