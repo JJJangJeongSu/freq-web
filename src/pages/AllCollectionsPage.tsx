@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -6,6 +6,7 @@ import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "
 import { useAllCollections } from "../hooks/useAllCollections";
 import { CollectionCard } from "../components/CollectionCard";
 import { apiService } from "../services/api.service";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 
 export function AllCollectionsPage() {
   const navigate = useNavigate();
@@ -16,46 +17,60 @@ export function AllCollectionsPage() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [sortBy, setSortBy] = useState<"recent" | "popularity">("recent");
 
-  // 검색 API 호출 (디바운스)
-  useEffect(() => {
+  // 검색 API 호출
+  const handleSearch = async () => {
     if (!searchQuery.trim()) {
+      setIsSearchMode(false);
       setSearchResults([]);
-      setIsSearching(false);
       return;
     }
 
-    const timer = setTimeout(async () => {
-      try {
-        setIsSearching(true);
-        setSearchError(null);
+    try {
+      setIsSearching(true);
+      setSearchError(null);
+      setIsSearchMode(true);
 
-        console.log('🔍 Searching collections with query:', searchQuery);
+      console.log('🔍 Searching collections with query:', searchQuery, 'sortBy:', sortBy);
 
-        const response = await apiService.collections.search(searchQuery);
+      const response = await apiService.collections.search(searchQuery, sortBy as any);
 
-        console.log('✅ Search response:', response);
+      console.log('✅ Search response:', response);
 
-        // API 응답 구조 확인
-        const results = (response.data as any)?.data || [];
-        setSearchResults(results);
+      // API 응답 구조: { success: true, data: { collections: [...] } }
+      const results = (response.data as any)?.data?.collections || [];
+      setSearchResults(results);
 
-      } catch (err: any) {
-        console.error('❌ Search failed:', err);
-        setSearchError(err.response?.data?.error?.message || '검색 중 오류가 발생했습니다.');
-        setSearchResults([]);
-      } finally {
-        setIsSearching(false);
-      }
-    }, 300); // 300ms 디바운스
+    } catch (err: any) {
+      console.error('❌ Search failed:', err);
+      setSearchError(err.response?.data?.error?.message || '검색 중 오류가 발생했습니다.');
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+  // Enter 키로 검색
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  // 검색 초기화
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setIsSearchMode(false);
+    setSearchError(null);
+  };
 
   // 표시할 컬렉션 결정
-  const displayCollections = searchQuery.trim() ? searchResults : (apiData || []);
-  const loading = searchQuery.trim() ? isSearching : allLoading;
-  const error = searchQuery.trim() ? searchError : allError?.message;
+  const displayCollections = isSearchMode ? searchResults : (apiData || []);
+  const loading = isSearchMode ? isSearching : allLoading;
+  const error = isSearchMode ? searchError : allError?.message;
 
   // 로딩 상태
   if (loading) {
@@ -112,34 +127,85 @@ export function AllCollectionsPage() {
 
       <main className="container mx-auto px-4 py-8">
         {/* Search Section - Material 3 Style */}
-        <div className="mb-8">
-          <div
-            className="w-full h-16 rounded-xl flex items-center px-6 border"
-            style={{
-              backgroundColor: 'var(--surface)',
-              borderColor: 'var(--outline)'
-            }}
-          >
-            <Search className="w-6 h-6 mr-4 flex-shrink-0" style={{ color: 'var(--on-surface-variant)' }} />
-            <Input
-              placeholder="컬렉션 제목 또는 설명으로 검색..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border-0 bg-transparent text-body-large p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-on-surface-variant"
-              style={{ color: 'var(--on-surface)' }}
-            />
+        <div className="mb-8 space-y-4">
+          <div className="flex gap-2">
+            <div
+              className="flex-1 h-14 rounded-xl flex items-center px-6 border"
+              style={{
+                backgroundColor: 'var(--surface)',
+                borderColor: 'var(--outline)'
+              }}
+            >
+              <Search className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: 'var(--on-surface-variant)' }} />
+              <Input
+                placeholder="컬렉션 제목 또는 설명으로 검색..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="border-0 bg-transparent text-body-large p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-on-surface-variant"
+                style={{ color: 'var(--on-surface)' }}
+              />
+            </div>
+            <Button
+              onClick={handleSearch}
+              disabled={isSearching}
+              className="h-14 px-6"
+            >
+              {isSearching ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  검색 중
+                </>
+              ) : (
+                <>
+                  <Search className="w-4 h-4 mr-2" />
+                  검색
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Filter Bar */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {isSearchMode && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearSearch}
+                >
+                  검색 초기화
+                </Button>
+              )}
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  정렬: {sortBy === "recent" ? "최신순" : "인기순"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setSortBy("recent")}>
+                  최신순
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("popularity")}>
+                  인기순
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
-            {searchQuery.trim() ? `'${searchQuery}' 검색 결과: ` : '총 '}{displayCollections.length}개의 컬렉션
+            {isSearchMode ? `'${searchQuery}' 검색 결과: ` : '총 '}{displayCollections.length}개의 컬렉션
           </p>
         </div>
 
         {/* Search Error Message */}
-        {error && searchQuery.trim() && (
+        {error && isSearchMode && (
           <div className="mb-6 p-4 rounded-lg bg-destructive/10 text-destructive">
             <p className="text-sm">{error}</p>
           </div>
@@ -170,10 +236,10 @@ export function AllCollectionsPage() {
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <SlidersHorizontal className="h-16 w-16 mb-6 text-muted-foreground/50" />
             <p className="text-xl font-semibold mb-2 text-foreground">
-              {searchQuery.trim() ? '검색 결과가 없습니다' : '컬렉션이 없습니다'}
+              {isSearchMode ? '검색 결과가 없습니다' : '컬렉션이 없습니다'}
             </p>
             <p className="text-base text-muted-foreground">
-              {searchQuery.trim() ? '다른 검색어를 시도해보세요.' : '새로운 컬렉션을 만들어보세요.'}
+              {isSearchMode ? '다른 검색어를 시도해보세요.' : '새로운 컬렉션을 만들어보세요.'}
             </p>
           </div>
         )}
