@@ -1,28 +1,61 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "lucide-react";
 import { useAllCollections } from "../hooks/useAllCollections";
 import { CollectionCard } from "../components/CollectionCard";
+import { apiService } from "../services/api.service";
 
 export function AllCollectionsPage() {
   const navigate = useNavigate();
-  // API 데이터 가져오기
-  const { data: apiData, loading, error, refetch } = useAllCollections();
+  // API 데이터 가져오기 (전체 컬렉션)
+  const { data: apiData, loading: allLoading, error: allError, refetch } = useAllCollections();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
-  // API 데이터를 그대로 사용
-  const allCollections = useMemo(() => {
-    return apiData || [];
-  }, [apiData]);
+  // 검색 API 호출 (디바운스)
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
 
-  // 필터링 (검색어만)
-  const filteredCollections = allCollections.filter(collection =>
-    collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    collection.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    const timer = setTimeout(async () => {
+      try {
+        setIsSearching(true);
+        setSearchError(null);
+
+        console.log('🔍 Searching collections with query:', searchQuery);
+
+        const response = await apiService.collections.search(searchQuery);
+
+        console.log('✅ Search response:', response);
+
+        // API 응답 구조 확인
+        const results = (response.data as any)?.data || [];
+        setSearchResults(results);
+
+      } catch (err: any) {
+        console.error('❌ Search failed:', err);
+        setSearchError(err.response?.data?.error?.message || '검색 중 오류가 발생했습니다.');
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300); // 300ms 디바운스
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // 표시할 컬렉션 결정
+  const displayCollections = searchQuery.trim() ? searchResults : (apiData || []);
+  const loading = searchQuery.trim() ? isSearching : allLoading;
+  const error = searchQuery.trim() ? searchError : allError?.message;
 
   // 로딩 상태
   if (loading) {
@@ -37,12 +70,12 @@ export function AllCollectionsPage() {
   }
 
   // 에러 상태
-  if (error) {
+  if (error && !searchQuery.trim()) {
     return (
       <div className="min-h-screen pb-20 flex items-center justify-center p-6 bg-background">
         <div className="text-center space-y-4">
           <p className="font-semibold text-destructive">컬렉션을 불러올 수 없습니다</p>
-          <p className="text-sm text-muted-foreground">{error.message}</p>
+          <p className="text-sm text-muted-foreground">{error}</p>
           <Button onClick={() => refetch()} variant="outline">
             <RefreshCw className="w-4 h-4 mr-2" />
             다시 시도
@@ -101,14 +134,21 @@ export function AllCollectionsPage() {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
-            총 {filteredCollections.length}개의 컬렉션
+            {searchQuery.trim() ? `'${searchQuery}' 검색 결과: ` : '총 '}{displayCollections.length}개의 컬렉션
           </p>
         </div>
 
+        {/* Search Error Message */}
+        {error && searchQuery.trim() && (
+          <div className="mb-6 p-4 rounded-lg bg-destructive/10 text-destructive">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
+
         {/* Collections Grid */}
-        {filteredCollections.length > 0 ? (
+        {displayCollections.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-            {filteredCollections.map((collection) => (
+            {displayCollections.map((collection) => (
               <CollectionCard
                 key={collection.collectionId}
                 collectionId={collection.collectionId}
@@ -130,10 +170,10 @@ export function AllCollectionsPage() {
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <SlidersHorizontal className="h-16 w-16 mb-6 text-muted-foreground/50" />
             <p className="text-xl font-semibold mb-2 text-foreground">
-              검색 결과가 없습니다
+              {searchQuery.trim() ? '검색 결과가 없습니다' : '컬렉션이 없습니다'}
             </p>
             <p className="text-base text-muted-foreground">
-              다른 검색어를 시도해보세요.
+              {searchQuery.trim() ? '다른 검색어를 시도해보세요.' : '새로운 컬렉션을 만들어보세요.'}
             </p>
           </div>
         )}
