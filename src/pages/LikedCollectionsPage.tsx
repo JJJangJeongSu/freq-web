@@ -5,51 +5,43 @@ import { EnhancedButton } from "../components/EnhancedButton";
 import { CollectionCard } from "../components/CollectionCard";
 import { Input } from "../components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
-import { useLikedCollections } from "../hooks/useLikedCollections";
+import { InfiniteScrollTrigger } from "../components/InfiniteScrollTrigger";
+import { useLikedCollectionsPaginated } from "../hooks/useLikedCollectionsPaginated";
 
 export function LikedCollectionsPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"recent" | "name" | "items" | "likes" | "creator">("recent");
 
-  // API 데이터 가져오기
-  const { data: collections, loading, error, refetch } = useLikedCollections();
+  // Paginated hook (infinite scroll)
+  const {
+    collections,
+    pagination,
+    loading,
+    error,
+    sortBy,
+    setSortBy,
+    loadMore,
+    refresh,
+    hasMore
+  } = useLikedCollectionsPaginated('infinite');
 
-  // Filter and sort collections
-  const sortedCollections = useMemo(() => {
-    if (!collections) return [];
+  // Client-side search filtering (필터링만, 정렬은 서버에서)
+  const filteredCollections = useMemo(() => {
+    if (!searchQuery.trim()) return collections;
 
-    // Filter
-    const filtered = collections.filter(collection =>
+    return collections.filter(collection =>
       collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      collection.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      collection.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       collection.author.username.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    // Sort
-    return [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.title.localeCompare(b.title);
-        case "items":
-          return b.itemCount - a.itemCount;
-        case "likes":
-          return b.likeCount - a.likeCount;
-        case "creator":
-          return a.author.username.localeCompare(b.author.username);
-        case "recent":
-        default:
-          return new Date(b.likedDate).getTime() - new Date(a.likedDate).getTime();
-      }
-    });
-  }, [collections, searchQuery, sortBy]);
+  }, [collections, searchQuery]);
 
   const handleCollectionClick = (collectionId: number) => {
     navigate(`/collections/${collectionId}`);
   };
 
-  // 로딩 상태
-  if (loading) {
+  // 초기 로딩 상태 (데이터가 없을 때만)
+  if (loading && collections.length === 0) {
     return (
       <div className="size-full bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -62,8 +54,8 @@ export function LikedCollectionsPage() {
     );
   }
 
-  // 에러 상태
-  if (error) {
+  // 에러 상태 (데이터가 없을 때만)
+  if (error && collections.length === 0) {
     return (
       <div className="size-full bg-background flex items-center justify-center p-6">
         <div className="text-center space-y-4">
@@ -71,9 +63,9 @@ export function LikedCollectionsPage() {
             컬렉션을 불러올 수 없습니다
           </p>
           <p className="text-body-medium text-on-surface-variant">
-            {error.message}
+            {error?.message || '좋아요한 컬렉션을 불러오는 중 오류가 발생했습니다.'}
           </p>
-          <EnhancedButton variant="filled" onClick={refetch}>
+          <EnhancedButton variant="filled" onClick={() => refresh()}>
             <RefreshCw className="size-4 mr-2" />
             다시 시도
           </EnhancedButton>
@@ -98,7 +90,10 @@ export function LikedCollectionsPage() {
           <div className="flex-1">
             <h1 className="text-title-large">좋아요한 컬렉션</h1>
             <p className="text-body-medium text-on-surface-variant">
-              {collections?.length || 0}개의 컬렉션
+              {pagination
+                ? `총 ${pagination.totalItems}개의 컬렉션 (${collections.length}개 표시)`
+                : `${collections.length}개의 컬렉션`
+              }
             </p>
           </div>
         </div>
@@ -124,19 +119,13 @@ export function LikedCollectionsPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setSortBy("recent")}>
-                최근 좋아요순
+                최신순
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("name")}>
-                이름순
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("creator")}>
-                제작자순
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("items")}>
-                아이템 많은순
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("likes")}>
+              <DropdownMenuItem onClick={() => setSortBy("popularity")}>
                 인기순
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSortBy("old")}>
+                오래된순
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -145,7 +134,7 @@ export function LikedCollectionsPage() {
 
       {/* Collections Grid */}
       <div className="p-3 md:p-4">
-        {sortedCollections.length === 0 ? (
+        {filteredCollections.length === 0 ? (
           <div className="text-center py-12">
             <Heart className="size-12 mx-auto mb-4 text-on-surface-variant" />
             <h3 className="text-title-medium mb-2">좋아요한 컬렉션이 없습니다</h3>
@@ -154,8 +143,9 @@ export function LikedCollectionsPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
-            {sortedCollections.map((collection) => (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
+              {filteredCollections.map((collection) => (
               <CollectionCard
                 key={collection.collectionId}
                 collectionId={collection.collectionId}
@@ -170,7 +160,18 @@ export function LikedCollectionsPage() {
                 onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
               />
             ))}
-          </div>
+            </div>
+
+            {/* Infinite Scroll Trigger (검색 모드가 아닐 때만) */}
+            {!searchQuery && (
+              <InfiniteScrollTrigger
+                onLoadMore={loadMore}
+                loading={loading}
+                hasMore={hasMore}
+                threshold={200}
+              />
+            )}
+          </>
         )}
       </div>
 
