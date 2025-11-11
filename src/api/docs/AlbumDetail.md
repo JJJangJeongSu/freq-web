@@ -20,6 +20,7 @@ Name | Type | Description | Notes
 **isRated** | **boolean** | 현재 사용자가 평가했는지 여부 (로그인 시에만) | [optional] [default to undefined]
 **reviews** | [**Array&lt;GetAlbumDetail200ResponseAllOfDataReviewsInner&gt;**](GetAlbumDetail200ResponseAllOfDataReviewsInner.md) | 내용 있는 리뷰(rate와 다름) | [default to undefined]
 **reviewCount** | **number** | 내용 있는 리뷰의 개수 | [default to undefined]
+**myReviewId** | **number** | 리뷰(혹은 별점을 남겼을 경우) 리뷰의 id | [default to undefined]
 
 ## Example
 
@@ -42,6 +43,7 @@ const instance: AlbumDetail = {
     isRated,
     reviews,
     reviewCount,
+    myReviewId,
 };
 ```
 

@@ -18,8 +18,9 @@ Name | Type | Description | Notes
 **ratedTracks** | [**Array&lt;RatedTrack&gt;**](RatedTrack.md) | 평가한 트랙 미리보기 | [default to undefined]
 **myCollections** | [**Array&lt;CollectionPreview&gt;**](CollectionPreview.md) | 내가 만든 컬렉션 | [default to undefined]
 **likedCollections** | [**Array&lt;CollectionPreview&gt;**](CollectionPreview.md) | 좋아요한 컬렉션 | [default to undefined]
-**rateDistributions** | [**GetMyActivity200ResponseAllOfDataRateDistributions**](GetMyActivity200ResponseAllOfDataRateDistributions.md) |  | [default to undefined]
-**followInfo** | [**GetMyActivity200ResponseAllOfDataFollowInfo**](GetMyActivity200ResponseAllOfDataFollowInfo.md) |  | [default to undefined]
+**rateDistributions** | [**GetOthersActivity200ResponseAllOfDataRateDistributions**](GetOthersActivity200ResponseAllOfDataRateDistributions.md) |  | [default to undefined]
+**followInfo** | [**GetOthersActivity200ResponseAllOfDataFollowInfo**](GetOthersActivity200ResponseAllOfDataFollowInfo.md) |  | [default to undefined]
+**userPreferences** | [**Array&lt;GetMyActivity200ResponseAllOfDataUserPreferencesInner&gt;**](GetMyActivity200ResponseAllOfDataUserPreferencesInner.md) |  | [default to undefined]
 
 ## Example
 
@@ -42,6 +43,7 @@ const instance: GetMyActivity200ResponseAllOfData = {
     likedCollections,
     rateDistributions,
     followInfo,
+    userPreferences,
 };
 ```
 

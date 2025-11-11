@@ -1,4 +1,4 @@
-# UserDetail
+# GetOthersActivity200ResponseAllOfData
 
 
 ## Properties
@@ -24,9 +24,9 @@ Name | Type | Description | Notes
 ## Example
 
 ```typescript
-import { UserDetail } from './api';
+import { GetOthersActivity200ResponseAllOfData } from './api';
 
-const instance: UserDetail = {
+const instance: GetOthersActivity200ResponseAllOfData = {
     userId,
     username,
     bio,

@@ -16,8 +16,8 @@ All URIs are relative to *http://localhost*
 |[**toggleArtistLike_0**](#toggleartistlike_0) | **POST** /reviews/artist-like/{artistId} | 아티스트 좋아요 토글|
 |[**toggleReviewLike**](#togglereviewlike) | **POST** /reviews/{reviewId}/likes/toggle | 리뷰 좋아요 토글|
 |[**toggleReviewLike_0**](#togglereviewlike_0) | **POST** /reviews/{reviewId}/likes/toggle | 리뷰 좋아요 토글|
-|[**updateReview**](#updatereview) | **PATCH** /reviews/{itemId} | 리뷰 수정|
-|[**updateReview_0**](#updatereview_0) | **PATCH** /reviews/{itemId} | 리뷰 수정|
+|[**updateReview**](#updatereview) | **PATCH** /reviews/{reviewId} | 리뷰 수정|
+|[**updateReview_0**](#updatereview_0) | **PATCH** /reviews/{reviewId} | 리뷰 수정|
 
 # **createReview**
 > CreateReview200Response createReview()
@@ -704,11 +704,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let itemId: number; // (default to undefined)
+let reviewId: string; // (default to undefined)
 let updateReviewRequest: UpdateReviewRequest; // (optional)
 
 const { status, data } = await apiInstance.updateReview(
-    itemId,
+    reviewId,
     updateReviewRequest
 );
 ```
@@ -718,7 +718,7 @@ const { status, data } = await apiInstance.updateReview(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **updateReviewRequest** | **UpdateReviewRequest**|  | |
-| **itemId** | [**number**] |  | defaults to undefined|
+| **reviewId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -763,11 +763,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let itemId: number; // (default to undefined)
+let reviewId: string; // (default to undefined)
 let updateReviewRequest: UpdateReviewRequest; // (optional)
 
 const { status, data } = await apiInstance.updateReview_0(
-    itemId,
+    reviewId,
     updateReviewRequest
 );
 ```
@@ -777,7 +777,7 @@ const { status, data } = await apiInstance.updateReview_0(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **updateReviewRequest** | **UpdateReviewRequest**|  | |
-| **itemId** | [**number**] |  | defaults to undefined|
+| **reviewId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type

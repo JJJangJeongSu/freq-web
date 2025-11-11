@@ -15,15 +15,18 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyCollections200Response1AllOfData } from './get-my-collections200-response1-all-of-data';
+import type { GetMyFollwers200ResponseAllOfData } from './get-my-follwers200-response-all-of-data';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PaginationInfo } from './pagination-info';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { SuccessResponse } from './success-response';
 
 /**
- * @type GetMyCollections200Response2
+ * @type GetMyFollwers200Response
  * @export
  */
-export type GetMyCollections200Response2 = SuccessResponse;
+export type GetMyFollwers200Response = SuccessResponse;
 
 

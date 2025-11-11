@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **comments** | [**Array&lt;Comment&gt;**](Comment.md) |  | [optional] [default to undefined]
+**pagination** | [**PaginationInfo**](PaginationInfo.md) |  | [default to undefined]
 
 ## Example
 
@@ -14,6 +15,7 @@ import { GetMyCollections200ResponseAllOfData } from './api';
 
 const instance: GetMyCollections200ResponseAllOfData = {
     comments,
+    pagination,
 };
 ```
 

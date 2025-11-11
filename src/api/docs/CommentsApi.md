@@ -252,14 +252,18 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CommentsApi(configuration);
 
-let itemId: string; //리뷰 or 콜렉션의 id (default to undefined)
+let itemId: number; //리뷰 or 콜렉션의 id (default to undefined)
 let type: 'collection' | 'review'; //review or collection (optional) (default to undefined)
-let sortBy: 'likes' | 'recent' | 'old'; //\'likes\' or \'recent\' or \'old\' (optional) (default to undefined)
+let sortBy: 'recent' | 'old' | 'popularity'; //\'likes\' or \'recent\' or \'old\'/ default = \'recent\' (optional) (default to 'recent')
+let page: number; //페이지 번호(1부터 시작) (optional) (default to 1)
+let limit: number; //페이지당 항목 수 (optional) (default to 20)
 
 const { status, data } = await apiInstance.getMyCollections(
     itemId,
     type,
-    sortBy
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -267,9 +271,11 @@ const { status, data } = await apiInstance.getMyCollections(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **itemId** | [**string**] | 리뷰 or 콜렉션의 id | defaults to undefined|
+| **itemId** | [**number**] | 리뷰 or 콜렉션의 id | defaults to undefined|
 | **type** | [**&#39;collection&#39; | &#39;review&#39;**]**Array<&#39;collection&#39; &#124; &#39;review&#39;>** | review or collection | (optional) defaults to undefined|
-| **sortBy** | [**&#39;likes&#39; | &#39;recent&#39; | &#39;old&#39;**]**Array<&#39;likes&#39; &#124; &#39;recent&#39; &#124; &#39;old&#39;>** | \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39; | (optional) defaults to undefined|
+| **sortBy** | [**&#39;recent&#39; | &#39;old&#39; | &#39;popularity&#39;**]**Array<&#39;recent&#39; &#124; &#39;old&#39; &#124; &#39;popularity&#39;>** | \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;/ default &#x3D; \&#39;recent\&#39; | (optional) defaults to 'recent'|
+| **page** | [**number**] | 페이지 번호(1부터 시작) | (optional) defaults to 1|
+| **limit** | [**number**] | 페이지당 항목 수 | (optional) defaults to 20|
 
 
 ### Return type

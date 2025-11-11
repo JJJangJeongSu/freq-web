@@ -36,6 +36,8 @@ import type { GetMyCollections200Response1 } from '../models';
 // @ts-ignore
 import type { GetMyCollections200Response2 } from '../models';
 // @ts-ignore
+import type { GetMyCollections200Response3 } from '../models';
+// @ts-ignore
 import type { GetUserCollections200Response } from '../models';
 // @ts-ignore
 import type { GetUserCollections200Response1 } from '../models';
@@ -334,13 +336,15 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
          * @summary 댓글 목록조회
-         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {number} itemId 리뷰 or 콜렉션의 id
          * @param {GetMyCollectionsTypeEnum} [type] review or collection
-         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;/ default &#x3D; \&#39;recent\&#39;
+         * @param {number} [page] 페이지 번호(1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections: async (itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections: async (itemId: number, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'itemId' is not null or undefined
             assertParamExists('getMyCollections', 'itemId', itemId)
             const localVarPath = `/comments/detail/{itemId}`
@@ -364,6 +368,14 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
                 localVarQueryParameter['sortBy'] = sortBy;
             }
 
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -379,10 +391,13 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 컬렉션 목록 조회
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_4: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_4: async (userId: string, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getMyCollections_4', 'userId', userId)
             const localVarPath = `/users/{userId}/collections`
@@ -398,6 +413,18 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -412,10 +439,13 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 내 컬렉션 목록 조회
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_5: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_5: async (sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/collections`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -427,6 +457,18 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -443,10 +485,13 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
          * @summary 좋아요한 컬렉션 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_6: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_6: async (userId: string, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getMyCollections_6', 'userId', userId)
             const localVarPath = `/users/{userId}/collections/liked`
@@ -465,6 +510,18 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             // authentication bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -1091,14 +1148,16 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
         /**
          * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
          * @summary 댓글 목록조회
-         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {number} itemId 리뷰 or 콜렉션의 id
          * @param {GetMyCollectionsTypeEnum} [type] review or collection
-         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;/ default &#x3D; \&#39;recent\&#39;
+         * @param {number} [page] 페이지 번호(1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(itemId, type, sortBy, options);
+        async getMyCollections(itemId: number, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(itemId, type, sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1107,11 +1166,14 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 컬렉션 목록 조회
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections_4(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_4(userId, options);
+        async getMyCollections_4(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_4(userId, sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_4']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1119,11 +1181,14 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
         /**
          * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 내 컬렉션 목록 조회
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections_5(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_5(options);
+        async getMyCollections_5(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_5(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_5']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1132,11 +1197,14 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
          * @summary 좋아요한 컬렉션 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections_6(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response2>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_6(userId, options);
+        async getMyCollections_6(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response3>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_6(userId, sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_6']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1410,43 +1478,54 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
         /**
          * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
          * @summary 댓글 목록조회
-         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {number} itemId 리뷰 or 콜렉션의 id
          * @param {GetMyCollectionsTypeEnum} [type] review or collection
-         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;/ default &#x3D; \&#39;recent\&#39;
+         * @param {number} [page] 페이지 번호(1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response> {
-            return localVarFp.getMyCollections(itemId, type, sortBy, options).then((request) => request(axios, basePath));
+        getMyCollections(itemId: number, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response> {
+            return localVarFp.getMyCollections(itemId, type, sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 컬렉션 목록 조회
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_4(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
-            return localVarFp.getMyCollections_4(userId, options).then((request) => request(axios, basePath));
+        getMyCollections_4(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
+            return localVarFp.getMyCollections_4(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 내 컬렉션 목록 조회
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_5(options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
-            return localVarFp.getMyCollections_5(options).then((request) => request(axios, basePath));
+        getMyCollections_5(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response2> {
+            return localVarFp.getMyCollections_5(sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
          * @summary 좋아요한 컬렉션 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_6(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response2> {
-            return localVarFp.getMyCollections_6(userId, options).then((request) => request(axios, basePath));
+        getMyCollections_6(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response3> {
+            return localVarFp.getMyCollections_6(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 공개(public)로 설정된 컬렉션을 조회합니다
@@ -1689,50 +1768,61 @@ export class CollectionsApi extends BaseAPI {
     /**
      * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
      * @summary 댓글 목록조회
-     * @param {string} itemId 리뷰 or 콜렉션의 id
+     * @param {number} itemId 리뷰 or 콜렉션의 id
      * @param {GetMyCollectionsTypeEnum} [type] review or collection
-     * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+     * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;/ default &#x3D; \&#39;recent\&#39;
+     * @param {number} [page] 페이지 번호(1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections(itemId, type, sortBy, options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections(itemId: number, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections(itemId, type, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
      * @summary 컬렉션 목록 조회
      * @param {string} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections_4(userId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections_4(userId, options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_4(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections_4(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
      * @summary 내 컬렉션 목록 조회
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections_5(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections_5(options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_5(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections_5(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
      * @summary 좋아요한 컬렉션 목록
      * @param {string} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections_6(userId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections_6(userId, options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_6(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections_6(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1918,9 +2008,9 @@ export type GetMyCollectionsTypeEnum = typeof GetMyCollectionsTypeEnum[keyof typ
  * @export
  */
 export const GetMyCollectionsSortByEnum = {
-    Likes: 'likes',
     Recent: 'recent',
-    Old: 'old'
+    Old: 'old',
+    Popularity: 'popularity'
 } as const;
 export type GetMyCollectionsSortByEnum = typeof GetMyCollectionsSortByEnum[keyof typeof GetMyCollectionsSortByEnum];
 /**

@@ -16,6 +16,9 @@
 // May contain unused imports in some cases
 // @ts-ignore
 import type { GetUserRatedTracks200ResponseAllOfDataTracksInner } from './get-user-rated-tracks200-response-all-of-data-tracks-inner';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PaginationInfo } from './pagination-info';
 
 /**
  * 
@@ -35,5 +38,11 @@ export interface GetUserRatedTracks200ResponseAllOfData {
      * @memberof GetUserRatedTracks200ResponseAllOfData
      */
     'tracks': Array<GetUserRatedTracks200ResponseAllOfDataTracksInner>;
+    /**
+     * 
+     * @type {PaginationInfo}
+     * @memberof GetUserRatedTracks200ResponseAllOfData
+     */
+    'pagination': PaginationInfo;
 }
 

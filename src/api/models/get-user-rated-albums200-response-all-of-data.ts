@@ -16,6 +16,9 @@
 // May contain unused imports in some cases
 // @ts-ignore
 import type { GetUserRatedAlbums200ResponseAllOfDataAlbumsInner } from './get-user-rated-albums200-response-all-of-data-albums-inner';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PaginationInfo } from './pagination-info';
 
 /**
  * 
@@ -35,5 +38,11 @@ export interface GetUserRatedAlbums200ResponseAllOfData {
      * @memberof GetUserRatedAlbums200ResponseAllOfData
      */
     'albums': Array<GetUserRatedAlbums200ResponseAllOfDataAlbumsInner>;
+    /**
+     * 
+     * @type {PaginationInfo}
+     * @memberof GetUserRatedAlbums200ResponseAllOfData
+     */
+    'pagination': PaginationInfo;
 }
 

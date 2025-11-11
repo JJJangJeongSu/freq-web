@@ -125,5 +125,11 @@ export interface AlbumDetail {
      * @memberof AlbumDetail
      */
     'reviewCount': number;
+    /**
+     * 리뷰(혹은 별점을 남겼을 경우) 리뷰의 id
+     * @type {number}
+     * @memberof AlbumDetail
+     */
+    'myReviewId': number | null;
 }
 

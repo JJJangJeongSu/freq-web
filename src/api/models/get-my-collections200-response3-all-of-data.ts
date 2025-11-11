@@ -15,7 +15,7 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetRatedAlbums200ResponseAllOfDataReviewsInner } from './get-rated-albums200-response-all-of-data-reviews-inner';
+import type { GetMyCollections200Response3AllOfDataCollectionsInner } from './get-my-collections200-response3-all-of-data-collections-inner';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { PaginationInfo } from './pagination-info';
@@ -23,19 +23,19 @@ import type { PaginationInfo } from './pagination-info';
 /**
  * 
  * @export
- * @interface GetRatedAlbums200ResponseAllOfData
+ * @interface GetMyCollections200Response3AllOfData
  */
-export interface GetRatedAlbums200ResponseAllOfData {
+export interface GetMyCollections200Response3AllOfData {
     /**
      * 
-     * @type {Array<GetRatedAlbums200ResponseAllOfDataReviewsInner>}
-     * @memberof GetRatedAlbums200ResponseAllOfData
+     * @type {Array<GetMyCollections200Response3AllOfDataCollectionsInner>}
+     * @memberof GetMyCollections200Response3AllOfData
      */
-    'reviews'?: Array<GetRatedAlbums200ResponseAllOfDataReviewsInner>;
+    'collections'?: Array<GetMyCollections200Response3AllOfDataCollectionsInner>;
     /**
      * 
      * @type {PaginationInfo}
-     * @memberof GetRatedAlbums200ResponseAllOfData
+     * @memberof GetMyCollections200Response3AllOfData
      */
     'pagination': PaginationInfo;
 }

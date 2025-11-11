@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **collections** | [**Array&lt;CollectionPreview&gt;**](CollectionPreview.md) | 이 트랙이 포함된 컬렉션 목록 | [default to undefined]
 **userRating** | **number** | 현재 사용자가 준 평점  | [optional] [default to undefined]
 **isRated** | **boolean** | 현재 사용자가 평가했는지 여부 (로그인 시에만) | [optional] [default to undefined]
+**myReviewId** | **number** | 별점을 줬을 경우, 해당 리뷰의 id | [default to undefined]
 
 ## Example
 
@@ -32,6 +33,7 @@ const instance: TrackDetail = {
     collections,
     userRating,
     isRated,
+    myReviewId,
 };
 ```
 

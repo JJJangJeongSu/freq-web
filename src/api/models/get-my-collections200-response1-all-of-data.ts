@@ -16,6 +16,9 @@
 // May contain unused imports in some cases
 // @ts-ignore
 import type { CollectionPreview } from './collection-preview';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PaginationInfo } from './pagination-info';
 
 /**
  * 
@@ -29,5 +32,11 @@ export interface GetMyCollections200Response1AllOfData {
      * @memberof GetMyCollections200Response1AllOfData
      */
     'collections'?: Array<CollectionPreview>;
+    /**
+     * 
+     * @type {PaginationInfo}
+     * @memberof GetMyCollections200Response1AllOfData
+     */
+    'pagination': PaginationInfo;
 }
 

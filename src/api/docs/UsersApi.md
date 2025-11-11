@@ -7,11 +7,13 @@ All URIs are relative to *http://localhost*
 |[**getLikedArtists**](#getlikedartists) | **GET** /users/{userId}/liked-artist | 타인이 좋아요한 아티스트 목록|
 |[**getLikedArtists_0**](#getlikedartists_0) | **GET** /users/me/liked-artist | 좋아요한 아티스트 목록|
 |[**getLikedArtists_1**](#getlikedartists_1) | **GET** /users/me/liked-artist | 좋아요한 아티스트 목록|
-|[**getMyActivity**](#getmyactivity) | **GET** /users/{userId}/activity | 타인 활동 페이지 조회|
+|[**getMyActivity**](#getmyactivity) | **GET** /users/me/activity | 내 활동 페이지 조회|
 |[**getMyActivity_0**](#getmyactivity_0) | **GET** /users/me/activity | 내 활동 페이지 조회|
-|[**getMyActivity_1**](#getmyactivity_1) | **GET** /users/me/activity | 내 활동 페이지 조회|
 |[**getMyCollections**](#getmycollections) | **GET** /users/me/collections | 내 컬렉션 목록 조회|
 |[**getMyCollections_0**](#getmycollections_0) | **GET** /users/{userId}/collections/liked | 좋아요한 컬렉션 목록|
+|[**getMyFollowing**](#getmyfollowing) | **GET** /users/me/following | 내가 팔로우 하는 유저들의 목록 조회|
+|[**getMyFollwers**](#getmyfollwers) | **GET** /users/me/followers | 나를 팔로우 하는 유저들의 목록 조회|
+|[**getOthersActivity**](#getothersactivity) | **GET** /users/{userId}/activity | 타인 활동 페이지 조회|
 |[**getRatedAlbums**](#getratedalbums) | **GET** /users/me/review-list | 리뷰(내용 있는) 목록(앨범만)|
 |[**getRatedAlbums_0**](#getratedalbums_0) | **GET** /users/me/review-list | 리뷰(내용 있는) 목록(앨범만)|
 |[**getUserCollections**](#getusercollections) | **GET** /users/me/badges | 내 칭호 목록 조회|
@@ -42,9 +44,15 @@ const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
 let userId: string; // (default to undefined)
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getLikedArtists(
-    userId
+    userId,
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -53,6 +61,9 @@ const { status, data } = await apiInstance.getLikedArtists(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **userId** | [**string**] |  | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
@@ -94,11 +105,24 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-const { status, data } = await apiInstance.getLikedArtists_0();
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getLikedArtists_0(
+    sortBy,
+    page,
+    limit
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
@@ -140,11 +164,24 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-const { status, data } = await apiInstance.getLikedArtists_1();
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getLikedArtists_1(
+    sortBy,
+    page,
+    limit
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
@@ -173,7 +210,7 @@ No authorization required
 # **getMyActivity**
 > GetMyActivity200Response getMyActivity()
 
-특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
+현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
 
 ### Example
 
@@ -186,18 +223,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: string; // (default to undefined)
-
-const { status, data } = await apiInstance.getMyActivity(
-    userId
-);
+const { status, data } = await apiInstance.getMyActivity();
 ```
 
 ### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **userId** | [**string**] |  | defaults to undefined|
+This endpoint does not have any parameters.
 
 
 ### Return type
@@ -224,7 +254,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyActivity_0**
-> GetMyActivity200Response1 getMyActivity_0()
+> GetMyActivity200Response getMyActivity_0()
 
 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
 
@@ -248,53 +278,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**GetMyActivity200Response1**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | 사용자 정보 조회 성공 |  -  |
-|**401** | 인증 실패 |  -  |
-|**500** | 서버 오류 |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getMyActivity_1**
-> GetMyActivity200Response1 getMyActivity_1()
-
-현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
-
-### Example
-
-```typescript
-import {
-    UsersApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new UsersApi(configuration);
-
-const { status, data } = await apiInstance.getMyActivity_1();
-```
-
-### Parameters
-This endpoint does not have any parameters.
-
-
-### Return type
-
-**GetMyActivity200Response1**
+**GetMyActivity200Response**
 
 ### Authorization
 
@@ -316,7 +300,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections**
-> GetMyCollections200Response1 getMyCollections()
+> GetMyCollections200Response2 getMyCollections()
 
 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
 
@@ -331,16 +315,29 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-const { status, data } = await apiInstance.getMyCollections();
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getMyCollections(
+    sortBy,
+    page,
+    limit
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
 
-**GetMyCollections200Response1**
+**GetMyCollections200Response2**
 
 ### Authorization
 
@@ -362,7 +359,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections_0**
-> GetMyCollections200Response2 getMyCollections_0()
+> GetMyCollections200Response3 getMyCollections_0()
 
 현재 인증된 사용자가 좋아요한 컬렉션의 목록
 
@@ -378,9 +375,15 @@ const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
 let userId: string; // (default to undefined)
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getMyCollections_0(
-    userId
+    userId,
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -389,11 +392,14 @@ const { status, data } = await apiInstance.getMyCollections_0(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **userId** | [**string**] |  | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
 
-**GetMyCollections200Response2**
+**GetMyCollections200Response3**
 
 ### Authorization
 
@@ -409,6 +415,171 @@ const { status, data } = await apiInstance.getMyCollections_0(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | 컬렉션 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMyFollowing**
+> GetMyFollowing200Response getMyFollowing()
+
+인증된 사용자가 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+
+### Example
+
+```typescript
+import {
+    UsersApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UsersApi(configuration);
+
+let page: number; //페이지 번호 (optional) (default to undefined)
+let limit: number; //페이지당 항목 수 (optional) (default to 20)
+
+const { status, data } = await apiInstance.getMyFollowing(
+    page,
+    limit
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **page** | [**number**] | 페이지 번호 | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수 | (optional) defaults to 20|
+
+
+### Return type
+
+**GetMyFollowing200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 팔로잉 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMyFollwers**
+> GetMyFollwers200Response getMyFollwers()
+
+인증된 사용자를 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+
+### Example
+
+```typescript
+import {
+    UsersApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UsersApi(configuration);
+
+let page: number; //페이지 번호 (optional) (default to undefined)
+let limit: number; //페이지당 항목 수 (optional) (default to 20)
+
+const { status, data } = await apiInstance.getMyFollwers(
+    page,
+    limit
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **page** | [**number**] | 페이지 번호 | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수 | (optional) defaults to 20|
+
+
+### Return type
+
+**GetMyFollwers200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 팔로워 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getOthersActivity**
+> GetOthersActivity200Response getOthersActivity()
+
+특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
+
+### Example
+
+```typescript
+import {
+    UsersApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UsersApi(configuration);
+
+let userId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getOthersActivity(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GetOthersActivity200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 사용자 정보 조회 성공 |  -  |
 |**401** | 인증 실패 |  -  |
 |**500** | 서버 오류 |  -  |
 
@@ -430,11 +601,24 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-const { status, data } = await apiInstance.getRatedAlbums();
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getRatedAlbums(
+    sortBy,
+    page,
+    limit
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
@@ -476,11 +660,24 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-const { status, data } = await apiInstance.getRatedAlbums_0();
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getRatedAlbums_0(
+    sortBy,
+    page,
+    limit
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
@@ -829,11 +1026,17 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: string; //사용자 ID (default to undefined)
+let userId: number; //사용자 ID (default to undefined)
+let sortBy: string; //정렬 기준 (recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 let authorization: string; //선택사항. 로그인 시 추가 정보 제공 (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getUserRatedAlbums(
     userId,
+    sortBy,
+    page,
+    limit,
     authorization
 );
 ```
@@ -842,7 +1045,10 @@ const { status, data } = await apiInstance.getUserRatedAlbums(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userId** | [**string**] | 사용자 ID | defaults to undefined|
+| **userId** | [**number**] | 사용자 ID | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 | **authorization** | [**string**] | 선택사항. 로그인 시 추가 정보 제공 | (optional) defaults to undefined|
 
 
@@ -885,11 +1091,17 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: string; //사용자 ID (default to undefined)
+let userId: number; //사용자 ID (default to undefined)
+let sortBy: string; //정렬 기준 (recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 let authorization: string; //선택사항. 로그인 시 추가 정보 제공 (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getUserRatedAlbums_0(
     userId,
+    sortBy,
+    page,
+    limit,
     authorization
 );
 ```
@@ -898,7 +1110,10 @@ const { status, data } = await apiInstance.getUserRatedAlbums_0(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userId** | [**string**] | 사용자 ID | defaults to undefined|
+| **userId** | [**number**] | 사용자 ID | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 | **authorization** | [**string**] | 선택사항. 로그인 시 추가 정보 제공 | (optional) defaults to undefined|
 
 
@@ -941,11 +1156,17 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: string; //사용자 ID (default to undefined)
+let userId: number; //사용자 ID (default to undefined)
+let sortBy: string; //정렬 기준 (recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 let authorization: string; //선택사항. 로그인 시 추가 정보 제공 (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getUserRatedTracks(
     userId,
+    sortBy,
+    page,
+    limit,
     authorization
 );
 ```
@@ -954,7 +1175,10 @@ const { status, data } = await apiInstance.getUserRatedTracks(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userId** | [**string**] | 사용자 ID | defaults to undefined|
+| **userId** | [**number**] | 사용자 ID | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 | **authorization** | [**string**] | 선택사항. 로그인 시 추가 정보 제공 | (optional) defaults to undefined|
 
 
@@ -997,11 +1221,17 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: string; //사용자 ID (default to undefined)
+let userId: number; //사용자 ID (default to undefined)
+let sortBy: string; //정렬 기준 (recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 let authorization: string; //선택사항. 로그인 시 추가 정보 제공 (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getUserRatedTracks_0(
     userId,
+    sortBy,
+    page,
+    limit,
     authorization
 );
 ```
@@ -1010,7 +1240,10 @@ const { status, data } = await apiInstance.getUserRatedTracks_0(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userId** | [**string**] | 사용자 ID | defaults to undefined|
+| **userId** | [**number**] | 사용자 ID | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 | **authorization** | [**string**] | 선택사항. 로그인 시 추가 정보 제공 | (optional) defaults to undefined|
 
 

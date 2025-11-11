@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **reviews** | [**Array&lt;GetRatedAlbums200ResponseAllOfDataReviewsInner&gt;**](GetRatedAlbums200ResponseAllOfDataReviewsInner.md) |  | [optional] [default to undefined]
+**pagination** | [**PaginationInfo**](PaginationInfo.md) |  | [default to undefined]
 
 ## Example
 
@@ -14,6 +15,7 @@ import { GetRatedAlbums200ResponseAllOfData } from './api';
 
 const instance: GetRatedAlbums200ResponseAllOfData = {
     reviews,
+    pagination,
 };
 ```
 

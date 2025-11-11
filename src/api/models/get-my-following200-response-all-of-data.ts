@@ -15,15 +15,19 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyCollections200Response1AllOfData } from './get-my-collections200-response1-all-of-data';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { SuccessResponse } from './success-response';
+import type { UserPreview } from './user-preview';
 
 /**
- * @type GetMyCollections200Response2
+ * 
  * @export
+ * @interface GetMyFollowing200ResponseAllOfData
  */
-export type GetMyCollections200Response2 = SuccessResponse;
-
+export interface GetMyFollowing200ResponseAllOfData {
+    /**
+     * 
+     * @type {Array<UserPreview>}
+     * @memberof GetMyFollowing200ResponseAllOfData
+     */
+    'followings'?: Array<UserPreview>;
+}
 

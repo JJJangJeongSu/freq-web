@@ -15,28 +15,25 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { Comment } from './comment';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { PaginationInfo } from './pagination-info';
+import type { RatingDistribution } from './rating-distribution';
 
 /**
- * 
+ * 별점 분포
  * @export
- * @interface GetMyCollections200ResponseAllOfData
+ * @interface GetOthersActivity200ResponseAllOfDataRateDistributions
  */
-export interface GetMyCollections200ResponseAllOfData {
+export interface GetOthersActivity200ResponseAllOfDataRateDistributions {
     /**
      * 
-     * @type {Array<Comment>}
-     * @memberof GetMyCollections200ResponseAllOfData
+     * @type {RatingDistribution}
+     * @memberof GetOthersActivity200ResponseAllOfDataRateDistributions
      */
-    'comments'?: Array<Comment>;
+    'album': RatingDistribution;
     /**
      * 
-     * @type {PaginationInfo}
-     * @memberof GetMyCollections200ResponseAllOfData
+     * @type {RatingDistribution}
+     * @memberof GetOthersActivity200ResponseAllOfDataRateDistributions
      */
-    'pagination': PaginationInfo;
+    'track': RatingDistribution;
 }
 

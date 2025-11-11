@@ -18,10 +18,10 @@
 import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyActivity200ResponseAllOfDataFollowInfo } from './get-my-activity200-response-all-of-data-follow-info';
+import type { GetOthersActivity200ResponseAllOfDataFollowInfo } from './get-others-activity200-response-all-of-data-follow-info';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyActivity200ResponseAllOfDataRateDistributions } from './get-my-activity200-response-all-of-data-rate-distributions';
+import type { GetOthersActivity200ResponseAllOfDataRateDistributions } from './get-others-activity200-response-all-of-data-rate-distributions';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { RatedAlbum } from './rated-album';
@@ -115,15 +115,15 @@ export interface UserDetail {
     'likedCollections': Array<CollectionPreview>;
     /**
      * 
-     * @type {GetMyActivity200ResponseAllOfDataRateDistributions}
+     * @type {GetOthersActivity200ResponseAllOfDataRateDistributions}
      * @memberof UserDetail
      */
-    'rateDistributions': GetMyActivity200ResponseAllOfDataRateDistributions;
+    'rateDistributions': GetOthersActivity200ResponseAllOfDataRateDistributions;
     /**
      * 
-     * @type {GetMyActivity200ResponseAllOfDataFollowInfo}
+     * @type {GetOthersActivity200ResponseAllOfDataFollowInfo}
      * @memberof UserDetail
      */
-    'followInfo': GetMyActivity200ResponseAllOfDataFollowInfo;
+    'followInfo': GetOthersActivity200ResponseAllOfDataFollowInfo;
 }
 

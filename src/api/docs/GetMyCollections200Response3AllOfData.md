@@ -1,20 +1,20 @@
-# GetLikedArtists200ResponseAllOfData
+# GetMyCollections200Response3AllOfData
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**artists** | [**Array&lt;GetLikedArtists200ResponseAllOfDataArtistsInner&gt;**](GetLikedArtists200ResponseAllOfDataArtistsInner.md) |  | [optional] [default to undefined]
+**collections** | [**Array&lt;GetMyCollections200Response3AllOfDataCollectionsInner&gt;**](GetMyCollections200Response3AllOfDataCollectionsInner.md) |  | [optional] [default to undefined]
 **pagination** | [**PaginationInfo**](PaginationInfo.md) |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { GetLikedArtists200ResponseAllOfData } from './api';
+import { GetMyCollections200Response3AllOfData } from './api';
 
-const instance: GetLikedArtists200ResponseAllOfData = {
-    artists,
+const instance: GetMyCollections200Response3AllOfData = {
+    collections,
     pagination,
 };
 ```

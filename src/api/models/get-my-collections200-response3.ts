@@ -15,15 +15,15 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyCollections200Response1AllOfData } from './get-my-collections200-response1-all-of-data';
+import type { GetMyCollections200Response3AllOfData } from './get-my-collections200-response3-all-of-data';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { SuccessResponse } from './success-response';
 
 /**
- * @type GetMyCollections200Response2
+ * @type GetMyCollections200Response3
  * @export
  */
-export type GetMyCollections200Response2 = SuccessResponse;
+export type GetMyCollections200Response3 = SuccessResponse;
 
 

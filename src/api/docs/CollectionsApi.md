@@ -429,14 +429,18 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CollectionsApi(configuration);
 
-let itemId: string; //리뷰 or 콜렉션의 id (default to undefined)
+let itemId: number; //리뷰 or 콜렉션의 id (default to undefined)
 let type: 'collection' | 'review'; //review or collection (optional) (default to undefined)
-let sortBy: 'likes' | 'recent' | 'old'; //\'likes\' or \'recent\' or \'old\' (optional) (default to undefined)
+let sortBy: 'recent' | 'old' | 'popularity'; //\'likes\' or \'recent\' or \'old\'/ default = \'recent\' (optional) (default to 'recent')
+let page: number; //페이지 번호(1부터 시작) (optional) (default to 1)
+let limit: number; //페이지당 항목 수 (optional) (default to 20)
 
 const { status, data } = await apiInstance.getMyCollections(
     itemId,
     type,
-    sortBy
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -444,9 +448,11 @@ const { status, data } = await apiInstance.getMyCollections(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **itemId** | [**string**] | 리뷰 or 콜렉션의 id | defaults to undefined|
+| **itemId** | [**number**] | 리뷰 or 콜렉션의 id | defaults to undefined|
 | **type** | [**&#39;collection&#39; | &#39;review&#39;**]**Array<&#39;collection&#39; &#124; &#39;review&#39;>** | review or collection | (optional) defaults to undefined|
-| **sortBy** | [**&#39;likes&#39; | &#39;recent&#39; | &#39;old&#39;**]**Array<&#39;likes&#39; &#124; &#39;recent&#39; &#124; &#39;old&#39;>** | \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39; | (optional) defaults to undefined|
+| **sortBy** | [**&#39;recent&#39; | &#39;old&#39; | &#39;popularity&#39;**]**Array<&#39;recent&#39; &#124; &#39;old&#39; &#124; &#39;popularity&#39;>** | \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;/ default &#x3D; \&#39;recent\&#39; | (optional) defaults to 'recent'|
+| **page** | [**number**] | 페이지 번호(1부터 시작) | (optional) defaults to 1|
+| **limit** | [**number**] | 페이지당 항목 수 | (optional) defaults to 20|
 
 
 ### Return type
@@ -489,9 +495,15 @@ const configuration = new Configuration();
 const apiInstance = new CollectionsApi(configuration);
 
 let userId: string; // (default to undefined)
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getMyCollections_0(
-    userId
+    userId,
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -500,6 +512,9 @@ const { status, data } = await apiInstance.getMyCollections_0(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **userId** | [**string**] |  | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
@@ -526,7 +541,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections_1**
-> GetMyCollections200Response1 getMyCollections_1()
+> GetMyCollections200Response2 getMyCollections_1()
 
 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
 
@@ -541,16 +556,29 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CollectionsApi(configuration);
 
-const { status, data } = await apiInstance.getMyCollections_1();
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getMyCollections_1(
+    sortBy,
+    page,
+    limit
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
 
-**GetMyCollections200Response1**
+**GetMyCollections200Response2**
 
 ### Authorization
 
@@ -572,7 +600,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections_2**
-> GetMyCollections200Response2 getMyCollections_2()
+> GetMyCollections200Response3 getMyCollections_2()
 
 현재 인증된 사용자가 좋아요한 컬렉션의 목록
 
@@ -588,9 +616,15 @@ const configuration = new Configuration();
 const apiInstance = new CollectionsApi(configuration);
 
 let userId: string; // (default to undefined)
+let sortBy: string; //정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) (optional) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to undefined)
+let limit: number; //페이지당 항목 수(기본 20) (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getMyCollections_2(
-    userId
+    userId,
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -599,11 +633,14 @@ const { status, data } = await apiInstance.getMyCollections_2(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **userId** | [**string**] |  | defaults to undefined|
+| **sortBy** | [**string**] | 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순) | (optional) defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to undefined|
+| **limit** | [**number**] | 페이지당 항목 수(기본 20) | (optional) defaults to undefined|
 
 
 ### Return type
 
-**GetMyCollections200Response2**
+**GetMyCollections200Response3**
 
 ### Authorization
 

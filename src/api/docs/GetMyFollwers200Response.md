@@ -1,20 +1,22 @@
-# GetLikedArtists200ResponseAllOfData
+# GetMyFollwers200Response
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**artists** | [**Array&lt;GetLikedArtists200ResponseAllOfDataArtistsInner&gt;**](GetLikedArtists200ResponseAllOfDataArtistsInner.md) |  | [optional] [default to undefined]
+**success** | **boolean** |  | [default to undefined]
+**data** | [**GetMyFollwers200ResponseAllOfData**](GetMyFollwers200ResponseAllOfData.md) |  | [default to undefined]
 **pagination** | [**PaginationInfo**](PaginationInfo.md) |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { GetLikedArtists200ResponseAllOfData } from './api';
+import { GetMyFollwers200Response } from './api';
 
-const instance: GetLikedArtists200ResponseAllOfData = {
-    artists,
+const instance: GetMyFollwers200Response = {
+    success,
+    data,
     pagination,
 };
 ```

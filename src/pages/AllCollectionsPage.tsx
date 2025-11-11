@@ -2,11 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent } from "../components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Badge } from "../components/ui/badge";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus, Heart } from "lucide-react";
+import { CollectionCard } from "../components/CollectionCard";
+import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "lucide-react";
 import { useAllCollections } from "../hooks/useAllCollections";
 import { apiService } from "../services/api.service";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
@@ -219,67 +216,23 @@ export function AllCollectionsPage() {
         {displayCollections.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             {displayCollections.map((collection) => (
-              <Card
+              <CollectionCard
                 key={collection.collectionId}
-                className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg border border-outline"
-                style={{ background: 'var(--surface)' }}
+                collectionId={collection.collectionId}
+                title={collection.title}
+                description={collection.description}
+                author={{
+                  id: collection.author.id,
+                  username: collection.author.username,
+                  imageUrl: collection.author.imageUrl
+                }}
+                itemCount={collection.itemCount}
+                likeCount={collection.likeCount}
+                coverImageUrl={collection.coverImageUrl}
+                tags={collection.tags}
                 onClick={() => navigate(`/collections/${collection.collectionId}`)}
-              >
-                <CardContent className="p-0">
-                  {/* Collection Image */}
-                  <div className="relative h-32 w-full">
-                    <ImageWithFallback
-                      src={collection.coverImageUrl}
-                      alt={collection.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Collection Info */}
-                  <div className="px-4 pt-4 pb-3 space-y-2">
-                    {/* Title */}
-                    <h3 className="font-semibold text-sm line-clamp-1" style={{ color: 'var(--on-surface)' }}>
-                      {collection.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-xs line-clamp-1" style={{ color: 'var(--on-surface-variant)' }}>
-                      {collection.description}
-                    </p>
-
-                    {/* Creator & Stats */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div
-                        className="flex items-center gap-1.5 flex-1 min-w-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/users/${collection.author.id}`);
-                        }}
-                      >
-                        <Avatar className="h-5 w-5 flex-shrink-0">
-                          <AvatarImage src={collection.author.imageUrl} />
-                          <AvatarFallback className="text-xs">{collection.author.username[0]}</AvatarFallback>
-                        </Avatar>
-                        <span className="text-xs truncate" style={{ color: 'var(--on-surface-variant)' }}>
-                          {collection.author.username}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="flex items-center gap-0.5">
-                          <Heart className="h-3 w-3" style={{ color: 'var(--on-surface-variant)' }} />
-                          <span className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>
-                            {collection.likeCount}
-                          </span>
-                        </div>
-                        <span className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>
-                          {collection.itemCount}곡
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
+              />
             ))}
           </div>
         ) : (

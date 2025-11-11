@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **totalCount** | **number** | 전체 평가한 트랙 수 | [default to undefined]
 **tracks** | [**Array&lt;GetUserRatedTracks200ResponseAllOfDataTracksInner&gt;**](GetUserRatedTracks200ResponseAllOfDataTracksInner.md) |  | [default to undefined]
+**pagination** | [**PaginationInfo**](PaginationInfo.md) |  | [default to undefined]
 
 ## Example
 
@@ -16,6 +17,7 @@ import { GetUserRatedTracks200ResponseAllOfData } from './api';
 const instance: GetUserRatedTracks200ResponseAllOfData = {
     totalCount,
     tracks,
+    pagination,
 };
 ```
 

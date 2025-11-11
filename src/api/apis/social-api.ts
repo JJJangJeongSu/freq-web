@@ -26,9 +26,9 @@ import type { ErrorResponse } from '../models';
 // @ts-ignore
 import type { GetLikedArtists200Response } from '../models';
 // @ts-ignore
-import type { GetMyActivity200Response } from '../models';
-// @ts-ignore
 import type { GetMyCollections200Response1 } from '../models';
+// @ts-ignore
+import type { GetOthersActivity200Response } from '../models';
 /**
  * SocialApi - axios parameter creator
  * @export
@@ -39,10 +39,13 @@ export const SocialApiAxiosParamCreator = function (configuration?: Configuratio
          * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 타인이 좋아요한 아티스트 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getLikedArtists: async (userId: string, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getLikedArtists', 'userId', userId)
             const localVarPath = `/users/{userId}/liked-artist`
@@ -57,6 +60,67 @@ export const SocialApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+         * @summary 컬렉션 목록 조회
+         * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections: async (userId: string, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getMyCollections', 'userId', userId)
+            const localVarPath = `/users/{userId}/collections`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -76,44 +140,10 @@ export const SocialApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyActivity: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getOthersActivity: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getMyActivity', 'userId', userId)
+            assertParamExists('getOthersActivity', 'userId', userId)
             const localVarPath = `/users/{userId}/activity`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
-         * @summary 컬렉션 목록 조회
-         * @param {string} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyCollections: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getMyCollections', 'userId', userId)
-            const localVarPath = `/users/{userId}/collections`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -151,13 +181,32 @@ export const SocialApiFp = function(configuration?: Configuration) {
          * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 타인이 좋아요한 아티스트 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLikedArtists(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists(userId, options);
+        async getLikedArtists(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists(userId, sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SocialApi.getLikedArtists']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+         * @summary 컬렉션 목록 조회
+         * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyCollections(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(userId, sortBy, page, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -167,23 +216,10 @@ export const SocialApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyActivity(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyActivity200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyActivity(userId, options);
+        async getOthersActivity(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetOthersActivity200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOthersActivity(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['SocialApi.getMyActivity']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
-         * @summary 컬렉션 목록 조회
-         * @param {string} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getMyCollections(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(userId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['SocialApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['SocialApi.getOthersActivity']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -200,11 +236,27 @@ export const SocialApiFactory = function (configuration?: Configuration, basePat
          * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 타인이 좋아요한 아티스트 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
-            return localVarFp.getLikedArtists(userId, options).then((request) => request(axios, basePath));
+        getLikedArtists(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
+            return localVarFp.getLikedArtists(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+         * @summary 컬렉션 목록 조회
+         * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
+            return localVarFp.getMyCollections(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
@@ -213,18 +265,8 @@ export const SocialApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyActivity(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyActivity200Response> {
-            return localVarFp.getMyActivity(userId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
-         * @summary 컬렉션 목록 조회
-         * @param {string} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyCollections(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
-            return localVarFp.getMyCollections(userId, options).then((request) => request(axios, basePath));
+        getOthersActivity(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetOthersActivity200Response> {
+            return localVarFp.getOthersActivity(userId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -240,12 +282,30 @@ export class SocialApi extends BaseAPI {
      * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
      * @summary 타인이 좋아요한 아티스트 목록
      * @param {string} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SocialApi
      */
-    public getLikedArtists(userId: string, options?: RawAxiosRequestConfig) {
-        return SocialApiFp(this.configuration).getLikedArtists(userId, options).then((request) => request(this.axios, this.basePath));
+    public getLikedArtists(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return SocialApiFp(this.configuration).getLikedArtists(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+     * @summary 컬렉션 목록 조회
+     * @param {string} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SocialApi
+     */
+    public getMyCollections(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return SocialApiFp(this.configuration).getMyCollections(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -256,20 +316,8 @@ export class SocialApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof SocialApi
      */
-    public getMyActivity(userId: string, options?: RawAxiosRequestConfig) {
-        return SocialApiFp(this.configuration).getMyActivity(userId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
-     * @summary 컬렉션 목록 조회
-     * @param {string} userId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SocialApi
-     */
-    public getMyCollections(userId: string, options?: RawAxiosRequestConfig) {
-        return SocialApiFp(this.configuration).getMyCollections(userId, options).then((request) => request(this.axios, this.basePath));
+    public getOthersActivity(userId: string, options?: RawAxiosRequestConfig) {
+        return SocialApiFp(this.configuration).getOthersActivity(userId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

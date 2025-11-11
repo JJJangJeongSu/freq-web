@@ -28,11 +28,15 @@ import type { GetLikedArtists200Response } from '../models';
 // @ts-ignore
 import type { GetMyActivity200Response } from '../models';
 // @ts-ignore
-import type { GetMyActivity200Response1 } from '../models';
-// @ts-ignore
-import type { GetMyCollections200Response1 } from '../models';
-// @ts-ignore
 import type { GetMyCollections200Response2 } from '../models';
+// @ts-ignore
+import type { GetMyCollections200Response3 } from '../models';
+// @ts-ignore
+import type { GetMyFollowing200Response } from '../models';
+// @ts-ignore
+import type { GetMyFollwers200Response } from '../models';
+// @ts-ignore
+import type { GetOthersActivity200Response } from '../models';
 // @ts-ignore
 import type { GetRatedAlbums200Response } from '../models';
 // @ts-ignore
@@ -59,10 +63,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 타인이 좋아요한 아티스트 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getLikedArtists: async (userId: string, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getLikedArtists', 'userId', userId)
             const localVarPath = `/users/{userId}/liked-artist`
@@ -78,35 +85,17 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
-         * @summary 좋아요한 아티스트 목록
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getLikedArtists_1: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/users/me/liked-artist`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -122,10 +111,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 좋아요한 아티스트 목록
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists_2: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getLikedArtists_1: async (sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/liked-artist`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -137,6 +129,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -150,17 +154,58 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
-         * @summary 타인 활동 페이지 조회
-         * @param {string} userId 
+         * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
+         * @summary 좋아요한 아티스트 목록
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyActivity: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getMyActivity', 'userId', userId)
-            const localVarPath = `/users/{userId}/activity`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+        getLikedArtists_2: async (sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/me/liked-artist`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
+         * @summary 내 활동 페이지 조회
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyActivity: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/me/activity`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -214,42 +259,15 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
-         * @summary 내 활동 페이지 조회
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyActivity_4: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/users/me/activity`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 내 컬렉션 목록 조회
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections: async (sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/collections`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -261,6 +279,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -277,12 +307,15 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
          * @summary 좋아요한 컬렉션 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_5: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_4: async (userId: string, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getMyCollections_5', 'userId', userId)
+            assertParamExists('getMyCollections_4', 'userId', userId)
             const localVarPath = `/users/{userId}/collections/liked`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -300,6 +333,132 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 인증된 사용자가 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+         * @summary 내가 팔로우 하는 유저들의 목록 조회
+         * @param {number} [page] 페이지 번호
+         * @param {number} [limit] 페이지당 항목 수
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyFollowing: async (page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/me/following`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 인증된 사용자를 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+         * @summary 나를 팔로우 하는 유저들의 목록 조회
+         * @param {number} [page] 페이지 번호
+         * @param {number} [limit] 페이지당 항목 수
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyFollwers: async (page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/me/followers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
+         * @summary 타인 활동 페이지 조회
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOthersActivity: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getOthersActivity', 'userId', userId)
+            const localVarPath = `/users/{userId}/activity`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -314,10 +473,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
          * @summary 리뷰(내용 있는) 목록(앨범만)
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRatedAlbums: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getRatedAlbums: async (sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/review-list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -334,6 +496,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -348,10 +522,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
          * @summary 리뷰(내용 있는) 목록(앨범만)
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRatedAlbums_6: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getRatedAlbums_5: async (sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/review-list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -367,6 +544,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -419,7 +608,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_7: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_6: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/active-badge`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -450,7 +639,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_8: async (getUserCollectionsRequest?: GetUserCollectionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_7: async (getUserCollectionsRequest?: GetUserCollectionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/active-badge`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -484,9 +673,9 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_9: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_8: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserCollections_9', 'userId', userId)
+            assertParamExists('getUserCollections_8', 'userId', userId)
             const localVarPath = `/users/{userId}/badges`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -552,9 +741,9 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserProfile_10: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserProfile_9: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserProfile_10', 'userId', userId)
+            assertParamExists('getUserProfile_9', 'userId', userId)
             const localVarPath = `/users/{userId}/profile`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -582,12 +771,15 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
          * @summary 평가한 앨범 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedAlbums: async (userId: string, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserRatedAlbums: async (userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getUserRatedAlbums', 'userId', userId)
             const localVarPath = `/users/{userId}/rated-albums`
@@ -602,6 +794,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -620,14 +824,17 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
          * @summary 평가한 앨범 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedAlbums_11: async (userId: string, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserRatedAlbums_10: async (userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserRatedAlbums_11', 'userId', userId)
+            assertParamExists('getUserRatedAlbums_10', 'userId', userId)
             const localVarPath = `/users/{userId}/rated-albums`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -640,6 +847,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -658,12 +877,15 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
          * @summary 평가한 트랙 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedTracks: async (userId: string, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserRatedTracks: async (userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getUserRatedTracks', 'userId', userId)
             const localVarPath = `/users/{userId}/rated-tracks`
@@ -683,6 +905,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
 
     
             if (authorization != null) {
@@ -700,14 +934,17 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
          * @summary 평가한 트랙 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedTracks_12: async (userId: string, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserRatedTracks_11: async (userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserRatedTracks_12', 'userId', userId)
+            assertParamExists('getUserRatedTracks_11', 'userId', userId)
             const localVarPath = `/users/{userId}/rated-tracks`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -724,6 +961,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // authentication bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -753,11 +1002,14 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 타인이 좋아요한 아티스트 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLikedArtists(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists(userId, options);
+        async getLikedArtists(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists(userId, sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getLikedArtists']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -765,11 +1017,14 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 좋아요한 아티스트 목록
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLikedArtists_1(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists_1(options);
+        async getLikedArtists_1(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists_1(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getLikedArtists_1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -777,24 +1032,26 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 좋아요한 아티스트 목록
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLikedArtists_2(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists_2(options);
+        async getLikedArtists_2(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLikedArtists200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLikedArtists_2(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getLikedArtists_2']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
-         * @summary 타인 활동 페이지 조회
-         * @param {string} userId 
+         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
+         * @summary 내 활동 페이지 조회
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyActivity(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyActivity200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyActivity(userId, options);
+        async getMyActivity(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyActivity200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyActivity(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyActivity']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -805,32 +1062,23 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyActivity_3(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyActivity200Response1>> {
+        async getMyActivity_3(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyActivity200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getMyActivity_3(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyActivity_3']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
-         * @summary 내 활동 페이지 조회
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getMyActivity_4(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyActivity200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyActivity_4(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyActivity_4']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
          * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 내 컬렉션 목록 조회
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(options);
+        async getMyCollections(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -839,23 +1087,70 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
          * @summary 좋아요한 컬렉션 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections_5(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response2>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_5(userId, options);
+        async getMyCollections_4(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response3>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_4(userId, sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyCollections_5']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyCollections_4']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 인증된 사용자가 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+         * @summary 내가 팔로우 하는 유저들의 목록 조회
+         * @param {number} [page] 페이지 번호
+         * @param {number} [limit] 페이지당 항목 수
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyFollowing(page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyFollowing200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyFollowing(page, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyFollowing']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 인증된 사용자를 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+         * @summary 나를 팔로우 하는 유저들의 목록 조회
+         * @param {number} [page] 페이지 번호
+         * @param {number} [limit] 페이지당 항목 수
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyFollwers(page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyFollwers200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyFollwers(page, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getMyFollwers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
+         * @summary 타인 활동 페이지 조회
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOthersActivity(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetOthersActivity200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOthersActivity(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getOthersActivity']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
          * @summary 리뷰(내용 있는) 목록(앨범만)
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getRatedAlbums(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetRatedAlbums200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getRatedAlbums(options);
+        async getRatedAlbums(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetRatedAlbums200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRatedAlbums(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getRatedAlbums']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -863,13 +1158,16 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
          * @summary 리뷰(내용 있는) 목록(앨범만)
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getRatedAlbums_6(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetRatedAlbums200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getRatedAlbums_6(options);
+        async getRatedAlbums_5(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetRatedAlbums200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRatedAlbums_5(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getRatedAlbums_6']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getRatedAlbums_5']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -890,10 +1188,10 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_7(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response2>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_7(options);
+        async getUserCollections_6(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_6(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserCollections_7']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserCollections_6']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -903,10 +1201,10 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_8(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response3>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_8(getUserCollectionsRequest, options);
+        async getUserCollections_7(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response3>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_7(getUserCollectionsRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserCollections_8']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserCollections_7']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -916,10 +1214,10 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_9(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_9(userId, options);
+        async getUserCollections_8(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_8(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserCollections_9']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserCollections_8']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -942,22 +1240,25 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserProfile_10(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserProfile200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile_10(userId, options);
+        async getUserProfile_9(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserProfile200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile_9(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserProfile_10']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserProfile_9']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
          * @summary 평가한 앨범 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserRatedAlbums(userId: string, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedAlbums200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedAlbums(userId, authorization, options);
+        async getUserRatedAlbums(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedAlbums200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedAlbums(userId, sortBy, page, limit, authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserRatedAlbums']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -965,27 +1266,33 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
          * @summary 평가한 앨범 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserRatedAlbums_11(userId: string, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedAlbums200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedAlbums_11(userId, authorization, options);
+        async getUserRatedAlbums_10(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedAlbums200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedAlbums_10(userId, sortBy, page, limit, authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserRatedAlbums_11']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserRatedAlbums_10']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
          * @summary 평가한 트랙 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserRatedTracks(userId: string, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedTracks200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedTracks(userId, authorization, options);
+        async getUserRatedTracks(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedTracks200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedTracks(userId, sortBy, page, limit, authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserRatedTracks']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -993,15 +1300,18 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
          * @summary 평가한 트랙 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserRatedTracks_12(userId: string, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedTracks200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedTracks_12(userId, authorization, options);
+        async getUserRatedTracks_11(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserRatedTracks200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRatedTracks_11(userId, sortBy, page, limit, authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserRatedTracks_12']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserRatedTracks_11']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1018,29 +1328,103 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 타인이 좋아요한 아티스트 목록
          * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
-            return localVarFp.getLikedArtists(userId, options).then((request) => request(axios, basePath));
+        getLikedArtists(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
+            return localVarFp.getLikedArtists(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 좋아요한 아티스트 목록
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists_1(options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
-            return localVarFp.getLikedArtists_1(options).then((request) => request(axios, basePath));
+        getLikedArtists_1(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
+            return localVarFp.getLikedArtists_1(sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
          * @summary 좋아요한 아티스트 목록
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLikedArtists_2(options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
-            return localVarFp.getLikedArtists_2(options).then((request) => request(axios, basePath));
+        getLikedArtists_2(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetLikedArtists200Response> {
+            return localVarFp.getLikedArtists_2(sortBy, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
+         * @summary 내 활동 페이지 조회
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyActivity(options?: RawAxiosRequestConfig): AxiosPromise<GetMyActivity200Response> {
+            return localVarFp.getMyActivity(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
+         * @summary 내 활동 페이지 조회
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyActivity_3(options?: RawAxiosRequestConfig): AxiosPromise<GetMyActivity200Response> {
+            return localVarFp.getMyActivity_3(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
+         * @summary 내 컬렉션 목록 조회
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response2> {
+            return localVarFp.getMyCollections(sortBy, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
+         * @summary 좋아요한 컬렉션 목록
+         * @param {string} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections_4(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response3> {
+            return localVarFp.getMyCollections_4(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 인증된 사용자가 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+         * @summary 내가 팔로우 하는 유저들의 목록 조회
+         * @param {number} [page] 페이지 번호
+         * @param {number} [limit] 페이지당 항목 수
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyFollowing(page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyFollowing200Response> {
+            return localVarFp.getMyFollowing(page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 인증된 사용자를 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+         * @summary 나를 팔로우 하는 유저들의 목록 조회
+         * @param {number} [page] 페이지 번호
+         * @param {number} [limit] 페이지당 항목 수
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyFollwers(page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetMyFollwers200Response> {
+            return localVarFp.getMyFollwers(page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
@@ -1049,63 +1433,32 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyActivity(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyActivity200Response> {
-            return localVarFp.getMyActivity(userId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
-         * @summary 내 활동 페이지 조회
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyActivity_3(options?: RawAxiosRequestConfig): AxiosPromise<GetMyActivity200Response1> {
-            return localVarFp.getMyActivity_3(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
-         * @summary 내 활동 페이지 조회
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyActivity_4(options?: RawAxiosRequestConfig): AxiosPromise<GetMyActivity200Response1> {
-            return localVarFp.getMyActivity_4(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
-         * @summary 내 컬렉션 목록 조회
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyCollections(options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
-            return localVarFp.getMyCollections(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
-         * @summary 좋아요한 컬렉션 목록
-         * @param {string} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getMyCollections_5(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response2> {
-            return localVarFp.getMyCollections_5(userId, options).then((request) => request(axios, basePath));
+        getOthersActivity(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetOthersActivity200Response> {
+            return localVarFp.getOthersActivity(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
          * @summary 리뷰(내용 있는) 목록(앨범만)
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRatedAlbums(options?: RawAxiosRequestConfig): AxiosPromise<GetRatedAlbums200Response> {
-            return localVarFp.getRatedAlbums(options).then((request) => request(axios, basePath));
+        getRatedAlbums(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetRatedAlbums200Response> {
+            return localVarFp.getRatedAlbums(sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
          * @summary 리뷰(내용 있는) 목록(앨범만)
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRatedAlbums_6(options?: RawAxiosRequestConfig): AxiosPromise<GetRatedAlbums200Response> {
-            return localVarFp.getRatedAlbums_6(options).then((request) => request(axios, basePath));
+        getRatedAlbums_5(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetRatedAlbums200Response> {
+            return localVarFp.getRatedAlbums_5(sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1122,8 +1475,8 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_7(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response2> {
-            return localVarFp.getUserCollections_7(options).then((request) => request(axios, basePath));
+        getUserCollections_6(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response2> {
+            return localVarFp.getUserCollections_6(options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1132,8 +1485,8 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_8(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response3> {
-            return localVarFp.getUserCollections_8(getUserCollectionsRequest, options).then((request) => request(axios, basePath));
+        getUserCollections_7(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response3> {
+            return localVarFp.getUserCollections_7(getUserCollectionsRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1142,8 +1495,8 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_9(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response1> {
-            return localVarFp.getUserCollections_9(userId, options).then((request) => request(axios, basePath));
+        getUserCollections_8(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response1> {
+            return localVarFp.getUserCollections_8(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
@@ -1162,52 +1515,64 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserProfile_10(userId: number, options?: RawAxiosRequestConfig): AxiosPromise<GetUserProfile200Response> {
-            return localVarFp.getUserProfile_10(userId, options).then((request) => request(axios, basePath));
+        getUserProfile_9(userId: number, options?: RawAxiosRequestConfig): AxiosPromise<GetUserProfile200Response> {
+            return localVarFp.getUserProfile_9(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
          * @summary 평가한 앨범 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedAlbums(userId: string, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedAlbums200Response> {
-            return localVarFp.getUserRatedAlbums(userId, authorization, options).then((request) => request(axios, basePath));
+        getUserRatedAlbums(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedAlbums200Response> {
+            return localVarFp.getUserRatedAlbums(userId, sortBy, page, limit, authorization, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
          * @summary 평가한 앨범 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedAlbums_11(userId: string, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedAlbums200Response> {
-            return localVarFp.getUserRatedAlbums_11(userId, authorization, options).then((request) => request(axios, basePath));
+        getUserRatedAlbums_10(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedAlbums200Response> {
+            return localVarFp.getUserRatedAlbums_10(userId, sortBy, page, limit, authorization, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
          * @summary 평가한 트랙 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedTracks(userId: string, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedTracks200Response> {
-            return localVarFp.getUserRatedTracks(userId, authorization, options).then((request) => request(axios, basePath));
+        getUserRatedTracks(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedTracks200Response> {
+            return localVarFp.getUserRatedTracks(userId, sortBy, page, limit, authorization, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
          * @summary 평가한 트랙 페이지
-         * @param {string} userId 사용자 ID
+         * @param {number} userId 사용자 ID
+         * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
          * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserRatedTracks_12(userId: string, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedTracks200Response> {
-            return localVarFp.getUserRatedTracks_12(userId, authorization, options).then((request) => request(axios, basePath));
+        getUserRatedTracks_11(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserRatedTracks200Response> {
+            return localVarFp.getUserRatedTracks_11(userId, sortBy, page, limit, authorization, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1223,46 +1588,54 @@ export class UsersApi extends BaseAPI {
      * userId의 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
      * @summary 타인이 좋아요한 아티스트 목록
      * @param {string} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getLikedArtists(userId: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getLikedArtists(userId, options).then((request) => request(this.axios, this.basePath));
+    public getLikedArtists(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getLikedArtists(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
      * @summary 좋아요한 아티스트 목록
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getLikedArtists_1(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getLikedArtists_1(options).then((request) => request(this.axios, this.basePath));
+    public getLikedArtists_1(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getLikedArtists_1(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 현재 인증된 사용자가 \'좋아요\'를 누른 모든 아티스트의 목록을 조회합니다.
      * @summary 좋아요한 아티스트 목록
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getLikedArtists_2(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getLikedArtists_2(options).then((request) => request(this.axios, this.basePath));
+    public getLikedArtists_2(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getLikedArtists_2(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
-     * @summary 타인 활동 페이지 조회
-     * @param {string} userId 
+     * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
+     * @summary 내 활동 페이지 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getMyActivity(userId: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getMyActivity(userId, options).then((request) => request(this.axios, this.basePath));
+    public getMyActivity(options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getMyActivity(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1277,59 +1650,98 @@ export class UsersApi extends BaseAPI {
     }
 
     /**
-     * 현재 인증된 사용자의 활동 정보를 종합적으로 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다.
-     * @summary 내 활동 페이지 조회
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getMyActivity_4(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getMyActivity_4(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
      * @summary 내 컬렉션 목록 조회
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getMyCollections(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getMyCollections(options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getMyCollections(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
      * @summary 좋아요한 컬렉션 목록
      * @param {string} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getMyCollections_5(userId: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getMyCollections_5(userId, options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_4(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getMyCollections_4(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 인증된 사용자가 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+     * @summary 내가 팔로우 하는 유저들의 목록 조회
+     * @param {number} [page] 페이지 번호
+     * @param {number} [limit] 페이지당 항목 수
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public getMyFollowing(page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getMyFollowing(page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 인증된 사용자를 팔로우 중인 유저 목록을 조회합니다. 결과는 페이지네이션 형식으로 반환됩니다. 
+     * @summary 나를 팔로우 하는 유저들의 목록 조회
+     * @param {number} [page] 페이지 번호
+     * @param {number} [limit] 페이지당 항목 수
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public getMyFollwers(page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getMyFollwers(page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
+     * @summary 타인 활동 페이지 조회
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public getOthersActivity(userId: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getOthersActivity(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
      * @summary 리뷰(내용 있는) 목록(앨범만)
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getRatedAlbums(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getRatedAlbums(options).then((request) => request(this.axios, this.basePath));
+    public getRatedAlbums(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getRatedAlbums(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
      * @summary 리뷰(내용 있는) 목록(앨범만)
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getRatedAlbums_6(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getRatedAlbums_6(options).then((request) => request(this.axios, this.basePath));
+    public getRatedAlbums_5(sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getRatedAlbums_5(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1350,8 +1762,8 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserCollections_7(options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserCollections_7(options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_6(options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserCollections_6(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1362,8 +1774,8 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserCollections_8(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserCollections_8(getUserCollectionsRequest, options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_7(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserCollections_7(getUserCollectionsRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1374,8 +1786,8 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserCollections_9(userId: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserCollections_9(userId, options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_8(userId: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserCollections_8(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1398,60 +1810,72 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserProfile_10(userId: number, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserProfile_10(userId, options).then((request) => request(this.axios, this.basePath));
+    public getUserProfile_9(userId: number, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserProfile_9(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
      * @summary 평가한 앨범 페이지
-     * @param {string} userId 사용자 ID
+     * @param {number} userId 사용자 ID
+     * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserRatedAlbums(userId: string, authorization?: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserRatedAlbums(userId, authorization, options).then((request) => request(this.axios, this.basePath));
+    public getUserRatedAlbums(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserRatedAlbums(userId, sortBy, page, limit, authorization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
      * @summary 평가한 앨범 페이지
-     * @param {string} userId 사용자 ID
+     * @param {number} userId 사용자 ID
+     * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserRatedAlbums_11(userId: string, authorization?: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserRatedAlbums_11(userId, authorization, options).then((request) => request(this.axios, this.basePath));
+    public getUserRatedAlbums_10(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserRatedAlbums_10(userId, sortBy, page, limit, authorization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
      * @summary 평가한 트랙 페이지
-     * @param {string} userId 사용자 ID
+     * @param {number} userId 사용자 ID
+     * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserRatedTracks(userId: string, authorization?: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserRatedTracks(userId, authorization, options).then((request) => request(this.axios, this.basePath));
+    public getUserRatedTracks(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserRatedTracks(userId, sortBy, page, limit, authorization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 사용자가 평가한 모든 트랙의 목록을 조회합니다. 트랙 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 리뷰 내용이 없어도 모든 평가를 가져옵니다
      * @summary 평가한 트랙 페이지
-     * @param {string} userId 사용자 ID
+     * @param {number} userId 사용자 ID
+     * @param {string} [sortBy] 정렬 기준 (recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
      * @param {string} [authorization] 선택사항. 로그인 시 추가 정보 제공
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserRatedTracks_12(userId: string, authorization?: string, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserRatedTracks_12(userId, authorization, options).then((request) => request(this.axios, this.basePath));
+    public getUserRatedTracks_11(userId: number, sortBy?: string, page?: number, limit?: number, authorization?: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserRatedTracks_11(userId, sortBy, page, limit, authorization, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

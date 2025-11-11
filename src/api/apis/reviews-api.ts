@@ -498,16 +498,16 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 수정
-         * @param {number} itemId 
+         * @param {string} reviewId 
          * @param {UpdateReviewRequest} [updateReviewRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReview: async (itemId: number, updateReviewRequest?: UpdateReviewRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'itemId' is not null or undefined
-            assertParamExists('updateReview', 'itemId', itemId)
-            const localVarPath = `/reviews/{itemId}`
-                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+        updateReview: async (reviewId: string, updateReviewRequest?: UpdateReviewRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'reviewId' is not null or undefined
+            assertParamExists('updateReview', 'reviewId', reviewId)
+            const localVarPath = `/reviews/{reviewId}`
+                .replace(`{${"reviewId"}}`, encodeURIComponent(String(reviewId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -536,16 +536,16 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 수정
-         * @param {number} itemId 
+         * @param {string} reviewId 
          * @param {UpdateReviewRequest} [updateReviewRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReview_7: async (itemId: number, updateReviewRequest?: UpdateReviewRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'itemId' is not null or undefined
-            assertParamExists('updateReview_7', 'itemId', itemId)
-            const localVarPath = `/reviews/{itemId}`
-                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+        updateReview_7: async (reviewId: string, updateReviewRequest?: UpdateReviewRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'reviewId' is not null or undefined
+            assertParamExists('updateReview_7', 'reviewId', reviewId)
+            const localVarPath = `/reviews/{reviewId}`
+                .replace(`{${"reviewId"}}`, encodeURIComponent(String(reviewId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -746,13 +746,13 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 수정
-         * @param {number} itemId 
+         * @param {string} reviewId 
          * @param {UpdateReviewRequest} [updateReviewRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateReview(itemId: number, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateReview200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReview(itemId, updateReviewRequest, options);
+        async updateReview(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateReview200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReview(reviewId, updateReviewRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.updateReview']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -760,13 +760,13 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 수정
-         * @param {number} itemId 
+         * @param {string} reviewId 
          * @param {UpdateReviewRequest} [updateReviewRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateReview_7(itemId: number, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateReview200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReview_7(itemId, updateReviewRequest, options);
+        async updateReview_7(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateReview200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReview_7(reviewId, updateReviewRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.updateReview_7']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -910,24 +910,24 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 수정
-         * @param {number} itemId 
+         * @param {string} reviewId 
          * @param {UpdateReviewRequest} [updateReviewRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReview(itemId: number, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateReview200Response> {
-            return localVarFp.updateReview(itemId, updateReviewRequest, options).then((request) => request(axios, basePath));
+        updateReview(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateReview200Response> {
+            return localVarFp.updateReview(reviewId, updateReviewRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 수정
-         * @param {number} itemId 
+         * @param {string} reviewId 
          * @param {UpdateReviewRequest} [updateReviewRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReview_7(itemId: number, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateReview200Response> {
-            return localVarFp.updateReview_7(itemId, updateReviewRequest, options).then((request) => request(axios, basePath));
+        updateReview_7(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateReview200Response> {
+            return localVarFp.updateReview_7(reviewId, updateReviewRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1092,27 +1092,27 @@ export class ReviewsApi extends BaseAPI {
     /**
      * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 리뷰 수정
-     * @param {number} itemId 
+     * @param {string} reviewId 
      * @param {UpdateReviewRequest} [updateReviewRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public updateReview(itemId: number, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).updateReview(itemId, updateReviewRequest, options).then((request) => request(this.axios, this.basePath));
+    public updateReview(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig) {
+        return ReviewsApiFp(this.configuration).updateReview(reviewId, updateReviewRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 자신이 작성한 리뷰의 내용을 수정합니다. 별점, 제목, 내용 등을 변경할 수 있습니다. 다른 사용자의 리뷰를 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 리뷰 수정
-     * @param {number} itemId 
+     * @param {string} reviewId 
      * @param {UpdateReviewRequest} [updateReviewRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public updateReview_7(itemId: number, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig) {
-        return ReviewsApiFp(this.configuration).updateReview_7(itemId, updateReviewRequest, options).then((request) => request(this.axios, this.basePath));
+    public updateReview_7(reviewId: string, updateReviewRequest?: UpdateReviewRequest, options?: RawAxiosRequestConfig) {
+        return ReviewsApiFp(this.configuration).updateReview_7(reviewId, updateReviewRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

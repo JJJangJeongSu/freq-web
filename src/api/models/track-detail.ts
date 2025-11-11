@@ -92,5 +92,11 @@ export interface TrackDetail {
      * @memberof TrackDetail
      */
     'isRated'?: boolean;
+    /**
+     * 별점을 줬을 경우, 해당 리뷰의 id
+     * @type {number}
+     * @memberof TrackDetail
+     */
+    'myReviewId': number | null;
 }
 

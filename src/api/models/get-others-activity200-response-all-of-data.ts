@@ -18,9 +18,6 @@
 import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyActivity200ResponseAllOfDataUserPreferencesInner } from './get-my-activity200-response-all-of-data-user-preferences-inner';
-// May contain unused imports in some cases
-// @ts-ignore
 import type { GetOthersActivity200ResponseAllOfDataFollowInfo } from './get-others-activity200-response-all-of-data-follow-info';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -35,104 +32,98 @@ import type { RatedTrack } from './rated-track';
 /**
  * 
  * @export
- * @interface GetMyActivity200ResponseAllOfData
+ * @interface GetOthersActivity200ResponseAllOfData
  */
-export interface GetMyActivity200ResponseAllOfData {
+export interface GetOthersActivity200ResponseAllOfData {
     /**
      * 사용자 ID
      * @type {number}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'userId': number;
     /**
      * 사용자 닉네임
      * @type {string}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'username': string;
     /**
      * 사용자 소개글
      * @type {string}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'bio': string;
     /**
      * 프로필 이미지 URL
      * @type {string}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'profileImageUrl': string;
     /**
      * 받은 좋아요 개수
      * @type {number}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'likeCount': number;
     /**
      * 내용이 있는 리뷰 개수
      * @type {number}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'contentReviewCount': number;
     /**
      * 평가한 앨범 개수
      * @type {number}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'albumReviewCount': number;
     /**
      * 평가한 트랙 개수
      * @type {number}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'trackReviewCount': number;
     /**
      * 좋아요한 아티스트 수
      * @type {number}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'likedArtistCount': number;
     /**
      * 평가한 앨범 미리보기
      * @type {Array<RatedAlbum>}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'ratedAlbums': Array<RatedAlbum>;
     /**
      * 평가한 트랙 미리보기
      * @type {Array<RatedTrack>}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'ratedTracks': Array<RatedTrack>;
     /**
      * 내가 만든 컬렉션
      * @type {Array<CollectionPreview>}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'myCollections': Array<CollectionPreview>;
     /**
      * 좋아요한 컬렉션
      * @type {Array<CollectionPreview>}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'likedCollections': Array<CollectionPreview>;
     /**
      * 
      * @type {GetOthersActivity200ResponseAllOfDataRateDistributions}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'rateDistributions': GetOthersActivity200ResponseAllOfDataRateDistributions;
     /**
      * 
      * @type {GetOthersActivity200ResponseAllOfDataFollowInfo}
-     * @memberof GetMyActivity200ResponseAllOfData
+     * @memberof GetOthersActivity200ResponseAllOfData
      */
     'followInfo': GetOthersActivity200ResponseAllOfDataFollowInfo;
-    /**
-     * 
-     * @type {Array<GetMyActivity200ResponseAllOfDataUserPreferencesInner>}
-     * @memberof GetMyActivity200ResponseAllOfData
-     */
-    'userPreferences': Array<GetMyActivity200ResponseAllOfDataUserPreferencesInner>;
 }
 

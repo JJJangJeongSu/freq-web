@@ -1,4 +1,4 @@
-# GetMyCollections200Response2
+# GetOthersActivity200Response
 
 
 ## Properties
@@ -6,14 +6,14 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **success** | **boolean** |  | [default to undefined]
-**data** | [**GetMyCollections200Response1AllOfData**](GetMyCollections200Response1AllOfData.md) |  | [default to undefined]
+**data** | [**GetOthersActivity200ResponseAllOfData**](GetOthersActivity200ResponseAllOfData.md) |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { GetMyCollections200Response2 } from './api';
+import { GetOthersActivity200Response } from './api';
 
-const instance: GetMyCollections200Response2 = {
+const instance: GetOthersActivity200Response = {
     success,
     data,
 };
