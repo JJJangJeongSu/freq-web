@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Camera, Loader2, Check, X, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -8,6 +8,8 @@ import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { useUpdateBio } from "../hooks/useUpdateBio";
 import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
+import { useUpdateNickname } from "../hooks/useUpdateNickname";
+import { useCheckNickname } from "../hooks/useCheckNickname";
 
 interface ProfileEditDialogProps {
   open: boolean;
@@ -28,6 +30,8 @@ export function ProfileEditDialog({
 }: ProfileEditDialogProps) {
   const { updateBio, loading: bioLoading, error: bioError } = useUpdateBio();
   const { updateProfileImage, loading: imageLoading, error: imageError } = useUpdateProfileImage();
+  const { updateNickname, loading: nicknameLoading, error: nicknameError: nicknameUpdateError } = useUpdateNickname();
+  const { checkNickname, checking: nicknameChecking } = useCheckNickname();
 
   const [editedNickname, setEditedNickname] = useState(username);
   const [editedBio, setEditedBio] = useState(bio);
@@ -37,10 +41,10 @@ export function ProfileEditDialog({
 
   // 닉네임 validation 상태
   const [nicknameError, setNicknameError] = useState<string | null>(null);
-  const [nicknameChecking, setNicknameChecking] = useState(false);
   const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nicknameCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // props 변경되면 상태 업데이트
   useEffect(() => {
@@ -109,10 +113,29 @@ export function ProfileEditDialog({
     return true;
   };
 
+  // 닉네임 중복 체크 (debounced)
+  const performNicknameCheck = useCallback(async (nickname: string) => {
+    try {
+      const isAvailable = await checkNickname(nickname);
+      setNicknameAvailable(isAvailable);
+
+      if (!isAvailable) {
+        setNicknameError('이미 사용 중인 닉네임입니다.');
+      }
+    } catch (error) {
+      console.error('Nickname check failed:', error);
+    }
+  }, [checkNickname]);
+
   // 닉네임 변경 핸들러
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = e.target.value;
     setEditedNickname(newNickname);
+
+    // 이전 타이머 취소
+    if (nicknameCheckTimeoutRef.current) {
+      clearTimeout(nicknameCheckTimeoutRef.current);
+    }
 
     // 기존 닉네임과 같으면 validation 스킵
     if (newNickname === username) {
@@ -123,9 +146,10 @@ export function ProfileEditDialog({
 
     // 실시간 validation
     if (validateNickname(newNickname)) {
-      // TODO: 나중에 API 중복 체크 추가
-      // 임시로 사용 가능한 것으로 표시
-      setNicknameAvailable(true);
+      // 500ms debounce 후 중복 체크
+      nicknameCheckTimeoutRef.current = setTimeout(() => {
+        performNicknameCheck(newNickname);
+      }, 500);
     }
   };
 
@@ -133,13 +157,18 @@ export function ProfileEditDialog({
     try {
       setSubmitSuccess(false);
 
-      // 닉네임 validation
+      // 닉네임 validation 및 업데이트
       if (editedNickname !== username) {
         if (!validateNickname(editedNickname)) {
           return;
         }
-        // TODO: 닉네임 업데이트 API 호출
-        console.log('닉네임 업데이트:', editedNickname);
+        if (!nicknameAvailable) {
+          setNicknameError('사용할 수 없는 닉네임입니다.');
+          return;
+        }
+
+        // 닉네임 업데이트 API 호출
+        await updateNickname(editedNickname);
       }
 
       // 이미지 업데이트
@@ -276,10 +305,10 @@ export function ProfileEditDialog({
           </div>
 
           {/* 에러 메시지 */}
-          {(bioError || imageError) && (
+          {(bioError || imageError || nicknameUpdateError) && (
             <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
               <p className="text-sm text-destructive">
-                {bioError?.message || imageError?.message}
+                {bioError?.message || imageError?.message || nicknameUpdateError?.message}
               </p>
             </div>
           )}
@@ -299,16 +328,24 @@ export function ProfileEditDialog({
               setSelectedFile(null);
               setPreviewUrl(null);
             }}
-            disabled={bioLoading || imageLoading}
+            disabled={bioLoading || imageLoading || nicknameLoading}
+            variant="outline"
           >
             취소
           </Button>
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={bioLoading || imageLoading || submitSuccess}
+            disabled={
+              bioLoading ||
+              imageLoading ||
+              nicknameLoading ||
+              nicknameChecking ||
+              submitSuccess ||
+              (editedNickname !== username && !nicknameAvailable)
+            }
           >
-            {bioLoading || imageLoading ? (
+            {bioLoading || imageLoading || nicknameLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 저장 중...
