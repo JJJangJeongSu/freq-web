@@ -34,6 +34,9 @@ import { UserProfilePage } from './pages/UserProfilePage';
 import { CollectionCommentsPage } from './pages/CollectionCommentsPage';
 import { AllReviewsPage } from './pages/AllReviewsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { FollowersPage } from './pages/FollowersPage';
+import { FollowingPage } from './pages/FollowingPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 
 /**
  * UnauthorizedListener Component
@@ -103,6 +106,8 @@ export default function App() {
             <Route path="/liked-collections" element={<LikedCollectionsPage />} />
             <Route path="/collections" element={<AllCollectionsPage />} />
             <Route path="/my-reviews" element={<MyReviewsPage />} />
+            <Route path="/followers" element={<FollowersPage />} />
+            <Route path="/following" element={<FollowingPage />} />
 
             {/* Action Pages - More specific routes first */}
             <Route path="/collections/new" element={<CreateCollectionPage />} />
@@ -110,6 +115,8 @@ export default function App() {
             <Route path="/collections/:collectionId/comments" element={<CollectionCommentsPage />} />
             <Route path="/albums/:albumId/reviews" element={<AllReviewsPage />} />
             <Route path="/albums/:albumId/write-review/:reviewId?" element={<WriteReviewPage />} />
+            {/* Legal/Info Pages */}
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           </Route>
         </Route>
 

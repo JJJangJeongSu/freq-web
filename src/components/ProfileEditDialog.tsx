@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, Check, X, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -29,17 +29,24 @@ export function ProfileEditDialog({
   const { updateBio, loading: bioLoading, error: bioError } = useUpdateBio();
   const { updateProfileImage, loading: imageLoading, error: imageError } = useUpdateProfileImage();
 
+  const [editedNickname, setEditedNickname] = useState(username);
   const [editedBio, setEditedBio] = useState(bio);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // 닉네임 validation 상태
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
+  const [nicknameChecking, setNicknameChecking] = useState(false);
+  const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // bio prop이 변경되면 editedBio 업데이트
+  // props 변경되면 상태 업데이트
   useEffect(() => {
+    setEditedNickname(username);
     setEditedBio(bio);
-  }, [bio]);
+  }, [username, bio]);
 
   // 모달이 닫힐 때 상태 초기화
   useEffect(() => {
@@ -47,6 +54,9 @@ export function ProfileEditDialog({
       setSelectedFile(null);
       setPreviewUrl(null);
       setSubmitSuccess(false);
+      setNicknameError(null);
+      setNicknameChecking(false);
+      setNicknameAvailable(null);
     }
   }, [open]);
 
@@ -78,9 +88,59 @@ export function ProfileEditDialog({
     }
   };
 
+  // 닉네임 validation
+  const validateNickname = (nickname: string) => {
+    if (nickname.length < 2) {
+      setNicknameError('닉네임은 2자 이상이어야 합니다.');
+      setNicknameAvailable(false);
+      return false;
+    }
+    if (nickname.length > 20) {
+      setNicknameError('닉네임은 20자 이하여야 합니다.');
+      setNicknameAvailable(false);
+      return false;
+    }
+    if (!/^[가-힣a-zA-Z0-9_]+$/.test(nickname)) {
+      setNicknameError('닉네임은 한글, 영문, 숫자, 언더스코어만 사용 가능합니다.');
+      setNicknameAvailable(false);
+      return false;
+    }
+    setNicknameError(null);
+    return true;
+  };
+
+  // 닉네임 변경 핸들러
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNickname = e.target.value;
+    setEditedNickname(newNickname);
+
+    // 기존 닉네임과 같으면 validation 스킵
+    if (newNickname === username) {
+      setNicknameError(null);
+      setNicknameAvailable(null);
+      return;
+    }
+
+    // 실시간 validation
+    if (validateNickname(newNickname)) {
+      // TODO: 나중에 API 중복 체크 추가
+      // 임시로 사용 가능한 것으로 표시
+      setNicknameAvailable(true);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       setSubmitSuccess(false);
+
+      // 닉네임 validation
+      if (editedNickname !== username) {
+        if (!validateNickname(editedNickname)) {
+          return;
+        }
+        // TODO: 닉네임 업데이트 API 호출
+        console.log('닉네임 업데이트:', editedNickname);
+      }
 
       // 이미지 업데이트
       if (selectedFile) {
@@ -108,31 +168,31 @@ export function ProfileEditDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>프로필 편집</DialogTitle>
-          <DialogDescription>이미지와 소개를 변경할 수 있습니다.</DialogDescription>
+          <DialogDescription>프로필 이미지, 닉네임, 소개를 변경할 수 있습니다.</DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* 프로필 이미지 업로드 */}
           <div className="space-y-2">
             <Label>프로필 이미지</Label>
             <div className="flex justify-center py-4">
               <div className="relative">
-                <Avatar className="w-32 h-32 border-2 border-border">
+                <Avatar className="w-24 h-24 border-2 border-border">
                   <AvatarImage src={previewUrl || profileImageUrl || undefined} />
-                  <AvatarFallback className="text-4xl">
+                  <AvatarFallback className="text-3xl">
                     {username.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <Button
                   size="icon"
-                  className="absolute bottom-0 right-0 w-9 h-9 rounded-full"
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-lg"
                   variant="secondary"
                   onClick={handleImageClick}
                   disabled={bioLoading || imageLoading}
                 >
-                  <Camera className="w-5 h-5" />
+                  <Camera className="w-4 h-4" />
                 </Button>
                 <input
                   ref={fileInputRef}
@@ -144,17 +204,75 @@ export function ProfileEditDialog({
                 />
               </div>
             </div>
+            <p className="text-xs text-muted-foreground text-center">
+              JPG, PNG 파일 (최대 5MB)
+            </p>
           </div>
 
+          {/* 닉네임 입력 */}
+          <div className="space-y-2">
+            <Label htmlFor="nickname">닉네임</Label>
+            <div className="relative">
+              <Input
+                id="nickname"
+                value={editedNickname}
+                onChange={handleNicknameChange}
+                placeholder="닉네임을 입력하세요"
+                disabled={bioLoading || imageLoading}
+                className={
+                  nicknameError
+                    ? 'pr-10 border-destructive focus-visible:ring-destructive'
+                    : editedNickname !== username && nicknameAvailable
+                    ? 'pr-10 border-green-500 focus-visible:ring-green-500'
+                    : 'pr-10'
+                }
+              />
+              {/* Validation 아이콘 */}
+              {editedNickname !== username && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {nicknameChecking ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                  ) : nicknameError ? (
+                    <X className="w-4 h-4 text-destructive" />
+                  ) : nicknameAvailable ? (
+                    <Check className="w-4 h-4 text-green-500" />
+                  ) : null}
+                </div>
+              )}
+            </div>
+            {/* 닉네임 가이드/에러 메시지 */}
+            {nicknameError ? (
+              <div className="flex items-center gap-1.5 text-xs text-destructive">
+                <AlertCircle className="w-3 h-3" />
+                <span>{nicknameError}</span>
+              </div>
+            ) : editedNickname !== username && nicknameAvailable ? (
+              <div className="flex items-center gap-1.5 text-xs text-green-600">
+                <Check className="w-3 h-3" />
+                <span>사용 가능한 닉네임입니다.</span>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                2-20자의 한글, 영문, 숫자, 언더스코어(_)만 사용 가능합니다.
+              </p>
+            )}
+          </div>
+
+          {/* 소개 입력 */}
           <div className="space-y-2">
             <Label htmlFor="bio">소개</Label>
             <Textarea
               id="bio"
               value={editedBio}
               onChange={(e) => setEditedBio(e.target.value)}
-              className="col-span-3"
+              placeholder="자신을 소개해주세요"
+              rows={4}
               disabled={bioLoading || imageLoading}
+              maxLength={500}
             />
+            <p className="text-xs text-muted-foreground text-right">
+              {editedBio.length} / 500
+            </p>
           </div>
 
           {/* 에러 메시지 */}

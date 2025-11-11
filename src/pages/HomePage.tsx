@@ -10,6 +10,7 @@ import { useHomeData } from "../hooks/useHomeData";
 import { StarRating } from "../components/StarRating";
 import { HorizontalMusicSection } from "../components/HorizontalMusicSection";
 import { clearAuthToken } from "../api/client";
+import { userCache } from "../utils/userCache";
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export function HomePage() {
 
   const handleLogout = () => {
     clearAuthToken();
+    userCache.clear();
     localStorage.clear();
     navigate('/auth');
   };

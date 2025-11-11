@@ -6,6 +6,7 @@ import { Separator } from "../components/ui/separator";
 import { useTheme } from "../components/theme-provider";
 import { useUserProfile } from "../hooks/useUserProfile";
 import { clearAuthToken } from "../api/client";
+import { userCache } from "../utils/userCache";
 
 export function UserPage() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export function UserPage() {
 
   const handleLogout = () => {
     clearAuthToken();
+    userCache.clear();
     localStorage.clear();
     navigate('/auth');
   };
@@ -114,7 +116,7 @@ export function UserPage() {
             <div className="space-y-5">
               <h3 className="font-semibold text-lg">기타</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors">
+                <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent cursor-pointer transition-colors" onClick={() => navigate('/privacy-policy')}>
                   <div className="flex items-center gap-4">
                     <Shield className="w-5 h-5 text-muted-foreground" />
                     <div>

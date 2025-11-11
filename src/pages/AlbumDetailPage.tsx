@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2, MessageCircle, ChevronDown, ChevronUp, MoreVertical, Trash2, Edit } from "lucide-react";
+import { ArrowLeft, Star, RefreshCw, Edit3, Heart, Loader2, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import React from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -6,29 +6,13 @@ import { StarRating } from "../components/StarRating";
 import { Progress } from "../components/ui/progress";
 import { Separator } from "../components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../components/ui/alert-dialog";
+import { ReviewCard } from "../components/ReviewCard";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAlbumDetail } from "../hooks/useAlbumDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { useUpdateReview } from "../hooks/useUpdateReview";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { useDeleteReview } from "../hooks/useDeleteReview";
 import { CreateReviewRequestTypeEnum } from "../api/models";
 
 export function AlbumDetailPage() {
@@ -40,14 +24,11 @@ export function AlbumDetailPage() {
   const { createReview, loading: createLoading, error: createError } = useCreateReview();
   const { updateReview, loading: updateLoading, error: updateError } = useUpdateReview();
   const { user } = useCurrentUser();
-  const { deleteReview, loading: deleting } = useDeleteReview();
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [trackListExpanded, setTrackListExpanded] = useState(false);
   const [reviewId, setReviewId] = useState<string | null>(null); // ⭐ 로컬 reviewId 상태
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [reviewToDelete, setReviewToDelete] = useState<any | null>(null);
 
   // 로딩과 에러를 통합
   const reviewLoading = createLoading || updateLoading;
@@ -116,43 +97,6 @@ export function AlbumDetailPage() {
       setTimeout(() => setSubmitSuccess(false), 3000);
     } catch (err: any) {
       console.error('❌ Review submission failed:', err);
-    }
-  };
-
-  const handleEditClick = (review: any, e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    // sessionStorage에 앨범 정보 저장
-    sessionStorage.setItem('review:albumMeta', JSON.stringify({
-      id: album.albumId,
-      title: album.title,
-      artist: album.artists.map((a: any) => a.name).join(', '),
-      imageUrl: album.imageUrl,
-      artistIds: album.artists.map((a: any) => a.artistId),
-      rating: review.rating
-    }));
-
-    // 리뷰 수정 페이지로 이동
-    navigate(`/albums/${albumId}/write-review/${review.reviewId}`);
-  };
-
-  const handleDeleteClick = (review: any, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setReviewToDelete(review);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!reviewToDelete) return;
-
-    try {
-      await deleteReview(String(reviewToDelete.reviewId));
-      setDeleteDialogOpen(false);
-      setReviewToDelete(null);
-      refetch();
-      console.log('✅ 리뷰 삭제 성공:', reviewToDelete.reviewId);
-    } catch (error: any) {
-      console.error('❌ 리뷰 삭제 실패:', error);
     }
   };
 
@@ -491,73 +435,30 @@ export function AlbumDetailPage() {
             </div>
             {(album as any).reviews && (album as any).reviews.length > 0 ? (
               <div className="space-y-3">
-                {(album as any).reviews.map((review: any) => {
-                  const isMyReview = user && review.userId === user.userId;
-
-                  return (
-                    <div
-                      key={review.reviewId}
-                      className="relative flex gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/50 cursor-pointer transition-colors"
-                      onClick={() => navigate(`/reviews/${review.reviewId}`)}
-                    >
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage src={review.userProfileImage} />
-                        <AvatarFallback>{(review.username || '?').charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium">{review.username}</span>
-                            <div className="flex items-center gap-1">
-                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs text-muted-foreground">{Number(review.rating).toFixed(1)}</span>
-                            </div>
-                          </div>
-                          <span className="text-xs text-muted-foreground">{review.createdAt}</span>
-                        </div>
-                        {review.content && (
-                          <p className="text-sm line-clamp-2">{review.content}</p>
-                        )}
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Heart className="w-3 h-3" />
-                            <span>{review.likeCount ?? 0}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MessageCircle className="w-3 h-3" />
-                            <span>{review.commentCount ?? 0}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 내 리뷰인 경우 더보기 메뉴 표시 */}
-                      {isMyReview && (
-                        <div className="absolute top-2 right-2">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={(e) => handleEditClick(review, e)}>
-                                <Edit className="w-4 h-4 mr-2" />
-                                수정하기
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={(e) => handleDeleteClick(review, e)}
-                                className="text-destructive focus:text-destructive focus:bg-destructive/10"
-                              >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                삭제하기
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                {(album as any).reviews.map((review: any) => (
+                  <ReviewCard
+                    key={review.reviewId}
+                    review={{
+                      reviewId: review.reviewId,
+                      userId: review.userId,
+                      username: review.username,
+                      userProfileImage: review.userProfileImage,
+                      rating: review.rating,
+                      content: review.content,
+                      likeCount: review.likeCount ?? 0,
+                      commentCount: review.commentCount ?? 0,
+                      createdAt: review.createdAt,
+                      isLiked: review.isLiked
+                    }}
+                    onReviewClick={(id) => navigate(`/reviews/${id}`)}
+                    onUserClick={(id) => navigate(`/users/${id}`)}
+                    onLikeClick={(id) => {
+                      console.log('Like review:', id);
+                      // TODO: Implement like functionality
+                    }}
+                    onReplyClick={(id) => navigate(`/reviews/${id}`)}
+                  />
+                ))}
               </div>
             ) : (
               <div className="text-center py-8 bg-muted/30 rounded-lg">
@@ -615,43 +516,6 @@ export function AlbumDetailPage() {
           </div>
         </div>
       </main>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>리뷰를 삭제하시겠습니까?</AlertDialogTitle>
-            <AlertDialogDescription>
-              {reviewToDelete && (
-                <>
-                  <span className="font-semibold">{album.title}</span>에 대한 리뷰가 영구적으로 삭제됩니다.
-                  <br />
-                  이 작업은 되돌릴 수 없습니다.
-                </>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setReviewToDelete(null)} disabled={deleting}>
-              취소
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete}
-              disabled={deleting}
-              className="!bg-red-600 hover:!bg-red-700 !text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {deleting ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                  삭제 중...
-                </div>
-              ) : (
-                "삭제"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

@@ -108,10 +108,16 @@ export function RateRecordPage() {
 
           {/* Follow Stats & Received Likes */}
           <div className="flex items-center gap-4 mb-3 text-sm">
-            <div>
+            <div
+              className="cursor-pointer hover:underline"
+              onClick={() => navigate('/followers')}
+            >
               팔로워 <span className="font-semibold">{data.statistics.followerCount}</span>
             </div>
-            <div>
+            <div
+              className="cursor-pointer hover:underline"
+              onClick={() => navigate('/following')}
+            >
               팔로잉 <span className="font-semibold">{data.statistics.followingCount}</span>
             </div>
             <div className="flex items-center gap-1 text-red-500">

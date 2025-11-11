@@ -2,10 +2,12 @@
  * AuthContext
  *
  * 전역 사용자 인증 및 사용자 정보 관리를 위한 Context
+ * localStorage 캐싱 적용 (TTL: 5분)
  */
 
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { apiService } from '@/services/api.service';
+import { userCache } from '@/utils/userCache';
 
 interface User {
   userId: number;
@@ -39,32 +41,48 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchUser = async () => {
+  const fetchUser = async (forceRefresh = false) => {
     const token = localStorage.getItem('authToken');
 
     if (!token) {
       setUser(null);
       setLoading(false);
+      userCache.clear();
       return;
+    }
+
+    // 캐시 확인 (강제 새로고침이 아닌 경우)
+    if (!forceRefresh) {
+      const cachedUser = userCache.get();
+      if (cachedUser) {
+        setUser(cachedUser);
+        setLoading(false);
+        return;
+      }
     }
 
     try {
       setLoading(true);
       setError(null);
 
-      // GET /users/me/activity API 호출로 변경
-      const response = await apiService.users.getMyActivity();
+      console.log('🔄 Fetching user profile from API...');
+
+      // GET /users/{userId}/profile API 호출
+      // 'me'를 userId로 사용 (현재 로그인한 사용자)
+      const response = await apiService.users.getUserProfile('me' as any);
       const userData = (response.data as any)?.data;
 
       if (userData) {
-        setUser({
+        const user: User = {
           userId: userData.userId,
           username: userData.username,
           profileImage: userData.profileImageUrl,
-          nickname: userData.nickname, // API 응답에 nickname이 있다면 사용
-          followInfo: userData.followInfo,
           bio: userData.bio,
-        });
+        };
+
+        setUser(user);
+        userCache.set(user); // 캐시에 저장
+        console.log('✅ User profile fetched and cached');
       }
     } catch (err: any) {
       console.error('❌ Failed to fetch current user:', err);
@@ -75,6 +93,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setError(new Error(errorMessage));
       setUser(null);
+      userCache.clear();
     } finally {
       setLoading(false);
     }

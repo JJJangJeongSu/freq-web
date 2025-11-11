@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Filter, Music, Loader2, RefreshCw, Heart } from "lucide-react";
-import { EnhancedButton } from "../components/EnhancedButton";
+import { Button } from "../components/ui/button";
 import { CollectionCard } from "../components/CollectionCard";
 import { Input } from "../components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
@@ -65,10 +65,10 @@ export function LikedCollectionsPage() {
           <p className="text-body-medium text-on-surface-variant">
             {error?.message || '좋아요한 컬렉션을 불러오는 중 오류가 발생했습니다.'}
           </p>
-          <EnhancedButton variant="filled" onClick={() => refresh()}>
+          <Button onClick={() => refresh()}>
             <RefreshCw className="size-4 mr-2" />
             다시 시도
-          </EnhancedButton>
+          </Button>
         </div>
       </div>
     );
@@ -79,14 +79,14 @@ export function LikedCollectionsPage() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-outline-variant">
         <div className="flex items-center gap-4 p-3 md:p-4">
-          <EnhancedButton
+          <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
             className="shrink-0"
           >
             <ArrowLeft className="size-6" />
-          </EnhancedButton>
+          </Button>
           <div className="flex-1">
             <h1 className="text-title-large">좋아요한 컬렉션</h1>
             <p className="text-body-medium text-on-surface-variant">
@@ -113,9 +113,9 @@ export function LikedCollectionsPage() {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <EnhancedButton variant="outlined" size="icon">
+              <Button variant="outline" size="icon">
                 <Filter className="size-4" />
-              </EnhancedButton>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setSortBy("recent")}>
