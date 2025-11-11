@@ -29,7 +29,6 @@ import { AllCollectionsPage } from './pages/AllCollectionsPage';
 import { MyReviewsPage } from './pages/MyReviewsPage';
 import { CreateCollectionPage } from './pages/CreateCollectionPage';
 import { WriteReviewPage } from './pages/WriteReviewPage';
-import { KMACollectionPage } from './pages/KMACollectionPage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { CollectionCommentsPage } from './pages/CollectionCommentsPage';
 import { AllReviewsPage } from './pages/AllReviewsPage';
@@ -37,6 +36,8 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { FollowersPage } from './pages/FollowersPage';
 import { FollowingPage } from './pages/FollowingPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { UserRatedAlbumsPage } from './pages/UserRatedAlbumsPage';
+import { UserRatedTracksPage } from './pages/UserRatedTracksPage';
 
 /**
  * UnauthorizedListener Component
@@ -95,6 +96,8 @@ export default function App() {
             <Route path="/reviews/:reviewId" element={<CommentDetailPage />} />
             <Route path="/collections/:collectionId" element={<CurationDetailPage />} />
             <Route path="/users/:userId" element={<UserProfilePage />} />
+            <Route path="/users/:userId/rated-albums" element={<UserRatedAlbumsPage />} />
+            <Route path="/users/:userId/rated-tracks" element={<UserRatedTracksPage />} />
 
             {/* List Pages */}
             <Route path="/rated-albums" element={<RatedAlbumsPage />} />
@@ -111,7 +114,6 @@ export default function App() {
 
             {/* Action Pages - More specific routes first */}
             <Route path="/collections/new" element={<CreateCollectionPage />} />
-            <Route path="/collections/kma" element={<KMACollectionPage />} />
             <Route path="/collections/:collectionId/comments" element={<CollectionCommentsPage />} />
             <Route path="/albums/:albumId/reviews" element={<AllReviewsPage />} />
             <Route path="/albums/:albumId/write-review/:reviewId?" element={<WriteReviewPage />} />
