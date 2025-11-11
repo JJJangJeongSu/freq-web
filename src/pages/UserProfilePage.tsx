@@ -9,12 +9,10 @@ import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserActivity } from "../hooks/useUserActivity";
 import { apiService } from "../services/api.service";
-import { useToast } from "../hooks/use-toast";
 
 export function UserProfilePage() {
   const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
-  const { toast } = useToast();
 
   // API 데이터 가져오기
   const { data, loading, error, refetch } = useUserActivity(userId);
@@ -117,10 +115,6 @@ export function UserProfilePage() {
       if (apiData) {
         const newIsFollowing = apiData.action === 'FOLLOWED';
         setIsFollowing(newIsFollowing);
-
-        toast({
-          description: newIsFollowing ? "팔로우 했습니다" : "언팔로우 했습니다",
-        });
       }
 
     } catch (err: any) {
@@ -129,12 +123,6 @@ export function UserProfilePage() {
       setFollowerCount(previousFollowerCount);
 
       console.error('❌ 팔로우 토글 실패:', err);
-
-      toast({
-        variant: "destructive",
-        title: "팔로우 처리 실패",
-        description: err.response?.data?.error?.message || "다시 시도해주세요.",
-      });
     } finally {
       setIsFollowLoading(false);
     }
