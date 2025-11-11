@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus } from "lucide-react";
+import { Card, CardContent } from "../components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Badge } from "../components/ui/badge";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { ArrowLeft, Search, SlidersHorizontal, Loader2, RefreshCw, Plus, Heart } from "lucide-react";
 import { useAllCollections } from "../hooks/useAllCollections";
-import { CollectionCard } from "../components/CollectionCard";
 import { apiService } from "../services/api.service";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 
@@ -130,26 +133,26 @@ export function AllCollectionsPage() {
         <div className="mb-8 space-y-4">
           <div className="flex gap-2">
             <div
-              className="flex-1 h-14 rounded-xl flex items-center px-6 border"
+              className="flex-1 h-14 rounded-full flex items-center px-6 border"
               style={{
-                backgroundColor: 'var(--surface)',
+                backgroundColor: 'var(--surface-container)',
                 borderColor: 'var(--outline)'
               }}
             >
               <Search className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: 'var(--on-surface-variant)' }} />
               <Input
-                placeholder="컬렉션 제목 또는 설명으로 검색..."
+                placeholder="컬렉션 제목으로 검색..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="border-0 bg-transparent text-body-large p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-on-surface-variant"
+                className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
                 style={{ color: 'var(--on-surface)' }}
               />
             </div>
             <Button
               onClick={handleSearch}
               disabled={isSearching}
-              className="h-14 px-6"
+              className="h-14 px-6 rounded-full"
             >
               {isSearching ? (
                 <>
@@ -173,6 +176,7 @@ export function AllCollectionsPage() {
                   variant="outline"
                   size="sm"
                   onClick={handleClearSearch}
+                  className="rounded-full"
                 >
                   검색 초기화
                 </Button>
@@ -180,7 +184,7 @@ export function AllCollectionsPage() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-full">
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
                   정렬: {sortBy === "recent" ? "최신순" : "인기순"}
                 </Button>
@@ -215,30 +219,96 @@ export function AllCollectionsPage() {
         {displayCollections.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             {displayCollections.map((collection) => (
-              <CollectionCard
+              <Card
                 key={collection.collectionId}
-                collectionId={collection.collectionId}
-                title={collection.title}
-                description={collection.description}
-                author={collection.author}
-                itemCount={collection.itemCount}
-                likeCount={collection.likeCount}
-                coverImageUrl={collection.coverImageUrl}
-                tags={collection.tags}
-                variant="grid"
+                className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg border border-outline"
+                style={{ background: 'var(--surface)' }}
                 onClick={() => navigate(`/collections/${collection.collectionId}`)}
-                onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
-              />
+              >
+                <CardContent className="p-0">
+                  {/* Collection Image */}
+                  <div className="relative aspect-square">
+                    <ImageWithFallback
+                      src={collection.coverImageUrl}
+                      alt={collection.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Collection Info */}
+                  <div className="p-4 space-y-3">
+                    {/* Title & Description */}
+                    <div>
+                      <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: 'var(--on-surface)' }}>
+                        {collection.title}
+                      </h3>
+                      <p className="text-sm line-clamp-2" style={{ color: 'var(--on-surface-variant)' }}>
+                        {collection.description}
+                      </p>
+                    </div>
+
+                    {/* Tags */}
+                    {collection.tags && collection.tags.length > 0 && (
+                      <div className="flex gap-1 flex-wrap">
+                        {collection.tags.slice(0, 3).map((tag, idx) => (
+                          <Badge
+                            key={idx}
+                            variant="secondary"
+                            className="text-xs rounded-full"
+                            style={{
+                              background: 'var(--surface-container)',
+                              color: 'var(--primary)',
+                              border: 'none'
+                            }}
+                          >
+                            #{tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Creator */}
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/users/${collection.author.id}`);
+                      }}
+                    >
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage src={collection.author.imageUrl} />
+                        <AvatarFallback>{collection.author.username[0]}</AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm" style={{ color: 'var(--on-surface-variant)' }}>
+                        {collection.author.username}
+                      </span>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-4 pt-2 border-t" style={{ borderColor: 'var(--outline-variant)' }}>
+                      <div className="flex items-center gap-1">
+                        <Heart className="h-4 w-4" style={{ color: 'var(--on-surface-variant)' }} />
+                        <span className="text-sm" style={{ color: 'var(--on-surface-variant)' }}>
+                          {collection.likeCount}
+                        </span>
+                      </div>
+                      <span className="text-sm" style={{ color: 'var(--on-surface-variant)' }}>
+                        {collection.itemCount}곡
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         ) : (
           /* Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <SlidersHorizontal className="h-16 w-16 mb-6 text-muted-foreground/50" />
-            <p className="text-xl font-semibold mb-2 text-foreground">
+            <SlidersHorizontal className="h-16 w-16 mb-6" style={{ color: 'var(--outline)' }} />
+            <p className="text-xl font-semibold mb-2" style={{ color: 'var(--on-surface)' }}>
               {isSearchMode ? '검색 결과가 없습니다' : '컬렉션이 없습니다'}
             </p>
-            <p className="text-base text-muted-foreground">
+            <p className="text-base" style={{ color: 'var(--on-surface-variant)' }}>
               {isSearchMode ? '다른 검색어를 시도해보세요.' : '새로운 컬렉션을 만들어보세요.'}
             </p>
           </div>
