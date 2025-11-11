@@ -227,7 +227,7 @@ export function AllCollectionsPage() {
               >
                 <CardContent className="p-0">
                   {/* Collection Image */}
-                  <div className="relative aspect-video">
+                  <div className="relative h-32 w-full">
                     <ImageWithFallback
                       src={collection.coverImageUrl}
                       alt={collection.title}
@@ -236,65 +236,46 @@ export function AllCollectionsPage() {
                   </div>
 
                   {/* Collection Info */}
-                  <div className="p-6 space-y-3">
-                    {/* Title & Description */}
-                    <div>
-                      <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: 'var(--on-surface)' }}>
-                        {collection.title}
-                      </h3>
-                      <p className="text-sm line-clamp-2" style={{ color: 'var(--on-surface-variant)' }}>
-                        {collection.description}
-                      </p>
-                    </div>
+                  <div className="px-4 pt-4 pb-3 space-y-2">
+                    {/* Title */}
+                    <h3 className="font-semibold text-sm line-clamp-1" style={{ color: 'var(--on-surface)' }}>
+                      {collection.title}
+                    </h3>
 
-                    {/* Tags */}
-                    {collection.tags && collection.tags.length > 0 && (
-                      <div className="flex gap-1 flex-wrap">
-                        {collection.tags.slice(0, 3).map((tag, idx) => (
-                          <Badge
-                            key={idx}
-                            variant="secondary"
-                            className="text-xs rounded-full"
-                            style={{
-                              background: 'var(--surface-container)',
-                              color: 'var(--primary)',
-                              border: 'none'
-                            }}
-                          >
-                            #{tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
+                    {/* Description */}
+                    <p className="text-xs line-clamp-1" style={{ color: 'var(--on-surface-variant)' }}>
+                      {collection.description}
+                    </p>
 
-                    {/* Creator */}
-                    <div
-                      className="flex items-center gap-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/users/${collection.author.id}`);
-                      }}
-                    >
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={collection.author.imageUrl} />
-                        <AvatarFallback>{collection.author.username[0]}</AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm" style={{ color: 'var(--on-surface-variant)' }}>
-                        {collection.author.username}
-                      </span>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="flex items-center gap-4 pt-2 border-t" style={{ borderColor: 'var(--outline-variant)' }}>
-                      <div className="flex items-center gap-1">
-                        <Heart className="h-4 w-4" style={{ color: 'var(--on-surface-variant)' }} />
-                        <span className="text-sm" style={{ color: 'var(--on-surface-variant)' }}>
-                          {collection.likeCount}
+                    {/* Creator & Stats */}
+                    <div className="flex items-center justify-between pt-1">
+                      <div
+                        className="flex items-center gap-1.5 flex-1 min-w-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/users/${collection.author.id}`);
+                        }}
+                      >
+                        <Avatar className="h-5 w-5 flex-shrink-0">
+                          <AvatarImage src={collection.author.imageUrl} />
+                          <AvatarFallback className="text-xs">{collection.author.username[0]}</AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs truncate" style={{ color: 'var(--on-surface-variant)' }}>
+                          {collection.author.username}
                         </span>
                       </div>
-                      <span className="text-sm" style={{ color: 'var(--on-surface-variant)' }}>
-                        {collection.itemCount}곡
-                      </span>
+
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="flex items-center gap-0.5">
+                          <Heart className="h-3 w-3" style={{ color: 'var(--on-surface-variant)' }} />
+                          <span className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>
+                            {collection.likeCount}
+                          </span>
+                        </div>
+                        <span className="text-xs" style={{ color: 'var(--on-surface-variant)' }}>
+                          {collection.itemCount}곡
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
