@@ -223,6 +223,7 @@ export function MyCollectionsPage() {
                   itemCount={collection.itemCount}
                   likeCount={collection.likeCount}
                   coverImageUrl={collection.coverImageUrl}
+                  tags={collection.tags}
                   onClick={() => handleCollectionClick(collection.collectionId)}
                   onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
                 />
