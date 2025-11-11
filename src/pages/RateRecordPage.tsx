@@ -372,9 +372,6 @@ export function RateRecordPage() {
                     </Badge>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
-                  크기는 평가한 곡 수에 비례합니다
-                </p>
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
