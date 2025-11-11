@@ -68,38 +68,49 @@ export function AlbumDetailPage() {
     setSubmitSuccess(false);
   };
 
+  // 평점만 수정 (reviewId 필요)
+  const handleUpdateRatingOnly = async () => {
+    if (!reviewId || userRating === 0) return;
+
+    try {
+      console.log('⭐ Updating rating only:', { reviewId, rating: userRating });
+
+      await updateReview(reviewId, {
+        rating: userRating,
+        type: CreateReviewRequestTypeEnum.Album
+      });
+
+      console.log('✅ Rating updated');
+      setSubmitSuccess(true);
+      refetch(); // 앨범 정보 새로고침
+
+      setTimeout(() => setSubmitSuccess(false), 3000);
+    } catch (err: any) {
+      console.error('❌ Rating update failed:', err);
+    }
+  };
+
+  // 새 리뷰 생성 (reviewId 없을 때만)
   const handleSubmitRating = async () => {
     if (!album || userRating === 0 || !albumId) return;
 
     try {
-      if (reviewId) {
-        // ⭐ 리뷰 수정 - PATCH /reviews/{itemId}
-        // itemId는 앨범 ID
-        console.log('📝 Updating review for album:', albumId);
+      // ⭐ 리뷰 생성 - POST
+      console.log('✨ Creating new review');
 
-        await updateReview(albumId, {
-          rating: userRating,
-          type: CreateReviewRequestTypeEnum.Album
-        });
+      const result = await createReview({
+        rating: userRating,
+        type: CreateReviewRequestTypeEnum.Album,
+        targetId: albumId,
+        artistIds: album.artists.map(a => a.artistId)
+      });
 
-        console.log('✅ Review updated');
-      } else {
-        // ⭐ 리뷰 생성 - POST
-        console.log('✨ Creating new review');
-
-        const result = await createReview({
-          rating: userRating,
-          type: CreateReviewRequestTypeEnum.Album,
-          targetId: albumId,
-          artistIds: album.artists.map(a => a.artistId)
-        });
-
-        // 생성된 reviewId 저장
-        setReviewId(result.reviewId);
-        console.log('✅ Review created, reviewId:', result.reviewId);
-      }
+      // 생성된 reviewId 저장
+      setReviewId(result.reviewId);
+      console.log('✅ Review created, reviewId:', result.reviewId);
 
       setSubmitSuccess(true);
+      refetch(); // 앨범 정보 새로고침
 
       // 3초 후 성공 메시지 숨기기
       setTimeout(() => setSubmitSuccess(false), 3000);
@@ -287,47 +298,95 @@ export function AlbumDetailPage() {
                   </div>
                 )}
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleSubmitRating}
-                    variant="outline"
-                    className="flex-1 h-12"
-                    disabled={reviewLoading || submitSuccess || (album as any).userRating === userRating}
-                  >
-                    {reviewLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        {reviewId ? '수정 중...' : '제출 중...'}
-                      </>
-                    ) : (album as any).userRating === userRating ? (
-                      '기존 평점과 동일합니다'
-                    ) : reviewId ? (
-                      '평가 수정하기'
-                    ) : (
-                      '제출하기'
-                    )}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      try {
-                        const meta = {
-                          id: albumId,
-                          title: album.title,
-                          artist: album.artists?.map(a => a.name).join(', ') || '',
-                          imageUrl: album.imageUrl,
-                          artistIds: album.artists?.map(a => a.artistId) || [],
-                          rating: userRating,
-                        };
-                        sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
-                      } catch {}
-                      navigate(`/albums/${albumId}/write-review`);
-                    }}
-                    className="flex-1 h-12"
-                  >
-                    <Edit3 className="w-4 h-4 mr-2" />
-                    리뷰 작성하기
-                  </Button>
-                </div>
+                {/* 옵션 2: 이미 리뷰가 있는 경우 */}
+                {reviewId ? (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-accent/30 rounded-lg">
+                      <p className="text-sm font-medium mb-1">이미 리뷰를 작성하셨습니다</p>
+                      <p className="text-xs text-muted-foreground">
+                        평점만 수정하거나 전체 리뷰를 수정할 수 있습니다
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleUpdateRatingOnly}
+                        variant="outline"
+                        className="flex-1 h-12"
+                        disabled={reviewLoading || submitSuccess || (album as any).userRating === userRating}
+                      >
+                        {updateLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            수정 중...
+                          </>
+                        ) : (album as any).userRating === userRating ? (
+                          '기존 평점과 동일합니다'
+                        ) : (
+                          '평점만 수정하기'
+                        )}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          try {
+                            const meta = {
+                              id: albumId,
+                              title: album.title,
+                              artist: album.artists?.map(a => a.name).join(', ') || '',
+                              imageUrl: album.imageUrl,
+                              artistIds: album.artists?.map(a => a.artistId) || [],
+                              rating: userRating,
+                            };
+                            sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
+                          } catch {}
+                          navigate(`/albums/${albumId}/write-review/${reviewId}`);
+                        }}
+                        className="flex-1 h-12"
+                      >
+                        <Edit3 className="w-4 h-4 mr-2" />
+                        리뷰 전체 수정하기
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  /* 새 리뷰 작성 */
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleSubmitRating}
+                      variant="outline"
+                      className="flex-1 h-12"
+                      disabled={reviewLoading || submitSuccess}
+                    >
+                      {createLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          제출 중...
+                        </>
+                      ) : (
+                        '제출하기'
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        try {
+                          const meta = {
+                            id: albumId,
+                            title: album.title,
+                            artist: album.artists?.map(a => a.name).join(', ') || '',
+                            imageUrl: album.imageUrl,
+                            artistIds: album.artists?.map(a => a.artistId) || [],
+                            rating: userRating,
+                          };
+                          sessionStorage.setItem('review:albumMeta', JSON.stringify(meta));
+                        } catch {}
+                        navigate(`/albums/${albumId}/write-review`);
+                      }}
+                      className="flex-1 h-12"
+                    >
+                      <Edit3 className="w-4 h-4 mr-2" />
+                      리뷰 작성하기
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </div>

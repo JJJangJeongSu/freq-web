@@ -150,17 +150,7 @@ export function LikedArtistsPage() {
                         alt={artist.name}
                         className="w-full h-full rounded-lg object-cover"
                       />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="absolute top-1 right-1 h-6 w-6 p-0 bg-black/50 hover:bg-black/70"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUnlike(artist.id);
-                        }}
-                      >
-                        <Heart className="w-3 h-3 text-white fill-white" />
-                      </Button>
+
                     </div>
                     
                     {/* Artist Info */}
