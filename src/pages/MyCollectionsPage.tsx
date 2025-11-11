@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Filter, Plus, Music, MoreVertical, Trash2 } from "lucide-react";
+import { ArrowLeft, Search, Filter, Plus, Music, MoreVertical, Trash2, Loader2 } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
 import { CollectionCard } from "../components/CollectionCard";
 import { Input } from "../components/ui/input";
@@ -15,45 +15,40 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../components/ui/alert-dialog";
-import { useMyCollections } from "../hooks/useMyCollections";
+import { InfiniteScrollTrigger } from "../components/InfiniteScrollTrigger";
+import { useMyCollectionsPaginated } from "../hooks/useMyCollectionsPaginated";
 import { useDeleteCollection } from "../hooks/useDeleteCollection";
 
 export function MyCollectionsPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"recent" | "name" | "items" | "likes">("recent");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [collectionToDelete, setCollectionToDelete] = useState<any | null>(null);
 
-  // API data fetching
-  const { data: collections, loading, error, refetch } = useMyCollections();
+  // Paginated hook (infinite scroll)
+  const {
+    collections,
+    pagination,
+    loading,
+    error,
+    sortBy,
+    setSortBy,
+    loadMore,
+    refresh,
+    hasMore
+  } = useMyCollectionsPaginated('infinite');
+
   const { deleteCollection, loading: deleting } = useDeleteCollection();
 
-  // Filter and sort collections using useMemo for performance
-  const sortedCollections = useMemo(() => {
-    if (!collections) return [];
+  // Client-side search filtering (필터링만, 정렬은 서버에서)
+  const filteredCollections = useMemo(() => {
+    if (!searchQuery.trim()) return collections;
 
-    // Filter collections
-    const filtered = collections.filter(collection =>
+    return collections.filter(collection =>
       collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      collection.description.toLowerCase().includes(searchQuery.toLowerCase())
+      collection.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    // Sort collections
-    return [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.title.localeCompare(b.title);
-        case "items":
-          return b.itemCount - a.itemCount;
-        case "likes":
-          return b.likeCount - a.likeCount;
-        case "recent":
-        default:
-          return new Date(b.likedDate).getTime() - new Date(a.likedDate).getTime();
-      }
-    });
-  }, [collections, searchQuery, sortBy]);
+  }, [collections, searchQuery]);
 
   const handleCollectionClick = (collectionId: number) => {
     navigate(`/collections/${collectionId}`);
@@ -72,26 +67,26 @@ export function MyCollectionsPage() {
       await deleteCollection(collectionToDelete.collectionId);
       setDeleteDialogOpen(false);
       setCollectionToDelete(null);
-      refetch();
+      refresh();
     } catch (error: any) {
       console.error("컬렉션 삭제 실패:", error);
     }
   };
 
-  // Loading state
-  if (loading) {
+  // 초기 로딩 상태 (데이터가 없을 때만)
+  if (loading && collections.length === 0) {
     return (
       <div className="size-full bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <Loader2 className="size-12 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-body-medium text-on-surface-variant">로딩 중...</p>
         </div>
       </div>
     );
   }
 
-  // Error state
-  if (error) {
+  // 에러 상태 (데이터가 없을 때만)
+  if (error && collections.length === 0) {
     return (
       <div className="size-full bg-background flex flex-col">
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-outline-variant">
@@ -112,11 +107,11 @@ export function MyCollectionsPage() {
             <Music className="size-12 mx-auto mb-4 text-destructive" />
             <h3 className="text-title-medium mb-2">데이터를 불러올 수 없습니다</h3>
             <p className="text-body-medium text-on-surface-variant mb-6">
-              {error.message}
+              {error?.message || '컬렉션을 불러오는 중 오류가 발생했습니다.'}
             </p>
             <EnhancedButton
               variant="filled"
-              onClick={() => window.location.reload()}
+              onClick={() => refresh()}
             >
               다시 시도
             </EnhancedButton>
@@ -142,7 +137,10 @@ export function MyCollectionsPage() {
           <div className="flex-1">
             <h1 className="text-title-large">내가 만든 컬렉션</h1>
             <p className="text-body-medium text-on-surface-variant">
-              {collections?.length || 0}개의 컬렉션
+              {pagination
+                ? `총 ${pagination.totalItems}개의 컬렉션 (${collections.length}개 표시)`
+                : `${collections.length}개의 컬렉션`
+              }
             </p>
           </div>
           <EnhancedButton
@@ -176,16 +174,13 @@ export function MyCollectionsPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setSortBy("recent")}>
-                최근 생성순
+                최신순
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("name")}>
-                이름순
+              <DropdownMenuItem onClick={() => setSortBy("popularity")}>
+                인기순
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("items")}>
-                아이템 많은순
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("likes")}>
-                좋아요 많은순
+              <DropdownMenuItem onClick={() => setSortBy("old")}>
+                오래된순
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -194,7 +189,7 @@ export function MyCollectionsPage() {
 
       {/* Collections Grid */}
       <div className="p-3 md:p-4">
-        {sortedCollections.length === 0 ? (
+        {filteredCollections.length === 0 ? (
           <div className="text-center py-12">
             <Music className="size-12 mx-auto mb-4 text-on-surface-variant" />
             <h3 className="text-title-medium mb-2">컬렉션이 없습니다</h3>
@@ -212,8 +207,9 @@ export function MyCollectionsPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
-            {sortedCollections.map((collection) => (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
+              {filteredCollections.map((collection) => (
               <div key={collection.collectionId} className="relative">
                 <CollectionCard
                   collectionId={collection.collectionId}
@@ -253,7 +249,18 @@ export function MyCollectionsPage() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+
+            {/* Infinite Scroll Trigger (검색 모드가 아닐 때만) */}
+            {!searchQuery && (
+              <InfiniteScrollTrigger
+                onLoadMore={loadMore}
+                loading={loading}
+                hasMore={hasMore}
+                threshold={200}
+              />
+            )}
+          </>
         )}
       </div>
 
