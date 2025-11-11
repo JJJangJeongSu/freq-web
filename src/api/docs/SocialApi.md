@@ -115,7 +115,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections**
-> GetUserCollections200Response getMyCollections()
+> GetMyCollections200Response1 getMyCollections()
 
 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
 
@@ -146,7 +146,7 @@ const { status, data } = await apiInstance.getMyCollections(
 
 ### Return type
 
-**GetUserCollections200Response**
+**GetMyCollections200Response1**
 
 ### Authorization
 

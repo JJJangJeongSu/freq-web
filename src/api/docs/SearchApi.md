@@ -11,7 +11,7 @@ All URIs are relative to *http://localhost*
 # **search**
 > Search200Response search()
 
-키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
 
 ### Example
 
@@ -25,7 +25,7 @@ const configuration = new Configuration();
 const apiInstance = new SearchApi(configuration);
 
 let q: string; //이름  (optional) (default to undefined)
-let sortBy: string; // (optional) (default to undefined)
+let sortBy: ''; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.search(
     q,
@@ -38,7 +38,7 @@ const { status, data } = await apiInstance.search(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **q** | [**string**] | 이름  | (optional) defaults to undefined|
-| **sortBy** | [**string**] |  | (optional) defaults to undefined|
+| **sortBy** | [**&#39;&#39;**]**Array<&#39;&#39;>** |  | (optional) defaults to undefined|
 
 
 ### Return type

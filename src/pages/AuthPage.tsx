@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Music, Mail, Lock, Eye, EyeOff, Bug, User, Check, X } from "lucide-react";
+import { Music, Mail, Lock, Eye, EyeOff, User, Check, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Switch } from "../components/ui/switch";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useLogin, useSignup, useCheckEmail, useCheckNickname } from "../hooks/useAuth";
@@ -18,7 +17,6 @@ export function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
-  const [debugMode, setDebugMode] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
   const [nicknameCheckResult, setNicknameCheckResult] = useState<"available" | "taken" | null>(null);
   const [emailCheckResult, setEmailCheckResult] = useState<"available" | "taken" | null>(null);
@@ -77,14 +75,6 @@ export function AuthPage() {
       // 에러 처리
       const errorMessage = err.response?.data?.error?.message || "로그인에 실패했습니다.";
       setError(errorMessage);
-    }
-  };
-
-  const handleDebugToggle = (checked: boolean) => {
-    setDebugMode(checked);
-    if (checked) {
-      // 디버그 모드 켜지면 바로 홈으로 이동
-      navigate('/home');
     }
   };
 
@@ -231,18 +221,6 @@ export function AuthPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Debug Toggle */}
-      <div className="flex justify-end p-4">
-        <div className="flex items-center gap-2">
-          <Label htmlFor="debug-mode" className="text-sm">디버그</Label>
-          <Switch
-            id="debug-mode"
-            checked={debugMode}
-            onCheckedChange={handleDebugToggle}
-          />
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-6">

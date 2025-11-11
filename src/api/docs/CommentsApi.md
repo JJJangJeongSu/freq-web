@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost*
 |[**createComment_0**](#createcomment_0) | **POST** /comments | 댓글 작성|
 |[**deleteComment**](#deletecomment) | **DELETE** /comments/{commentId} | 댓글 삭제|
 |[**deleteComment_0**](#deletecomment_0) | **DELETE** /comments/{commentId} | 댓글 삭제|
+|[**getMyCollections**](#getmycollections) | **GET** /comments/detail/{itemId} | 댓글 목록조회|
 |[**toggleCommentLike**](#togglecommentlike) | **POST** /comments/{commentId}/like | 댓글 좋아요 토글|
 |[**toggleCommentLike_0**](#togglecommentlike_0) | **POST** /comments/{commentId}/like | 댓글 좋아요 토글|
 |[**updateComment**](#updatecomment) | **PATCH** /comments/{commentId} | 댓글 수정|
@@ -231,6 +232,65 @@ No authorization required
 |**401** | 인증 실패 |  -  |
 |**403** | 권한 없음 |  -  |
 |**404** | 리소스를 찾을 수 없음 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMyCollections**
+> GetMyCollections200Response getMyCollections()
+
+itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+
+### Example
+
+```typescript
+import {
+    CommentsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CommentsApi(configuration);
+
+let itemId: string; //리뷰 or 콜렉션의 id (default to undefined)
+let type: 'collection' | 'review'; //review or collection (optional) (default to undefined)
+let sortBy: 'likes' | 'recent' | 'old'; //\'likes\' or \'recent\' or \'old\' (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getMyCollections(
+    itemId,
+    type,
+    sortBy
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **itemId** | [**string**] | 리뷰 or 콜렉션의 id | defaults to undefined|
+| **type** | [**&#39;collection&#39; | &#39;review&#39;**]**Array<&#39;collection&#39; &#124; &#39;review&#39;>** | review or collection | (optional) defaults to undefined|
+| **sortBy** | [**&#39;likes&#39; | &#39;recent&#39; | &#39;old&#39;**]**Array<&#39;likes&#39; &#124; &#39;recent&#39; &#124; &#39;old&#39;>** | \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39; | (optional) defaults to undefined|
+
+
+### Return type
+
+**GetMyCollections200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 목록 조회 성공 |  -  |
+|**401** | 인증 실패 |  -  |
 |**500** | 서버 오류 |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

@@ -18,10 +18,10 @@
 import type { CollectionPreview } from './collection-preview';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyActivity200ResponseAllOfDataRateDistributions } from './get-my-activity200-response-all-of-data-rate-distributions';
+import type { GetMyActivity200ResponseAllOfDataFollowInfo } from './get-my-activity200-response-all-of-data-follow-info';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetMyActivity200ResponseAllOfDataUserPreferencesInner } from './get-my-activity200-response-all-of-data-user-preferences-inner';
+import type { GetMyActivity200ResponseAllOfDataRateDistributions } from './get-my-activity200-response-all-of-data-rate-distributions';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { RatedAlbum } from './rated-album';
@@ -121,9 +121,9 @@ export interface GetMyActivity200ResponseAllOfData {
     'rateDistributions': GetMyActivity200ResponseAllOfDataRateDistributions;
     /**
      * 
-     * @type {Array<GetMyActivity200ResponseAllOfDataUserPreferencesInner>}
+     * @type {GetMyActivity200ResponseAllOfDataFollowInfo}
      * @memberof GetMyActivity200ResponseAllOfData
      */
-    'userPreferences': Array<GetMyActivity200ResponseAllOfDataUserPreferencesInner>;
+    'followInfo': GetMyActivity200ResponseAllOfDataFollowInfo;
 }
 

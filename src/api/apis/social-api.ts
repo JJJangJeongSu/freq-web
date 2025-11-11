@@ -28,7 +28,7 @@ import type { GetLikedArtists200Response } from '../models';
 // @ts-ignore
 import type { GetMyActivity200Response } from '../models';
 // @ts-ignore
-import type { GetUserCollections200Response } from '../models';
+import type { GetMyCollections200Response1 } from '../models';
 /**
  * SocialApi - axios parameter creator
  * @export
@@ -180,7 +180,7 @@ export const SocialApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
+        async getMyCollections(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SocialApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
@@ -223,7 +223,7 @@ export const SocialApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
+        getMyCollections(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
             return localVarFp.getMyCollections(userId, options).then((request) => request(axios, basePath));
         },
     };

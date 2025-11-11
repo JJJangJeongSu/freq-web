@@ -32,7 +32,7 @@ export const useMyCollections = (): UseMyCollectionsReturn => {
       setError(null);
 
       // API 호출 (/users/me/collections)
-      const response = await apiService.collections.getMyCollections_4();
+      const response = await apiService.collections.getMyCollections_5();
 
       // 응답 unwrap
       const responseData = response.data;

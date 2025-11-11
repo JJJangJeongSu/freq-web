@@ -310,6 +310,15 @@ export function CreateCollectionPage() {
       return;
     }
 
+    if (tags.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "태그를 추가해주세요",
+        description: "최소 1개 이상의 태그를 추가해야 합니다.",
+      });
+      return;
+    }
+
     if (selectedMusic.length === 0) {
       toast({
         variant: "destructive",
@@ -400,7 +409,7 @@ export function CreateCollectionPage() {
           variant="ghost"
           size="sm"
           onClick={handleSave}
-          disabled={!formData.title.trim() || isSaving}
+          disabled={!formData.title.trim() || tags.length === 0 || isSaving}
         >
           {isSaving ? (
             <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
@@ -581,7 +590,7 @@ export function CreateCollectionPage() {
           <CardContent className="p-4 space-y-4">
             <h3 className="font-medium flex items-center gap-2">
               <Hash className="w-4 h-4" />
-              태그 (최대 5개)
+              태그 (최소 1개, 최대 5개) *
             </h3>
             
             {/* 태그 입력 */}
@@ -867,7 +876,7 @@ export function CreateCollectionPage() {
 
             <Button
               onClick={handleSave}
-              disabled={!formData.title.trim() || isSaving}
+              disabled={!formData.title.trim() || tags.length === 0 || isSaving}
               className="w-full"
             >
               {isSaving ? (

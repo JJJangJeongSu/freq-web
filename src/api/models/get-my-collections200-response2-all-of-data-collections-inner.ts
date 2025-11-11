@@ -20,70 +20,76 @@ import type { UserPreview } from './user-preview';
 /**
  * 
  * @export
- * @interface CollectionPreview
+ * @interface GetMyCollections200Response2AllOfDataCollectionsInner
  */
-export interface CollectionPreview {
+export interface GetMyCollections200Response2AllOfDataCollectionsInner {
     /**
      * 컬렉션 ID
      * @type {number}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'collectionId': number;
     /**
      * 컬렉션 제목
      * @type {string}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'title': string;
     /**
      * 컬렉션 설명
      * @type {string}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'description': string;
     /**
      * 
      * @type {UserPreview}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'author': UserPreview;
     /**
      * 컬렉션에 포함된 아이템 개수
      * @type {number}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'itemCount': number;
     /**
      * 받은 좋아요 수
      * @type {number}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'likeCount': number;
     /**
      * 커버 이미지 URL
      * @type {string}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'coverImageUrl': string;
     /**
      * 공개 여부
      * @type {string}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
-    'visibility'?: CollectionPreviewVisibilityEnum;
+    'visibility'?: GetMyCollections200Response2AllOfDataCollectionsInnerVisibilityEnum;
+    /**
+     * 좋아요한 날짜
+     * @type {string}
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
+     */
+    'likedDate': string;
     /**
      * 
      * @type {Array<string>}
-     * @memberof CollectionPreview
+     * @memberof GetMyCollections200Response2AllOfDataCollectionsInner
      */
     'tags': Array<string>;
 }
 
-export const CollectionPreviewVisibilityEnum = {
+export const GetMyCollections200Response2AllOfDataCollectionsInnerVisibilityEnum = {
     Public: 'public',
     Private: 'private'
 } as const;
 
-export type CollectionPreviewVisibilityEnum = typeof CollectionPreviewVisibilityEnum[keyof typeof CollectionPreviewVisibilityEnum];
+export type GetMyCollections200Response2AllOfDataCollectionsInnerVisibilityEnum = typeof GetMyCollections200Response2AllOfDataCollectionsInnerVisibilityEnum[keyof typeof GetMyCollections200Response2AllOfDataCollectionsInnerVisibilityEnum];
 
 

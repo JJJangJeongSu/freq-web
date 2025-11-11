@@ -29,6 +29,7 @@ export function CurationDetailPage() {
   const [isLikeLoading, setIsLikeLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [commentLikeStates, setCommentLikeStates] = useState<Record<number, boolean>>({});
+  const [commentLikeCounts, setCommentLikeCounts] = useState<Record<number, number>>({});
 
   // API 데이터가 로드되면 좋아요 상태 업데이트
   useEffect(() => {
@@ -36,12 +37,15 @@ export function CurationDetailPage() {
       setIsLiked(collection.isLiked || false);
       setLikes(collection.likeCount);
 
-      // 댓글 좋아요 상태 초기화
+      // 댓글 좋아요 상태 및 카운트 초기화
       const states: Record<number, boolean> = {};
+      const counts: Record<number, number> = {};
       collection.comments.forEach(comment => {
         states[comment.commentId] = comment.isLiked;
+        counts[comment.commentId] = comment.likeCount;
       });
       setCommentLikeStates(states);
+      setCommentLikeCounts(counts);
     }
   }, [collection]);
 
@@ -93,11 +97,16 @@ export function CurationDetailPage() {
 
   const handleCommentLike = async (commentId: number) => {
     const prevState = commentLikeStates[commentId];
+    const prevCount = commentLikeCounts[commentId] || 0;
 
     // Optimistic update
     setCommentLikeStates(prev => ({
       ...prev,
       [commentId]: !prevState
+    }));
+    setCommentLikeCounts(prev => ({
+      ...prev,
+      [commentId]: prevState ? prevCount - 1 : prevCount + 1
     }));
 
     try {
@@ -117,6 +126,10 @@ export function CurationDetailPage() {
       setCommentLikeStates(prev => ({
         ...prev,
         [commentId]: prevState
+      }));
+      setCommentLikeCounts(prev => ({
+        ...prev,
+        [commentId]: prevCount
       }));
       console.error('❌ 댓글 좋아요 실패:', err);
     }
@@ -219,13 +232,13 @@ export function CurationDetailPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/30" />
           <div className="absolute bottom-4 left-4 right-4 text-white">
-            <h1 className="text-2xl font-bold mb-2">{collection.title}</h1>
+            <h1 className="text-2xl font-bold mb-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{collection.title}</h1>
             <div className="flex items-center gap-2">
               <Avatar className="w-6 h-6">
                 <AvatarImage src={collection.author.imageUrl} />
                 <AvatarFallback>{collection.author.username.charAt(0)}</AvatarFallback>
               </Avatar>
-              <span className="text-sm">{collection.author.username}</span>
+              <span className="text-sm" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{collection.author.username}</span>
             </div>
           </div>
         </div>
@@ -313,10 +326,27 @@ export function CurationDetailPage() {
 
           {/* Comments */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">댓글 ({collection.commentCount})</h3>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold">댓글</h3>
+                <span className="text-lg font-bold" style={{ color: 'var(--primary)' }}>
+                  {collection.commentCount}
+                </span>
+              </div>
+              {collection.commentCount > 3 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate(`/collections/${curationId}/comments`)}
+                  style={{ color: 'var(--primary)' }}
+                >
+                  전체보기
+                </Button>
+              )}
+            </div>
             {collection.comments.length > 0 ? (
               <div className="space-y-4">
-                {collection.comments.map((comment) => (
+                {collection.comments.slice(0, 3).map((comment) => (
                   <div key={comment.commentId} className="flex gap-3">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={comment.profileImageUrl} />
@@ -340,7 +370,7 @@ export function CurationDetailPage() {
                         }}
                       >
                         <Heart className={`w-3 h-3 mr-1 ${commentLikeStates[comment.commentId] ? 'fill-red-500 text-red-500' : ''}`} />
-                        <span className="text-xs">{comment.likeCount}</span>
+                        <span className="text-xs">{commentLikeCounts[comment.commentId] ?? comment.likeCount}</span>
                       </Button>
                     </div>
                   </div>

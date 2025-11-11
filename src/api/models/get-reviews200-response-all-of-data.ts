@@ -15,6 +15,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
+import type { PaginationInfo } from './pagination-info';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { ReviewSummary } from './review-summary';
 
 /**
@@ -30,10 +33,10 @@ export interface GetReviews200ResponseAllOfData {
      */
     'reviews'?: Array<ReviewSummary>;
     /**
-     * 전체 리뷰 개수
-     * @type {number}
+     * 
+     * @type {PaginationInfo}
      * @memberof GetReviews200ResponseAllOfData
      */
-    'total'?: number;
+    'pagination'?: PaginationInfo;
 }
 

@@ -28,6 +28,8 @@ import type { CreateCommentRequest } from '../models';
 // @ts-ignore
 import type { ErrorResponse } from '../models';
 // @ts-ignore
+import type { GetMyCollections200Response } from '../models';
+// @ts-ignore
 import type { SuccessResponse } from '../models';
 // @ts-ignore
 import type { ToggleCommentLike200Response } from '../models';
@@ -165,6 +167,50 @@ export const CommentsApiAxiosParamCreator = function (configuration?: Configurat
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+         * @summary 댓글 목록조회
+         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {GetMyCollectionsTypeEnum} [type] review or collection
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections: async (itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('getMyCollections', 'itemId', itemId)
+            const localVarPath = `/comments/detail/{itemId}`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
 
 
     
@@ -384,6 +430,21 @@ export const CommentsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+         * @summary 댓글 목록조회
+         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {GetMyCollectionsTypeEnum} [type] review or collection
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(itemId, type, sortBy, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CommentsApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 특정 댓글에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 댓글에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다.
          * @summary 댓글 좋아요 토글
          * @param {string} commentId 좋아요를 토글할 댓글 ID
@@ -488,6 +549,18 @@ export const CommentsApiFactory = function (configuration?: Configuration, baseP
             return localVarFp.deleteComment_2(commentId, options).then((request) => request(axios, basePath));
         },
         /**
+         * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+         * @summary 댓글 목록조회
+         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {GetMyCollectionsTypeEnum} [type] review or collection
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response> {
+            return localVarFp.getMyCollections(itemId, type, sortBy, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 특정 댓글에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 댓글에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다.
          * @summary 댓글 좋아요 토글
          * @param {string} commentId 좋아요를 토글할 댓글 ID
@@ -588,6 +661,20 @@ export class CommentsApi extends BaseAPI {
     }
 
     /**
+     * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+     * @summary 댓글 목록조회
+     * @param {string} itemId 리뷰 or 콜렉션의 id
+     * @param {GetMyCollectionsTypeEnum} [type] review or collection
+     * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentsApi
+     */
+    public getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig) {
+        return CommentsApiFp(this.configuration).getMyCollections(itemId, type, sortBy, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 특정 댓글에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 댓글에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다.
      * @summary 댓글 좋아요 토글
      * @param {string} commentId 좋아요를 토글할 댓글 ID
@@ -638,3 +725,20 @@ export class CommentsApi extends BaseAPI {
     }
 }
 
+/**
+ * @export
+ */
+export const GetMyCollectionsTypeEnum = {
+    Collection: 'collection',
+    Review: 'review'
+} as const;
+export type GetMyCollectionsTypeEnum = typeof GetMyCollectionsTypeEnum[keyof typeof GetMyCollectionsTypeEnum];
+/**
+ * @export
+ */
+export const GetMyCollectionsSortByEnum = {
+    Likes: 'likes',
+    Recent: 'recent',
+    Old: 'old'
+} as const;
+export type GetMyCollectionsSortByEnum = typeof GetMyCollectionsSortByEnum[keyof typeof GetMyCollectionsSortByEnum];

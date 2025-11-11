@@ -34,14 +34,14 @@ import type { Search200Response1 } from '../models';
 export const SearchApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+         * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
-         * @param {string} [sortBy] 
+         * @param {SearchSortByEnum} [sortBy] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search: async (q?: string, sortBy?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        search: async (q?: string, sortBy?: SearchSortByEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/collections/search`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -184,14 +184,14 @@ export const SearchApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = SearchApiAxiosParamCreator(configuration)
     return {
         /**
-         * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+         * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
-         * @param {string} [sortBy] 
+         * @param {SearchSortByEnum} [sortBy] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async search(q?: string, sortBy?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Search200Response>> {
+        async search(q?: string, sortBy?: SearchSortByEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Search200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, sortBy, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SearchApi.search']?.[localVarOperationServerIndex]?.url;
@@ -238,14 +238,14 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
     const localVarFp = SearchApiFp(configuration)
     return {
         /**
-         * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+         * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
-         * @param {string} [sortBy] 
+         * @param {SearchSortByEnum} [sortBy] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search(q?: string, sortBy?: string, options?: RawAxiosRequestConfig): AxiosPromise<Search200Response> {
+        search(q?: string, sortBy?: SearchSortByEnum, options?: RawAxiosRequestConfig): AxiosPromise<Search200Response> {
             return localVarFp.search(q, sortBy, options).then((request) => request(axios, basePath));
         },
         /**
@@ -283,15 +283,15 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
  */
 export class SearchApi extends BaseAPI {
     /**
-     * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+     * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
      * @summary 컬렉션 검색
      * @param {string} [q] 이름 
-     * @param {string} [sortBy] 
+     * @param {SearchSortByEnum} [sortBy] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SearchApi
      */
-    public search(q?: string, sortBy?: string, options?: RawAxiosRequestConfig) {
+    public search(q?: string, sortBy?: SearchSortByEnum, options?: RawAxiosRequestConfig) {
         return SearchApiFp(this.configuration).search(q, sortBy, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -324,6 +324,13 @@ export class SearchApi extends BaseAPI {
     }
 }
 
+/**
+ * @export
+ */
+export const SearchSortByEnum = {
+    Empty: ''
+} as const;
+export type SearchSortByEnum = typeof SearchSortByEnum[keyof typeof SearchSortByEnum];
 /**
  * @export
  */

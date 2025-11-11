@@ -10,13 +10,14 @@ All URIs are relative to *http://localhost*
 |[**deleteReview_0**](#deletereview_0) | **DELETE** /reviews/{reviewId} | 리뷰 삭제|
 |[**getReviewDetail**](#getreviewdetail) | **GET** /reviews/{reviewId} | 리뷰 상세 조회|
 |[**getReviewDetail_0**](#getreviewdetail_0) | **GET** /reviews/{reviewId} | 리뷰 상세 조회|
-|[**getReviews**](#getreviews) | **GET** /reviews | 리뷰 목록 조회 Copy|
+|[**getReviews**](#getreviews) | **GET** /reviews | 리뷰 목록 조회|
+|[**getReviews_0**](#getreviews_0) | **GET** /reviews | 리뷰 목록 조회|
 |[**toggleArtistLike**](#toggleartistlike) | **POST** /reviews/artist-like/{artistId} | 아티스트 좋아요 토글|
 |[**toggleArtistLike_0**](#toggleartistlike_0) | **POST** /reviews/artist-like/{artistId} | 아티스트 좋아요 토글|
 |[**toggleReviewLike**](#togglereviewlike) | **POST** /reviews/{reviewId}/likes/toggle | 리뷰 좋아요 토글|
 |[**toggleReviewLike_0**](#togglereviewlike_0) | **POST** /reviews/{reviewId}/likes/toggle | 리뷰 좋아요 토글|
-|[**updateReview**](#updatereview) | **PATCH** /reviews/{reviewId} | 리뷰 수정|
-|[**updateReview_0**](#updatereview_0) | **PATCH** /reviews/{reviewId} | 리뷰 수정|
+|[**updateReview**](#updatereview) | **PATCH** /reviews/{itemId} | 리뷰 수정|
+|[**updateReview_0**](#updatereview_0) | **PATCH** /reviews/{itemId} | 리뷰 수정|
 
 # **createReview**
 > CreateReview200Response createReview()
@@ -256,7 +257,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //리뷰 ID (default to undefined)
+let reviewId: number; //리뷰 ID (default to undefined)
 
 const { status, data } = await apiInstance.getReviewDetail(
     reviewId
@@ -267,7 +268,7 @@ const { status, data } = await apiInstance.getReviewDetail(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reviewId** | [**string**] | 리뷰 ID | defaults to undefined|
+| **reviewId** | [**number**] | 리뷰 ID | defaults to undefined|
 
 
 ### Return type
@@ -309,7 +310,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //리뷰 ID (default to undefined)
+let reviewId: number; //리뷰 ID (default to undefined)
 
 const { status, data } = await apiInstance.getReviewDetail_0(
     reviewId
@@ -320,7 +321,7 @@ const { status, data } = await apiInstance.getReviewDetail_0(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reviewId** | [**string**] | 리뷰 ID | defaults to undefined|
+| **reviewId** | [**number**] | 리뷰 ID | defaults to undefined|
 
 
 ### Return type
@@ -363,9 +364,15 @@ const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
 let targetId: string; //가져올 대상의 ID (앨범 ID 또는 트랙 ID) (default to undefined)
+let sortBy: 'popularity' | 'recent' | 'old'; //정렬 기준(popularity or recent or old) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to 1)
+let limit: number; //페이지당 항목 수 (optional) (default to 20)
 
 const { status, data } = await apiInstance.getReviews(
-    targetId
+    targetId,
+    sortBy,
+    page,
+    limit
 );
 ```
 
@@ -374,6 +381,71 @@ const { status, data } = await apiInstance.getReviews(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **targetId** | [**string**] | 가져올 대상의 ID (앨범 ID 또는 트랙 ID) | defaults to undefined|
+| **sortBy** | [**&#39;popularity&#39; | &#39;recent&#39; | &#39;old&#39;**]**Array<&#39;popularity&#39; &#124; &#39;recent&#39; &#124; &#39;old&#39;>** | 정렬 기준(popularity or recent or old) | defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to 1|
+| **limit** | [**number**] | 페이지당 항목 수 | (optional) defaults to 20|
+
+
+### Return type
+
+**GetReviews200Response**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 리뷰 목록 조회 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getReviews_0**
+> GetReviews200Response getReviews_0()
+
+특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
+
+### Example
+
+```typescript
+import {
+    ReviewsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ReviewsApi(configuration);
+
+let targetId: string; //가져올 대상의 ID (앨범 ID 또는 트랙 ID) (default to undefined)
+let sortBy: 'popularity' | 'recent' | 'old'; //정렬 기준(popularity or recent or old) (default to undefined)
+let page: number; //페이지 번호 (1부터 시작) (optional) (default to 1)
+let limit: number; //페이지당 항목 수 (optional) (default to 20)
+
+const { status, data } = await apiInstance.getReviews_0(
+    targetId,
+    sortBy,
+    page,
+    limit
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **targetId** | [**string**] | 가져올 대상의 ID (앨범 ID 또는 트랙 ID) | defaults to undefined|
+| **sortBy** | [**&#39;popularity&#39; | &#39;recent&#39; | &#39;old&#39;**]**Array<&#39;popularity&#39; &#124; &#39;recent&#39; &#124; &#39;old&#39;>** | 정렬 기준(popularity or recent or old) | defaults to undefined|
+| **page** | [**number**] | 페이지 번호 (1부터 시작) | (optional) defaults to 1|
+| **limit** | [**number**] | 페이지당 항목 수 | (optional) defaults to 20|
 
 
 ### Return type
@@ -632,11 +704,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //수정할 리뷰의 ID (default to undefined)
+let itemId: number; // (default to undefined)
 let updateReviewRequest: UpdateReviewRequest; // (optional)
 
 const { status, data } = await apiInstance.updateReview(
-    reviewId,
+    itemId,
     updateReviewRequest
 );
 ```
@@ -646,7 +718,7 @@ const { status, data } = await apiInstance.updateReview(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **updateReviewRequest** | **UpdateReviewRequest**|  | |
-| **reviewId** | [**string**] | 수정할 리뷰의 ID | defaults to undefined|
+| **itemId** | [**number**] |  | defaults to undefined|
 
 
 ### Return type
@@ -691,11 +763,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //수정할 리뷰의 ID (default to undefined)
+let itemId: number; // (default to undefined)
 let updateReviewRequest: UpdateReviewRequest; // (optional)
 
 const { status, data } = await apiInstance.updateReview_0(
-    reviewId,
+    itemId,
     updateReviewRequest
 );
 ```
@@ -705,7 +777,7 @@ const { status, data } = await apiInstance.updateReview_0(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **updateReviewRequest** | **UpdateReviewRequest**|  | |
-| **reviewId** | [**string**] | 수정할 리뷰의 ID | defaults to undefined|
+| **itemId** | [**number**] |  | defaults to undefined|
 
 
 ### Return type

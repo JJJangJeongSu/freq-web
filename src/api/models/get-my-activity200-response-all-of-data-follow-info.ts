@@ -13,21 +13,24 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { Comment } from './comment';
 
 /**
  * 
  * @export
- * @interface GetMyCollections200ResponseAllOfData
+ * @interface GetMyActivity200ResponseAllOfDataFollowInfo
  */
-export interface GetMyCollections200ResponseAllOfData {
+export interface GetMyActivity200ResponseAllOfDataFollowInfo {
     /**
      * 
-     * @type {Array<Comment>}
-     * @memberof GetMyCollections200ResponseAllOfData
+     * @type {number}
+     * @memberof GetMyActivity200ResponseAllOfDataFollowInfo
      */
-    'comments'?: Array<Comment>;
+    'followingCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetMyActivity200ResponseAllOfDataFollowInfo
+     */
+    'followerCount': number;
 }
 

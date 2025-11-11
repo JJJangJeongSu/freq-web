@@ -32,7 +32,9 @@ import type { GetCollectionDetail200Response } from '../models';
 // @ts-ignore
 import type { GetMyCollections200Response } from '../models';
 // @ts-ignore
-import type { GetReviews200Response } from '../models';
+import type { GetMyCollections200Response1 } from '../models';
+// @ts-ignore
+import type { GetMyCollections200Response2 } from '../models';
 // @ts-ignore
 import type { GetUserCollections200Response } from '../models';
 // @ts-ignore
@@ -180,11 +182,11 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 컬렉션 삭제
-         * @param {string} collectionId 삭제할 컬렉션 ID
+         * @param {number} collectionId 삭제할 컬렉션 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCollection: async (collectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteCollection: async (collectionId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'collectionId' is not null or undefined
             assertParamExists('deleteCollection', 'collectionId', collectionId)
             const localVarPath = `/collections/{collectionId}`
@@ -218,11 +220,11 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 컬렉션 삭제
-         * @param {string} collectionId 삭제할 컬렉션 ID
+         * @param {number} collectionId 삭제할 컬렉션 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCollection_2: async (collectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteCollection_2: async (collectionId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'collectionId' is not null or undefined
             assertParamExists('deleteCollection_2', 'collectionId', collectionId)
             const localVarPath = `/collections/{collectionId}`
@@ -330,15 +332,59 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
+         * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+         * @summary 댓글 목록조회
+         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {GetMyCollectionsTypeEnum} [type] review or collection
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections: async (itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('getMyCollections', 'itemId', itemId)
+            const localVarPath = `/comments/detail/{itemId}`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 컬렉션 목록 조회
          * @param {string} userId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_4: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getMyCollections', 'userId', userId)
+            assertParamExists('getMyCollections_4', 'userId', userId)
             const localVarPath = `/users/{userId}/collections`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -369,7 +415,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_4: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_5: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/collections`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -400,9 +446,9 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_5: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getMyCollections_6: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getMyCollections_5', 'userId', userId)
+            assertParamExists('getMyCollections_6', 'userId', userId)
             const localVarPath = `/users/{userId}/collections/liked`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -432,16 +478,16 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
-         * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
-         * @summary 리뷰 목록 조회 Copy
-         * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
+         * 공개(public)로 설정된 컬렉션을 조회합니다
+         * @summary 컬렉션 전체 조회
+         * @param {GetUserCollectionsSortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviews: async (targetId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'targetId' is not null or undefined
-            assertParamExists('getReviews', 'targetId', targetId)
-            const localVarPath = `/reviews`;
+        getUserCollections: async (sortBy?: GetUserCollectionsSortByEnum, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/collections/all`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -453,8 +499,16 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (targetId !== undefined) {
-                localVarQueryParameter['targetId'] = targetId;
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
             }
 
 
@@ -469,12 +523,15 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
-         *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+         * 공개(public)로 설정된 컬렉션을 조회합니다
          * @summary 컬렉션 전체 조회
+         * @param {GetUserCollections0SortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_7: async (sortBy?: GetUserCollections0SortByEnum, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/collections/all`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -487,43 +544,17 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
-         * @summary 컬렉션 전체 조회
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUserCollections_6: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/collections/all`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
 
 
     
@@ -542,7 +573,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_7: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_8: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/badges`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -576,7 +607,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_8: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_9: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/active-badge`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -607,7 +638,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_9: async (getUserCollectionsRequest?: GetUserCollectionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_10: async (getUserCollectionsRequest?: GetUserCollectionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users/me/active-badge`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -641,9 +672,9 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_10: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_11: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserCollections_10', 'userId', userId)
+            assertParamExists('getUserCollections_11', 'userId', userId)
             const localVarPath = `/users/{userId}/badges`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -674,7 +705,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_11: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_12: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/home`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -704,7 +735,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_12: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_13: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/popular-albums`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -734,7 +765,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_13: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserCollections_14: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/popular-tracks`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -759,14 +790,14 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
-         * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+         * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
-         * @param {string} [sortBy] 
+         * @param {SearchSortByEnum} [sortBy] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search: async (q?: string, sortBy?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        search: async (q?: string, sortBy?: SearchSortByEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/collections/search`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -843,9 +874,9 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleCollectionLike_14: async (collectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        toggleCollectionLike_15: async (collectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'collectionId' is not null or undefined
-            assertParamExists('toggleCollectionLike_14', 'collectionId', collectionId)
+            assertParamExists('toggleCollectionLike_15', 'collectionId', collectionId)
             const localVarPath = `/collections/{collectionId}/likes/toggle`
                 .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -920,9 +951,9 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCollection_15: async (collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateCollection_16: async (collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'collectionId' is not null or undefined
-            assertParamExists('updateCollection_15', 'collectionId', collectionId)
+            assertParamExists('updateCollection_16', 'collectionId', collectionId)
             const localVarPath = `/collections/{collectionId}`
                 .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1006,11 +1037,11 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 컬렉션 삭제
-         * @param {string} collectionId 삭제할 컬렉션 ID
+         * @param {number} collectionId 삭제할 컬렉션 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteCollection(collectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
+        async deleteCollection(collectionId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCollection(collectionId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.deleteCollection']?.[localVarOperationServerIndex]?.url;
@@ -1019,11 +1050,11 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 컬렉션 삭제
-         * @param {string} collectionId 삭제할 컬렉션 ID
+         * @param {number} collectionId 삭제할 컬렉션 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteCollection_2(collectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
+        async deleteCollection_2(collectionId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCollection_2(collectionId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.deleteCollection_2']?.[localVarOperationServerIndex]?.url;
@@ -1058,16 +1089,31 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+         * @summary 댓글 목록조회
+         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {GetMyCollectionsTypeEnum} [type] review or collection
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(itemId, type, sortBy, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 컬렉션 목록 조회
          * @param {string} userId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections(userId, options);
+        async getMyCollections_4(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_4(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_4']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1076,10 +1122,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections_4(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_4(options);
+        async getMyCollections_5(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_5(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_4']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_5']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1089,47 +1135,40 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMyCollections_5(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_5(userId, options);
+        async getMyCollections_6(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMyCollections200Response2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyCollections_6(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_5']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getMyCollections_6']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
-         * @summary 리뷰 목록 조회 Copy
-         * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getReviews(targetId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetReviews200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviews(targetId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getReviews']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+         * 공개(public)로 설정된 컬렉션을 조회합니다
          * @summary 컬렉션 전체 조회
+         * @param {GetUserCollectionsSortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections(options);
+        async getUserCollections(sortBy?: GetUserCollectionsSortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+         * 공개(public)로 설정된 컬렉션을 조회합니다
          * @summary 컬렉션 전체 조회
+         * @param {GetUserCollections0SortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_6(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_6(options);
+        async getUserCollections_7(sortBy?: GetUserCollections0SortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_7(sortBy, page, limit, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_6']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_7']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1138,10 +1177,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_7(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_7(options);
+        async getUserCollections_8(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_8(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_7']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_8']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1150,10 +1189,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_8(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response2>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_8(options);
+        async getUserCollections_9(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_9(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_8']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_9']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1163,10 +1202,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_9(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response3>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_9(getUserCollectionsRequest, options);
+        async getUserCollections_10(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response3>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_10(getUserCollectionsRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_9']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_10']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1176,10 +1215,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_10(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response1>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_10(userId, options);
+        async getUserCollections_11(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response1>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_11(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_10']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_11']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1188,10 +1227,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_11(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response4>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_11(options);
+        async getUserCollections_12(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response4>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_12(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_11']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_12']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1200,10 +1239,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_12(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response5>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_12(options);
+        async getUserCollections_13(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response5>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_13(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_12']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_13']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1212,21 +1251,21 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserCollections_13(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response6>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_13(options);
+        async getUserCollections_14(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserCollections200Response6>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserCollections_14(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_13']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.getUserCollections_14']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+         * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
-         * @param {string} [sortBy] 
+         * @param {SearchSortByEnum} [sortBy] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async search(q?: string, sortBy?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Search200Response>> {
+        async search(q?: string, sortBy?: SearchSortByEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Search200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, sortBy, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollectionsApi.search']?.[localVarOperationServerIndex]?.url;
@@ -1252,10 +1291,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async toggleCollectionLike_14(collectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleCollectionLike200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleCollectionLike_14(collectionId, options);
+        async toggleCollectionLike_15(collectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleCollectionLike200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleCollectionLike_15(collectionId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.toggleCollectionLike_14']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.toggleCollectionLike_15']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1280,10 +1319,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateCollection_15(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCollectionDetail200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCollection_15(collectionId, updateCollectionRequest, options);
+        async updateCollection_16(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCollectionDetail200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCollection_16(collectionId, updateCollectionRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.updateCollection_15']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.updateCollection_16']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1329,21 +1368,21 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
         /**
          * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 컬렉션 삭제
-         * @param {string} collectionId 삭제할 컬렉션 ID
+         * @param {number} collectionId 삭제할 컬렉션 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCollection(collectionId: string, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
+        deleteCollection(collectionId: number, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
             return localVarFp.deleteCollection(collectionId, options).then((request) => request(axios, basePath));
         },
         /**
          * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 컬렉션 삭제
-         * @param {string} collectionId 삭제할 컬렉션 ID
+         * @param {number} collectionId 삭제할 컬렉션 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCollection_2(collectionId: string, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
+        deleteCollection_2(collectionId: number, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
             return localVarFp.deleteCollection_2(collectionId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1369,14 +1408,26 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
             return localVarFp.getCollectionDetail_3(collectionId, authorization, options).then((request) => request(axios, basePath));
         },
         /**
+         * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+         * @summary 댓글 목록조회
+         * @param {string} itemId 리뷰 or 콜렉션의 id
+         * @param {GetMyCollectionsTypeEnum} [type] review or collection
+         * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response> {
+            return localVarFp.getMyCollections(itemId, type, sortBy, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
          * @summary 컬렉션 목록 조회
          * @param {string} userId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
-            return localVarFp.getMyCollections(userId, options).then((request) => request(axios, basePath));
+        getMyCollections_4(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
+            return localVarFp.getMyCollections_4(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
@@ -1384,8 +1435,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_4(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
-            return localVarFp.getMyCollections_4(options).then((request) => request(axios, basePath));
+        getMyCollections_5(options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response1> {
+            return localVarFp.getMyCollections_5(options).then((request) => request(axios, basePath));
         },
         /**
          * 현재 인증된 사용자가 좋아요한 컬렉션의 목록
@@ -1394,36 +1445,32 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMyCollections_5(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response> {
-            return localVarFp.getMyCollections_5(userId, options).then((request) => request(axios, basePath));
+        getMyCollections_6(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetMyCollections200Response2> {
+            return localVarFp.getMyCollections_6(userId, options).then((request) => request(axios, basePath));
         },
         /**
-         * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
-         * @summary 리뷰 목록 조회 Copy
-         * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getReviews(targetId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetReviews200Response> {
-            return localVarFp.getReviews(targetId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+         * 공개(public)로 설정된 컬렉션을 조회합니다
          * @summary 컬렉션 전체 조회
+         * @param {GetUserCollectionsSortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
-            return localVarFp.getUserCollections(options).then((request) => request(axios, basePath));
+        getUserCollections(sortBy?: GetUserCollectionsSortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
+            return localVarFp.getUserCollections(sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
-         *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+         * 공개(public)로 설정된 컬렉션을 조회합니다
          * @summary 컬렉션 전체 조회
+         * @param {GetUserCollections0SortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_6(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
-            return localVarFp.getUserCollections_6(options).then((request) => request(axios, basePath));
+        getUserCollections_7(sortBy?: GetUserCollections0SortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response> {
+            return localVarFp.getUserCollections_7(sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1431,8 +1478,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_7(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response1> {
-            return localVarFp.getUserCollections_7(options).then((request) => request(axios, basePath));
+        getUserCollections_8(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response1> {
+            return localVarFp.getUserCollections_8(options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1440,8 +1487,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_8(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response2> {
-            return localVarFp.getUserCollections_8(options).then((request) => request(axios, basePath));
+        getUserCollections_9(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response2> {
+            return localVarFp.getUserCollections_9(options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1450,8 +1497,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_9(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response3> {
-            return localVarFp.getUserCollections_9(getUserCollectionsRequest, options).then((request) => request(axios, basePath));
+        getUserCollections_10(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response3> {
+            return localVarFp.getUserCollections_10(getUserCollectionsRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1460,8 +1507,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_10(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response1> {
-            return localVarFp.getUserCollections_10(userId, options).then((request) => request(axios, basePath));
+        getUserCollections_11(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response1> {
+            return localVarFp.getUserCollections_11(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 홈 화면에 해당하는 API
@@ -1469,8 +1516,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_11(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response4> {
-            return localVarFp.getUserCollections_11(options).then((request) => request(axios, basePath));
+        getUserCollections_12(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response4> {
+            return localVarFp.getUserCollections_12(options).then((request) => request(axios, basePath));
         },
         /**
          * 인기 앨범 목록  상위 100개 불러오기
@@ -1478,8 +1525,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_12(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response5> {
-            return localVarFp.getUserCollections_12(options).then((request) => request(axios, basePath));
+        getUserCollections_13(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response5> {
+            return localVarFp.getUserCollections_13(options).then((request) => request(axios, basePath));
         },
         /**
          * 인기 트랙 목록  상위 100개 불러오기 인기도는 복합적으로 계산해야할 듯?
@@ -1487,18 +1534,18 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCollections_13(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response6> {
-            return localVarFp.getUserCollections_13(options).then((request) => request(axios, basePath));
+        getUserCollections_14(options?: RawAxiosRequestConfig): AxiosPromise<GetUserCollections200Response6> {
+            return localVarFp.getUserCollections_14(options).then((request) => request(axios, basePath));
         },
         /**
-         * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+         * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
-         * @param {string} [sortBy] 
+         * @param {SearchSortByEnum} [sortBy] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search(q?: string, sortBy?: string, options?: RawAxiosRequestConfig): AxiosPromise<Search200Response> {
+        search(q?: string, sortBy?: SearchSortByEnum, options?: RawAxiosRequestConfig): AxiosPromise<Search200Response> {
             return localVarFp.search(q, sortBy, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1518,8 +1565,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleCollectionLike_14(collectionId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleCollectionLike200Response> {
-            return localVarFp.toggleCollectionLike_14(collectionId, options).then((request) => request(axios, basePath));
+        toggleCollectionLike_15(collectionId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleCollectionLike200Response> {
+            return localVarFp.toggleCollectionLike_15(collectionId, options).then((request) => request(axios, basePath));
         },
         /**
          * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
@@ -1540,8 +1587,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCollection_15(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetCollectionDetail200Response> {
-            return localVarFp.updateCollection_15(collectionId, updateCollectionRequest, options).then((request) => request(axios, basePath));
+        updateCollection_16(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetCollectionDetail200Response> {
+            return localVarFp.updateCollection_16(collectionId, updateCollectionRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1592,24 +1639,24 @@ export class CollectionsApi extends BaseAPI {
     /**
      * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 컬렉션 삭제
-     * @param {string} collectionId 삭제할 컬렉션 ID
+     * @param {number} collectionId 삭제할 컬렉션 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public deleteCollection(collectionId: string, options?: RawAxiosRequestConfig) {
+    public deleteCollection(collectionId: number, options?: RawAxiosRequestConfig) {
         return CollectionsApiFp(this.configuration).deleteCollection(collectionId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 자신이 생성한 컬렉션을 삭제합니다. 다른 사용자의 컬렉션을 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 컬렉션 삭제
-     * @param {string} collectionId 삭제할 컬렉션 ID
+     * @param {number} collectionId 삭제할 컬렉션 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public deleteCollection_2(collectionId: string, options?: RawAxiosRequestConfig) {
+    public deleteCollection_2(collectionId: number, options?: RawAxiosRequestConfig) {
         return CollectionsApiFp(this.configuration).deleteCollection_2(collectionId, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1640,6 +1687,20 @@ export class CollectionsApi extends BaseAPI {
     }
 
     /**
+     * itemId의 댓글 상세 목록을 조회한다 리뷰 혹은 컬렉션에 댓글을 달 수 있으므로, type = \'review\' or \'collection\' sortBy option도 있슴
+     * @summary 댓글 목록조회
+     * @param {string} itemId 리뷰 or 콜렉션의 id
+     * @param {GetMyCollectionsTypeEnum} [type] review or collection
+     * @param {GetMyCollectionsSortByEnum} [sortBy] \&#39;likes\&#39; or \&#39;recent\&#39; or \&#39;old\&#39;
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CollectionsApi
+     */
+    public getMyCollections(itemId: string, type?: GetMyCollectionsTypeEnum, sortBy?: GetMyCollectionsSortByEnum, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections(itemId, type, sortBy, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 특정 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
      * @summary 컬렉션 목록 조회
      * @param {string} userId 
@@ -1647,8 +1708,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections(userId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections(userId, options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_4(userId: string, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections_4(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1658,8 +1719,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections_4(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections_4(options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_5(options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections_5(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1670,58 +1731,41 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getMyCollections_5(userId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getMyCollections_5(userId, options).then((request) => request(this.axios, this.basePath));
+    public getMyCollections_6(userId: string, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getMyCollections_6(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 특정 앨범에 작성된 모든 리뷰의 목록을 조회합니다.
-     * @summary 리뷰 목록 조회 Copy
-     * @param {string} targetId 가져올 대상의 ID (앨범 ID 또는 트랙 ID)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CollectionsApi
-     */
-    public getReviews(targetId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getReviews(targetId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+     * 공개(public)로 설정된 컬렉션을 조회합니다
      * @summary 컬렉션 전체 조회
+     * @param {GetUserCollectionsSortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections(options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections(sortBy?: GetUserCollectionsSortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     *  \'공개(public)\'로 설정된 컬렉션을 조회합니다
+     * 공개(public)로 설정된 컬렉션을 조회합니다
      * @summary 컬렉션 전체 조회
+     * @param {GetUserCollections0SortByEnum} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections_6(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_6(options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_7(sortBy?: GetUserCollections0SortByEnum, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_7(sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 홈 화면에 해당하는 API
      * @summary 내 칭호 목록 조회
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CollectionsApi
-     */
-    public getUserCollections_7(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_7(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 홈 화면에 해당하는 API
-     * @summary 활성화된 칭호 확인
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
@@ -1732,14 +1776,25 @@ export class CollectionsApi extends BaseAPI {
 
     /**
      * 홈 화면에 해당하는 API
+     * @summary 활성화된 칭호 확인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CollectionsApi
+     */
+    public getUserCollections_9(options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_9(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 홈 화면에 해당하는 API
      * @summary 칭호 설정
      * @param {GetUserCollectionsRequest} [getUserCollectionsRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections_9(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_9(getUserCollectionsRequest, options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_10(getUserCollectionsRequest?: GetUserCollectionsRequest, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_10(getUserCollectionsRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1750,8 +1805,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections_10(userId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_10(userId, options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_11(userId: string, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_11(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1761,8 +1816,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections_11(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_11(options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_12(options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_12(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1772,8 +1827,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections_12(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_12(options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_13(options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_13(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1783,20 +1838,20 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public getUserCollections_13(options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).getUserCollections_13(options).then((request) => request(this.axios, this.basePath));
+    public getUserCollections_14(options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).getUserCollections_14(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 키워드를 사용하여 앨범, 트랙, 아티스트를 통합 검색합니다. `type` 파라미터를 통해 검색 범위를 \'all\'(전체), \'album\', \'track\', \'artist\' 중 하나로 지정할 수 있습니다. 현재 검색어는 영어만 지원하며, 띄어쓰기 없이 입력해야 합니다.
+     * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
      * @summary 컬렉션 검색
      * @param {string} [q] 이름 
-     * @param {string} [sortBy] 
+     * @param {SearchSortByEnum} [sortBy] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public search(q?: string, sortBy?: string, options?: RawAxiosRequestConfig) {
+    public search(q?: string, sortBy?: SearchSortByEnum, options?: RawAxiosRequestConfig) {
         return CollectionsApiFp(this.configuration).search(q, sortBy, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1820,8 +1875,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public toggleCollectionLike_14(collectionId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).toggleCollectionLike_14(collectionId, options).then((request) => request(this.axios, this.basePath));
+    public toggleCollectionLike_15(collectionId: string, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).toggleCollectionLike_15(collectionId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1846,8 +1901,50 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public updateCollection_15(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).updateCollection_15(collectionId, updateCollectionRequest, options).then((request) => request(this.axios, this.basePath));
+    public updateCollection_16(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).updateCollection_16(collectionId, updateCollectionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
+/**
+ * @export
+ */
+export const GetMyCollectionsTypeEnum = {
+    Collection: 'collection',
+    Review: 'review'
+} as const;
+export type GetMyCollectionsTypeEnum = typeof GetMyCollectionsTypeEnum[keyof typeof GetMyCollectionsTypeEnum];
+/**
+ * @export
+ */
+export const GetMyCollectionsSortByEnum = {
+    Likes: 'likes',
+    Recent: 'recent',
+    Old: 'old'
+} as const;
+export type GetMyCollectionsSortByEnum = typeof GetMyCollectionsSortByEnum[keyof typeof GetMyCollectionsSortByEnum];
+/**
+ * @export
+ */
+export const GetUserCollectionsSortByEnum = {
+    Popularity: 'popularity',
+    Recent: 'recent',
+    Old: 'old'
+} as const;
+export type GetUserCollectionsSortByEnum = typeof GetUserCollectionsSortByEnum[keyof typeof GetUserCollectionsSortByEnum];
+/**
+ * @export
+ */
+export const GetUserCollections0SortByEnum = {
+    Popularity: 'popularity',
+    Recent: 'recent',
+    Old: 'old'
+} as const;
+export type GetUserCollections0SortByEnum = typeof GetUserCollections0SortByEnum[keyof typeof GetUserCollections0SortByEnum];
+/**
+ * @export
+ */
+export const SearchSortByEnum = {
+    Empty: ''
+} as const;
+export type SearchSortByEnum = typeof SearchSortByEnum[keyof typeof SearchSortByEnum];

@@ -9,7 +9,6 @@ import { Input } from "../components/ui/input";
 import { useHomeData } from "../hooks/useHomeData";
 import { StarRating } from "../components/StarRating";
 import { HorizontalMusicSection } from "../components/HorizontalMusicSection";
-import { CollectionCard } from "../components/CollectionCard";
 import { clearAuthToken } from "../api/client";
 
 export function HomePage() {
@@ -78,7 +77,7 @@ export function HomePage() {
     return `${diffDays}일 전`;
   };
 
-  // Collections data - use API structure directly
+  // Collections data
   const collections = homeData?.recommandedCollections || [];
 
   // Map popular reviews (filter out reviews without album data)
@@ -186,32 +185,31 @@ export function HomePage() {
             </div>
           </div>
 
-
           {/* Material 3 컬렉션 섹션 */}
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4 md:px-6">
-              <h2 className="text-xl font-semibold">추천 컬렉션</h2>
+              <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>추천 컬렉션</h2>
               <div className="flex items-center gap-2 md:gap-3">
-                <Button 
+                <Button
                   variant="outline"
                   size="sm"
                   className="h-10 px-3 md:px-4 rounded-full border-2 state-layer-hover"
-                  style={{ 
+                  style={{
                     borderColor: 'var(--outline)',
                     color: 'var(--primary)',
                     backgroundColor: 'transparent'
                   }}
-                onClick={() => navigate('/collections/new')}
+                  onClick={() => navigate('/collections/new')}
                 >
                   <Plus className="w-4 h-4 mr-1 md:mr-2" />
                   <span className="text-label-large">만들기</span>
                 </Button>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   className="h-10 px-3 md:px-4 rounded-full state-layer-hover"
                   style={{ color: 'var(--primary)' }}
-                onClick={() => navigate('/collections')}
+                  onClick={() => navigate('/collections')}
                 >
                   <span className="text-label-large">전체보기</span>
                 </Button>
@@ -219,20 +217,92 @@ export function HomePage() {
             </div>
             <div className="flex gap-3 md:gap-6 px-4 md:px-6 overflow-x-auto scrollbar-hide">
               {collections.map((collection) => (
-                <CollectionCard
+                <div
                   key={collection.collectionId}
-                  collectionId={collection.collectionId}
-                  title={collection.title}
-                  description={collection.description}
-                  author={collection.author}
-                  itemCount={collection.itemCount}
-                  likeCount={collection.likeCount}
-                  coverImageUrl={collection.coverImageUrl}
-                  tags={collection.tags}
-                  variant="scroll"
+                  className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-80 lg:w-96 cursor-pointer transition-all rounded-xl overflow-hidden border hover:shadow-md"
+                  style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}
                   onClick={() => navigate(`/collections/${collection.collectionId}`)}
-                  onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
-                />
+                >
+                  <div className="relative h-48">
+                    <ImageWithFallback
+                      src={collection.coverImageUrl || ''}
+                      alt={collection.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <div className="flex flex-wrap gap-2">
+                        {collection.tags?.slice(0, 2).map((tag) => (
+                          <div
+                            key={tag}
+                            className="px-3 py-1 rounded-full text-label-small"
+                            style={{
+                              backgroundColor: 'var(--surface-container)',
+                              color: 'var(--on-surface)'
+                            }}
+                          >
+                            {tag}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 md:p-6">
+                    {/* 제목 */}
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-title-medium line-clamp-1 flex-1" style={{ color: 'var(--on-surface)' }}>
+                        {collection.title}
+                      </h3>
+                    </div>
+
+                    {/* 설명 */}
+                    <p className="text-body-medium line-clamp-2 mb-4" style={{ color: 'var(--on-surface-variant)' }}>
+                      {collection.description}
+                    </p>
+
+                    {/* 크리에이터 정보 */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/users/${collection.author.id}`);
+                          }}
+                        >
+                          <AvatarImage src={collection.author.imageUrl} />
+                          <AvatarFallback className="text-label-small">{collection.author.username.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span
+                          className="text-label-medium cursor-pointer hover:underline"
+                          style={{ color: 'var(--on-surface-variant)' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/users/${collection.author.id}`);
+                          }}
+                        >
+                          {collection.author.username}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 통계 */}
+                    <div className="flex items-center gap-4 mt-4">
+                      <div className="flex items-center gap-1">
+                        <Heart className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
+                        <span className="text-label-medium" style={{ color: 'var(--on-surface-variant)' }}>
+                          {collection.likeCount}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Music className="w-4 h-4" style={{ color: 'var(--on-surface-variant)' }} />
+                        <span className="text-label-medium" style={{ color: 'var(--on-surface-variant)' }}>
+                          {collection.itemCount}곡
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>

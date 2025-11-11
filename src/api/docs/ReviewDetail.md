@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **reviewId** | **number** | 리뷰 ID | [default to undefined]
-**targetId** | **number** | 대상 ID (앨범 또는 트랙) | [default to undefined]
+**targetId** | **string** | 대상 ID (앨범 또는 트랙) | [default to undefined]
 **targetTitle** | **string** | 대상 제목 | [default to undefined]
 **targetType** | **string** | 대상 타입 | [default to undefined]
 **imageUrl** | **string** | 앨범/트랙 이미지 URL | [default to undefined]
@@ -16,7 +16,7 @@ Name | Type | Description | Notes
 **content** | **string** | 리뷰 내용 | [optional] [default to undefined]
 **rating** | **number** | 별점 | [default to undefined]
 **userId** | **number** | 작성자 ID | [default to undefined]
-**username** | **number** | 작성자 닉네임 | [default to undefined]
+**username** | **string** | 작성자 닉네임 | [default to undefined]
 **userImageUrl** | **string** | 작성자 프로필 이미지 | [default to undefined]
 **likeCount** | **number** | 좋아요 개수 | [default to undefined]
 **isLiked** | **boolean** | 현재 사용자의 좋아요 여부 (로그인 시에만 제공) | [optional] [default to undefined]

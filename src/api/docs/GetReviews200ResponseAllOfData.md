@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **reviews** | [**Array&lt;ReviewSummary&gt;**](ReviewSummary.md) |  | [optional] [default to undefined]
-**total** | **number** | 전체 리뷰 개수 | [optional] [default to undefined]
+**pagination** | [**PaginationInfo**](PaginationInfo.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -15,7 +15,7 @@ import { GetReviews200ResponseAllOfData } from './api';
 
 const instance: GetReviews200ResponseAllOfData = {
     reviews,
-    total,
+    pagination,
 };
 ```
 

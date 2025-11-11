@@ -31,10 +31,10 @@ export interface ReviewDetail {
     'reviewId': number;
     /**
      * 대상 ID (앨범 또는 트랙)
-     * @type {number}
+     * @type {string}
      * @memberof ReviewDetail
      */
-    'targetId': number;
+    'targetId': string;
     /**
      * 대상 제목
      * @type {string}

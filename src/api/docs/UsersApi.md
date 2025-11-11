@@ -14,8 +14,6 @@ All URIs are relative to *http://localhost*
 |[**getMyCollections_0**](#getmycollections_0) | **GET** /users/{userId}/collections/liked | 좋아요한 컬렉션 목록|
 |[**getRatedAlbums**](#getratedalbums) | **GET** /users/me/review-list | 리뷰(내용 있는) 목록(앨범만)|
 |[**getRatedAlbums_0**](#getratedalbums_0) | **GET** /users/me/review-list | 리뷰(내용 있는) 목록(앨범만)|
-|[**getRatedTracks**](#getratedtracks) | **GET** /users/me/track-rate-record | 평가한 트랙 목록|
-|[**getRatedTracks_0**](#getratedtracks_0) | **GET** /users/me/track-rate-record | 평가한 트랙 목록|
 |[**getUserCollections**](#getusercollections) | **GET** /users/me/badges | 내 칭호 목록 조회|
 |[**getUserCollections_0**](#getusercollections_0) | **GET** /users/me/active-badge | 활성화된 칭호 확인|
 |[**getUserCollections_1**](#getusercollections_1) | **PATCH** /users/me/active-badge | 칭호 설정|
@@ -318,7 +316,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections**
-> GetUserCollections200Response getMyCollections()
+> GetMyCollections200Response1 getMyCollections()
 
 현재 인증된 사용자가 생성한 모든 컬렉션의 목록을 조회합니다. 여기에는 공개(public) 및 비공개(private) 컬렉션이 모두 포함됩니다.
 
@@ -342,7 +340,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**GetUserCollections200Response**
+**GetMyCollections200Response1**
 
 ### Authorization
 
@@ -364,7 +362,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMyCollections_0**
-> GetMyCollections200Response getMyCollections_0()
+> GetMyCollections200Response2 getMyCollections_0()
 
 현재 인증된 사용자가 좋아요한 컬렉션의 목록
 
@@ -395,7 +393,7 @@ const { status, data } = await apiInstance.getMyCollections_0(
 
 ### Return type
 
-**GetMyCollections200Response**
+**GetMyCollections200Response2**
 
 ### Authorization
 
@@ -503,98 +501,6 @@ This endpoint does not have any parameters.
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | 평가한 앨범 목록 조회 성공 |  -  |
-|**401** | 인증 실패 |  -  |
-|**500** | 서버 오류 |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getRatedTracks**
-> GetRatedTracks200Response getRatedTracks()
-
-현재 인증된 사용자가 리뷰(평가)를 남긴 모든 트랙의 목록을 조회합니다.
-
-### Example
-
-```typescript
-import {
-    UsersApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new UsersApi(configuration);
-
-const { status, data } = await apiInstance.getRatedTracks();
-```
-
-### Parameters
-This endpoint does not have any parameters.
-
-
-### Return type
-
-**GetRatedTracks200Response**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | 평가한 트랙 목록 조회 성공 |  -  |
-|**401** | 인증 실패 |  -  |
-|**500** | 서버 오류 |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getRatedTracks_0**
-> GetRatedTracks200Response getRatedTracks_0()
-
-현재 인증된 사용자가 리뷰(평가)를 남긴 모든 트랙의 목록을 조회합니다.
-
-### Example
-
-```typescript
-import {
-    UsersApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new UsersApi(configuration);
-
-const { status, data } = await apiInstance.getRatedTracks_0();
-```
-
-### Parameters
-This endpoint does not have any parameters.
-
-
-### Return type
-
-**GetRatedTracks200Response**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | 평가한 트랙 목록 조회 성공 |  -  |
 |**401** | 인증 실패 |  -  |
 |**500** | 서버 오류 |  -  |
 

@@ -55,7 +55,7 @@ export function AllCollectionsPage() {
   return (
     <div className="min-h-screen pb-20 bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--outline)' }}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
@@ -78,15 +78,22 @@ export function AllCollectionsPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Search and Filter Section */}
+        {/* Search Section - Material 3 Style */}
         <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <div
+            className="w-full h-16 rounded-xl flex items-center px-6 border"
+            style={{
+              backgroundColor: 'var(--surface)',
+              borderColor: 'var(--outline)'
+            }}
+          >
+            <Search className="w-6 h-6 mr-4 flex-shrink-0" style={{ color: 'var(--on-surface-variant)' }} />
             <Input
               placeholder="컬렉션 제목 또는 설명으로 검색..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 rounded-full bg-card border-border focus-visible:ring-primary"
+              className="border-0 bg-transparent text-body-large p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-on-surface-variant"
+              style={{ color: 'var(--on-surface)' }}
             />
           </div>
         </div>

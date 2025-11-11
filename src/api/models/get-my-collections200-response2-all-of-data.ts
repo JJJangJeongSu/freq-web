@@ -15,19 +15,19 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { Comment } from './comment';
+import type { GetMyCollections200Response2AllOfDataCollectionsInner } from './get-my-collections200-response2-all-of-data-collections-inner';
 
 /**
  * 
  * @export
- * @interface GetMyCollections200ResponseAllOfData
+ * @interface GetMyCollections200Response2AllOfData
  */
-export interface GetMyCollections200ResponseAllOfData {
+export interface GetMyCollections200Response2AllOfData {
     /**
      * 
-     * @type {Array<Comment>}
-     * @memberof GetMyCollections200ResponseAllOfData
+     * @type {Array<GetMyCollections200Response2AllOfDataCollectionsInner>}
+     * @memberof GetMyCollections200Response2AllOfData
      */
-    'comments'?: Array<Comment>;
+    'collections'?: Array<GetMyCollections200Response2AllOfDataCollectionsInner>;
 }
 

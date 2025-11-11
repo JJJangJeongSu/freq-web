@@ -1,12 +1,10 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Filter, Plus, MoreVertical, Music, Heart } from "lucide-react";
+import { ArrowLeft, Search, Filter, Plus, Music } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
-import { EnhancedCard } from "../components/EnhancedCard";
+import { CollectionCard } from "../components/CollectionCard";
 import { Input } from "../components/ui/input";
-import { Badge } from "../components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useMyCollections } from "../hooks/useMyCollections";
 
 export function MyCollectionsPage() {
@@ -183,69 +181,18 @@ export function MyCollectionsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
             {sortedCollections.map((collection) => (
-              <EnhancedCard
+              <CollectionCard
                 key={collection.collectionId}
-                variant="elevated"
-                className="overflow-hidden cursor-pointer card-lift"
+                collectionId={collection.collectionId}
+                title={collection.title}
+                description={collection.description}
+                author={collection.author}
+                itemCount={collection.itemCount}
+                likeCount={collection.likeCount}
+                coverImageUrl={collection.coverImageUrl}
                 onClick={() => handleCollectionClick(collection.collectionId)}
-              >
-                <div className="relative">
-                  <ImageWithFallback
-                    src={collection.coverImageUrl}
-                    alt={collection.title}
-                    className="w-full h-48 md:h-40 object-cover"
-                  />
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    {collection.visibility === 'private' && (
-                      <Badge variant="secondary" className="text-xs">
-                        비공개
-                      </Badge>
-                    )}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <EnhancedButton
-                          variant="filled"
-                          size="icon"
-                          className="size-8 bg-surface-container/80 hover:bg-surface-container"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <MoreVertical className="size-4" />
-                        </EnhancedButton>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>편집</DropdownMenuItem>
-                        <DropdownMenuItem>공유</DropdownMenuItem>
-                        <DropdownMenuItem>복제</DropdownMenuItem>
-                        <DropdownMenuItem className="text-error">삭제</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                  <div className="absolute bottom-2 left-2">
-                    <Badge variant="outline" className="bg-surface-container/80 text-xs">
-                      {collection.itemCount}곡
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="p-4">
-                  <h3 className="text-title-medium mb-1 line-clamp-1">
-                    {collection.title}
-                  </h3>
-                  <p className="text-body-small text-on-surface-variant mb-3 line-clamp-2">
-                    {collection.description}
-                  </p>
-
-                  <div className="flex items-center justify-between text-body-small text-on-surface-variant">
-                    <span>{new Date(collection.likedDate).toLocaleDateString()}</span>
-                    {collection.visibility === 'public' && (
-                      <div className="flex items-center gap-1">
-                        <Heart className="size-3" />
-                        <span>{collection.likeCount}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </EnhancedCard>
+                onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
+              />
             ))}
           </div>
         )}

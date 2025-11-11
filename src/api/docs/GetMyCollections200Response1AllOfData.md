@@ -1,19 +1,19 @@
-# GetMyCollections200ResponseAllOfData
+# GetMyCollections200Response1AllOfData
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**comments** | [**Array&lt;Comment&gt;**](Comment.md) |  | [optional] [default to undefined]
+**collections** | [**Array&lt;CollectionPreview&gt;**](CollectionPreview.md) |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { GetMyCollections200ResponseAllOfData } from './api';
+import { GetMyCollections200Response1AllOfData } from './api';
 
-const instance: GetMyCollections200ResponseAllOfData = {
-    comments,
+const instance: GetMyCollections200Response1AllOfData = {
+    collections,
 };
 ```
 
