@@ -1,19 +1,33 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Filter, Plus, Music } from "lucide-react";
+import { ArrowLeft, Search, Filter, Plus, Music, MoreVertical, Trash2 } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
 import { CollectionCard } from "../components/CollectionCard";
 import { Input } from "../components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 import { useMyCollections } from "../hooks/useMyCollections";
+import { useDeleteCollection } from "../hooks/useDeleteCollection";
 
 export function MyCollectionsPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "name" | "items" | "likes">("recent");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [collectionToDelete, setCollectionToDelete] = useState<any | null>(null);
 
   // API data fetching
-  const { data: collections, loading, error } = useMyCollections();
+  const { data: collections, loading, error, refetch } = useMyCollections();
+  const { deleteCollection, loading: deleting } = useDeleteCollection();
 
   // Filter and sort collections using useMemo for performance
   const sortedCollections = useMemo(() => {
@@ -43,6 +57,25 @@ export function MyCollectionsPage() {
 
   const handleCollectionClick = (collectionId: number) => {
     navigate(`/collections/${collectionId}`);
+  };
+
+  const handleDeleteClick = (collection: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCollectionToDelete(collection);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!collectionToDelete) return;
+
+    try {
+      await deleteCollection(collectionToDelete.collectionId);
+      setDeleteDialogOpen(false);
+      setCollectionToDelete(null);
+      refetch();
+    } catch (error: any) {
+      console.error("컬렉션 삭제 실패:", error);
+    }
   };
 
   // Loading state
@@ -181,18 +214,43 @@ export function MyCollectionsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
             {sortedCollections.map((collection) => (
-              <CollectionCard
-                key={collection.collectionId}
-                collectionId={collection.collectionId}
-                title={collection.title}
-                description={collection.description}
-                author={collection.author}
-                itemCount={collection.itemCount}
-                likeCount={collection.likeCount}
-                coverImageUrl={collection.coverImageUrl}
-                onClick={() => handleCollectionClick(collection.collectionId)}
-                onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
-              />
+              <div key={collection.collectionId} className="relative">
+                <CollectionCard
+                  collectionId={collection.collectionId}
+                  title={collection.title}
+                  description={collection.description}
+                  author={collection.author}
+                  itemCount={collection.itemCount}
+                  likeCount={collection.likeCount}
+                  coverImageUrl={collection.coverImageUrl}
+                  onClick={() => handleCollectionClick(collection.collectionId)}
+                  onAuthorClick={(authorId) => navigate(`/users/${authorId}`)}
+                />
+                {/* 더보기 메뉴 */}
+                <div className="absolute top-2 right-2 z-50">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <EnhancedButton
+                        variant="filled"
+                        size="icon"
+                        className="size-8 bg-surface-container/80 hover:bg-surface-container backdrop-blur-sm"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="size-4" />
+                      </EnhancedButton>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        className="text-error focus:text-error focus:bg-error/10"
+                        onClick={(e) => handleDeleteClick(collection, e)}
+                      >
+                        <Trash2 className="size-4 mr-2" />
+                        삭제
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -200,6 +258,43 @@ export function MyCollectionsPage() {
 
       {/* Bottom spacing for navigation */}
       <div className="h-20" />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>컬렉션을 삭제하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {collectionToDelete && (
+                <>
+                  <span className="font-semibold">{collectionToDelete.title}</span> 컬렉션이 영구적으로 삭제됩니다.
+                  <br />
+                  이 작업은 되돌릴 수 없습니다.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setCollectionToDelete(null)} disabled={deleting}>
+              취소
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={deleting}
+              className="!bg-red-600 hover:!bg-red-700 !text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {deleting ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                  삭제 중...
+                </div>
+              ) : (
+                "삭제"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
