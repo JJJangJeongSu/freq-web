@@ -37,8 +37,8 @@ export function useUpdateNickname(): UseUpdateNicknameReturn {
       console.log('🔄 Updating nickname:', nickname);
 
       // API 호출: PATCH /users/nickname
-      const response = await apiService.auth.changeNickname({
-        nickname
+      const response = await apiService.authUpdate.changeNickname({
+        newNickname: nickname
       });
 
       if (!response.data.success) {

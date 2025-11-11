@@ -30,7 +30,7 @@ export function ProfileEditDialog({
 }: ProfileEditDialogProps) {
   const { updateBio, loading: bioLoading, error: bioError } = useUpdateBio();
   const { updateProfileImage, loading: imageLoading, error: imageError } = useUpdateProfileImage();
-  const { updateNickname, loading: nicknameLoading, error: nicknameError: nicknameUpdateError } = useUpdateNickname();
+  const { updateNickname, loading: nicknameLoading, error: nicknameUpdateError } = useUpdateNickname();
   const { checkNickname, checking: nicknameChecking } = useCheckNickname();
 
   const [editedNickname, setEditedNickname] = useState(username);
@@ -59,7 +59,6 @@ export function ProfileEditDialog({
       setPreviewUrl(null);
       setSubmitSuccess(false);
       setNicknameError(null);
-      setNicknameChecking(false);
       setNicknameAvailable(null);
     }
   }, [open]);
@@ -233,9 +232,6 @@ export function ProfileEditDialog({
                 />
               </div>
             </div>
-            <p className="text-xs text-muted-foreground text-center">
-              JPG, PNG 파일 (최대 5MB)
-            </p>
           </div>
 
           {/* 닉네임 입력 */}
