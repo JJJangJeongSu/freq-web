@@ -42,10 +42,8 @@ export function WriteReviewPage() {
     rating: 0
   });
 
-  // 앨범 메타데이터 로드 (작성 모드)
+  // 앨범 메타데이터 로드 (작성 모드 + 수정 모드 공통)
   useEffect(() => {
-    if (isEditMode) return; // 수정 모드에서는 sessionStorage 사용 안 함
-
     try {
       const raw = sessionStorage.getItem('review:albumMeta');
       if (raw) {
@@ -59,8 +57,8 @@ export function WriteReviewPage() {
             artistIds: meta.artistIds || [],
             rating: meta.rating || 0
           });
-          // 전달받은 별점으로 초기화
-          if (meta.rating > 0) {
+          // 작성 모드일 때만 전달받은 별점으로 초기화
+          if (!isEditMode && meta.rating > 0) {
             setRating(meta.rating);
           }
         }
