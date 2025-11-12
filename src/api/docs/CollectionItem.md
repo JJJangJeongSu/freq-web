@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **number** | 아이템 ID | [default to undefined]
+**id** | **string** | 아이템 ID (스포티파이 ID) | [default to undefined]
 **type** | **string** | 아이템 타입 | [default to undefined]
 **title** | **string** | 제목 | [default to undefined]
 **artists** | **Array&lt;string&gt;** | 아티스트 목록 | [optional] [default to undefined]

@@ -1,4 +1,4 @@
-import { ArrowLeft, Camera, Plus, X, Search, Music, Album, Hash, Globe, Lock, Save, ImageIcon, Edit3, MessageSquare, Check, Disc, Upload } from "lucide-react";
+import { ArrowLeft, Camera, Plus, X, Search, Music, Album, Hash, Globe, Lock, Save, ImageIcon, Edit3, MessageSquare, Check, Disc, Upload, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
@@ -139,15 +139,6 @@ export function CreateCollectionPage() {
     return scored;
   }, [tagInput]);
 
-  // 검색 타입 변경 시 컬렉션 타입에 맞게 제한
-  useEffect(() => {
-    if (formData.type === 'albums') {
-      setSearchType('album');
-    } else if (formData.type === 'tracks') {
-      setSearchType('track');
-    }
-  }, [formData.type]);
-
   // 검색어 변경 시 디바운스 처리하여 API 호출
   useEffect(() => {
     if (musicSearchQuery.trim().length === 0) {
@@ -160,6 +151,69 @@ export function CreateCollectionPage() {
 
     return () => clearTimeout(timeoutId);
   }, [musicSearchQuery, searchType]);
+
+  // 수정 모드일 때 기존 컬렉션 데이터 로드
+  useEffect(() => {
+    if (!isEditMode || !collectionId) return;
+
+    const loadCollectionData = async () => {
+      try {
+        setIsLoadingCollection(true);
+        setLoadError(null);
+
+        const response = await apiService.collections.getCollectionDetail(collectionId);
+        const collection: CollectionDetail = response.data.data;
+
+        console.log('✅ 컬렉션 데이터 로드 성공:', collection);
+
+        // 폼 데이터 채우기
+        setFormData({
+          title: collection.title,
+          description: collection.description,
+          type: 'mixed', // API 응답에 type이 없으므로 기본값 사용
+          isPublic: collection.isPublic === 'public'
+        });
+
+        // 태그 채우기
+        setTags(collection.tags || []);
+
+        // 커버 이미지 설정 (coverImgUrl → uploadedCoverImage)
+        setUploadedCoverImage(collection.coverImgUrl);
+
+        // 아이템 정보 표시용
+        // CollectionItem에서 SearchResult로 변환 (DB ID = Spotify ID)
+        const convertedItems: SearchResult[] = collection.items.map(item => ({
+          id: item.id, // DB ID가 Spotify ID와 동일
+          title: item.title,
+          artist: item.artists?.[0] || '',
+          imageUrl: item.coverUrl,
+          type: item.type as 'album' | 'track'
+        }));
+
+        setSelectedMusic(convertedItems);
+
+        // 아이템 설명 복원
+        const descriptions: Record<string, string> = {};
+        collection.items.forEach(item => {
+          if (item.description) {
+            descriptions[item.id] = item.description;
+          }
+        });
+        setMusicDescriptions(descriptions);
+
+      } catch (error: any) {
+        console.error('❌ 컬렉션 데이터 로드 실패:', error);
+        const errorMessage = error.response?.data?.error?.message
+          || error.message
+          || '컬렉션을 불러오는데 실패했습니다.';
+        setLoadError(errorMessage);
+      } finally {
+        setIsLoadingCollection(false);
+      }
+    };
+
+    loadCollectionData();
+  }, [isEditMode, collectionId]);
 
   const handleAddTag = (genre?: string) => {
     const tagToAdd = genre || tagInput.trim();
@@ -354,24 +408,30 @@ export function CreateCollectionPage() {
           ? CreateCollectionRequestIsPublicEnum.Public
           : CreateCollectionRequestIsPublicEnum.Private,
         coverImageUrl: finalCoverImage, // 업로드한 이미지 또는 첫 번째 음악 커버
+        // 생성/수정 모두 items 전송 (DB ID = Spotify ID)
         items: selectedMusic.map(convertToCollectionItem),
         tags: tags.length > 0 ? tags : undefined
       };
 
-      // API 호출
-      const response = await apiService.collections.createCollection(requestBody);
-
-      console.log('✅ 컬렉션 생성 성공:', response.data);
+      // API 호출 - 모드에 따라 다른 엔드포인트 사용
+      let response;
+      if (isEditMode && collectionId) {
+        response = await apiService.collections.modifyCollection(Number(collectionId), requestBody);
+        console.log('✅ 컬렉션 수정 성공:', response.data);
+      } else {
+        response = await apiService.collections.createCollection(requestBody);
+        console.log('✅ 컬렉션 생성 성공:', response.data);
+      }
 
       // 성공 후 이전 페이지로 이동
       navigate('/rate-record');
     } catch (error: any) {
-      console.error('❌ 컬렉션 생성 실패:', error);
+      console.error(`❌ 컬렉션 ${isEditMode ? '수정' : '생성'} 실패:`, error);
 
       // 에러 메시지 추출
       const errorMessage = error.response?.data?.error?.message
         || error.message
-        || '컬렉션 생성 중 오류가 발생했습니다.';
+        || `컬렉션 ${isEditMode ? '수정' : '생성'} 중 오류가 발생했습니다.`;
 
       setSaveError(errorMessage);
     } finally {
@@ -383,6 +443,49 @@ export function CreateCollectionPage() {
   const searchResults: SearchResult[] = searchData
     ? [...(searchData.albums || []), ...(searchData.tracks || [])]
     : [];
+
+  // 수정 모드에서 데이터 로딩 중일 때 로딩 UI 표시
+  if (isEditMode && isLoadingCollection) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <header className="flex items-center justify-between p-4 border-b border-border">
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="font-semibold">컬렉션 수정하기</h1>
+          <div className="w-10"></div>
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-muted-foreground">컬렉션 데이터를 불러오는 중...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // 수정 모드에서 로드 에러 발생 시 에러 UI 표시
+  if (isEditMode && loadError) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <header className="flex items-center justify-between p-4 border-b border-border">
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="font-semibold">컬렉션 수정하기</h1>
+          <div className="w-10"></div>
+        </header>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-destructive mb-2">컬렉션을 불러오는데 실패했습니다</p>
+            <p className="text-sm text-muted-foreground mb-4">{loadError}</p>
+            <Button onClick={() => navigate(-1)}>돌아가기</Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -396,7 +499,7 @@ export function CreateCollectionPage() {
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
-        <h1 className="font-semibold">새 컬렉션 만들기</h1>
+        <h1 className="font-semibold">{isEditMode ? '컬렉션 수정하기' : '새 컬렉션 만들기'}</h1>
         <div className="w-10"></div> {/* Spacer for layout balance */}
       </header>
 
@@ -432,26 +535,6 @@ export function CreateCollectionPage() {
                 rows={3}
               />
               <p className="text-xs text-muted-foreground">{formData.description.length}/200</p>
-            </div>
-
-            {/* 컬렉션 타입 */}
-            <div className="space-y-2">
-              <Label>컬렉션 타입</Label>
-              <Select value={formData.type} onValueChange={(value: 'albums' | 'tracks' | 'mixed') => setFormData({...formData, type: value})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="albums">앨범만</SelectItem>
-                  <SelectItem value="tracks">트랙만</SelectItem>
-                  <SelectItem value="mixed">앨범 + 트랙</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                {formData.type === 'albums' && '이 컬렉션에는 앨범만 추가할 수 있습니다'}
-                {formData.type === 'tracks' && '이 컬렉션에는 트랙만 추가할 수 있습니다'}
-                {formData.type === 'mixed' && '이 컬렉션에는 앨범과 트랙을 모두 추가할 수 있습니다'}
-              </p>
             </div>
 
             {/* 공개 설정 */}
@@ -659,10 +742,10 @@ export function CreateCollectionPage() {
           </CardContent>
         </Card>
 
-        {/* 음악 추가 */}
+        {/* 음악 추가 / 아이템 목록 */}
         <Card>
           <CardContent className="p-4 space-y-4">
-            <h3 className="font-medium">음악 추가</h3>
+            <h3 className="font-medium">{isEditMode ? '컬렉션 아이템' : '음악 추가'}</h3>
 
             {/* 검색 타입 토글 (mixed 타입일 때만 표시) */}
             {formData.type === 'mixed' && (
@@ -884,17 +967,20 @@ export function CreateCollectionPage() {
               {isSaving ? (
                 <>
                   <div className="animate-spin w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
-                  저장 중...
+                  {isEditMode ? '수정 중...' : '저장 중...'}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  컬렉션 저장
+                  {isEditMode ? '컬렉션 수정' : '컬렉션 저장'}
                 </>
               )}
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              {formData.isPublic ? '공개 컬렉션으로 저장됩니다' : '비공개 컬렉션으로 저장됩니다'}
+              {isEditMode
+                ? (formData.isPublic ? '공개 컬렉션으로 수정됩니다' : '비공개 컬렉션으로 수정됩니다')
+                : (formData.isPublic ? '공개 컬렉션으로 저장됩니다' : '비공개 컬렉션으로 저장됩니다')
+              }
             </p>
           </CardContent>
         </Card>

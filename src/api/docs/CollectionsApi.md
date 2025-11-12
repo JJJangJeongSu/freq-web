@@ -1119,7 +1119,7 @@ No authorization required
 # **modifyCollection**
 > CreateCollection200Response modifyCollection()
 
-기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
 
 ### Example
 
@@ -1167,7 +1167,7 @@ const { status, data } = await apiInstance.modifyCollection(
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | 컬렉션 수정 성공 |  -  |
+|**200** | 컬렉션 생성 성공 |  -  |
 |**400** | 잘못된 요청 |  -  |
 |**401** | 인증 실패 |  -  |
 |**500** | 서버 오류 |  -  |
@@ -1177,7 +1177,7 @@ const { status, data } = await apiInstance.modifyCollection(
 # **modifyCollection_0**
 > CreateCollection200Response modifyCollection_0()
 
-기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
 
 ### Example
 
@@ -1225,7 +1225,7 @@ const { status, data } = await apiInstance.modifyCollection_0(
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | 컬렉션 수정 성공 |  -  |
+|**200** | 컬렉션 생성 성공 |  -  |
 |**400** | 잘못된 요청 |  -  |
 |**401** | 인증 실패 |  -  |
 |**500** | 서버 오류 |  -  |

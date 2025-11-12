@@ -147,7 +147,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //삭제할 리뷰의 ID (default to undefined)
+let reviewId: number; //삭제할 리뷰의 ID (default to undefined)
 
 const { status, data } = await apiInstance.deleteReview(
     reviewId
@@ -158,7 +158,7 @@ const { status, data } = await apiInstance.deleteReview(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reviewId** | [**string**] | 삭제할 리뷰의 ID | defaults to undefined|
+| **reviewId** | [**number**] | 삭제할 리뷰의 ID | defaults to undefined|
 
 
 ### Return type
@@ -202,7 +202,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //삭제할 리뷰의 ID (default to undefined)
+let reviewId: number; //삭제할 리뷰의 ID (default to undefined)
 
 const { status, data } = await apiInstance.deleteReview_0(
     reviewId
@@ -213,7 +213,7 @@ const { status, data } = await apiInstance.deleteReview_0(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reviewId** | [**string**] | 삭제할 리뷰의 ID | defaults to undefined|
+| **reviewId** | [**number**] | 삭제할 리뷰의 ID | defaults to undefined|
 
 
 ### Return type

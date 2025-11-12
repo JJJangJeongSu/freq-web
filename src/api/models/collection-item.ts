@@ -21,11 +21,11 @@
  */
 export interface CollectionItem {
     /**
-     * 아이템 ID
-     * @type {number}
+     * 아이템 ID (스포티파이 ID)
+     * @type {string}
      * @memberof CollectionItem
      */
-    'id': number;
+    'id': string;
     /**
      * 아이템 타입
      * @type {string}

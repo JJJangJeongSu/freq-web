@@ -118,11 +118,11 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 삭제
-         * @param {string} reviewId 삭제할 리뷰의 ID
+         * @param {number} reviewId 삭제할 리뷰의 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteReview: async (reviewId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteReview: async (reviewId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
             assertParamExists('deleteReview', 'reviewId', reviewId)
             const localVarPath = `/reviews/{reviewId}`
@@ -152,11 +152,11 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 삭제
-         * @param {string} reviewId 삭제할 리뷰의 ID
+         * @param {number} reviewId 삭제할 리뷰의 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteReview_2: async (reviewId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteReview_2: async (reviewId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
             assertParamExists('deleteReview_2', 'reviewId', reviewId)
             const localVarPath = `/reviews/{reviewId}`
@@ -610,11 +610,11 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 삭제
-         * @param {string} reviewId 삭제할 리뷰의 ID
+         * @param {number} reviewId 삭제할 리뷰의 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteReview(reviewId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
+        async deleteReview(reviewId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteReview(reviewId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.deleteReview']?.[localVarOperationServerIndex]?.url;
@@ -623,11 +623,11 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 삭제
-         * @param {string} reviewId 삭제할 리뷰의 ID
+         * @param {number} reviewId 삭제할 리뷰의 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteReview_2(reviewId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
+        async deleteReview_2(reviewId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteReview_2(reviewId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.deleteReview_2']?.[localVarOperationServerIndex]?.url;
@@ -804,21 +804,21 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
         /**
          * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 삭제
-         * @param {string} reviewId 삭제할 리뷰의 ID
+         * @param {number} reviewId 삭제할 리뷰의 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteReview(reviewId: string, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
+        deleteReview(reviewId: number, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
             return localVarFp.deleteReview(reviewId, options).then((request) => request(axios, basePath));
         },
         /**
          * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 리뷰 삭제
-         * @param {string} reviewId 삭제할 리뷰의 ID
+         * @param {number} reviewId 삭제할 리뷰의 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteReview_2(reviewId: string, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
+        deleteReview_2(reviewId: number, options?: RawAxiosRequestConfig): AxiosPromise<SuccessResponse> {
             return localVarFp.deleteReview_2(reviewId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -966,24 +966,24 @@ export class ReviewsApi extends BaseAPI {
     /**
      * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 리뷰 삭제
-     * @param {string} reviewId 삭제할 리뷰의 ID
+     * @param {number} reviewId 삭제할 리뷰의 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public deleteReview(reviewId: string, options?: RawAxiosRequestConfig) {
+    public deleteReview(reviewId: number, options?: RawAxiosRequestConfig) {
         return ReviewsApiFp(this.configuration).deleteReview(reviewId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 자신이 작성한 리뷰를 삭제합니다. 다른 사용자의 리뷰를 삭제하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 리뷰 삭제
-     * @param {string} reviewId 삭제할 리뷰의 ID
+     * @param {number} reviewId 삭제할 리뷰의 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public deleteReview_2(reviewId: string, options?: RawAxiosRequestConfig) {
+    public deleteReview_2(reviewId: number, options?: RawAxiosRequestConfig) {
         return ReviewsApiFp(this.configuration).deleteReview_2(reviewId, options).then((request) => request(this.axios, this.basePath));
     }
 

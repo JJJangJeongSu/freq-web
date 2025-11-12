@@ -845,7 +845,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
-         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
          * @summary 컬렉션 수정
          * @param {number} collectionId 
          * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -887,7 +887,7 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
-         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
          * @summary 컬렉션 수정
          * @param {number} collectionId 
          * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -1324,7 +1324,7 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
          * @summary 컬렉션 수정
          * @param {number} collectionId 
          * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -1338,7 +1338,7 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
          * @summary 컬렉션 수정
          * @param {number} collectionId 
          * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -1615,7 +1615,7 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
             return localVarFp.getUserCollections_14(options).then((request) => request(axios, basePath));
         },
         /**
-         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
          * @summary 컬렉션 수정
          * @param {number} collectionId 
          * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -1626,7 +1626,7 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
             return localVarFp.modifyCollection(collectionId, createCollectionRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
          * @summary 컬렉션 수정
          * @param {number} collectionId 
          * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -1931,7 +1931,7 @@ export class CollectionsApi extends BaseAPI {
     }
 
     /**
-     * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+     * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
      * @summary 컬렉션 수정
      * @param {number} collectionId 
      * @param {CreateCollectionRequest} [createCollectionRequest] 
@@ -1944,7 +1944,7 @@ export class CollectionsApi extends BaseAPI {
     }
 
     /**
-     * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+     * 기존 컬렉션을 수정합니다. 기존 정보는 프론트가 알아서 구해옵니다 
      * @summary 컬렉션 수정
      * @param {number} collectionId 
      * @param {CreateCollectionRequest} [createCollectionRequest] 

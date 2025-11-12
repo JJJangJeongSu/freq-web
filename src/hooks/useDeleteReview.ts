@@ -23,7 +23,7 @@ export const useDeleteReview = (): UseDeleteReviewReturn => {
       setError(null);
 
       // API 호출 - DELETE /reviews/{reviewId}
-      await apiService.reviews.deleteReview(reviewId);
+      await apiService.reviews.deleteReview(Number(reviewId));
 
       console.log('✅ 리뷰 삭제 성공:', reviewId);
     } catch (err: any) {
