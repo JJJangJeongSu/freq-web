@@ -407,7 +407,7 @@ export function HomePage() {
 
                     {/* 우측: 리뷰 내용 + 좋아요/댓글 */}
                     <div className="flex-1 flex flex-col justify-between">
-                      <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
+                      <p className="text-body-medium leading-relaxed whitespace-pre-line" style={{ color: 'var(--on-surface)' }}>
                         {review.content}
                       </p>
                       <div className="flex items-center gap-4 mt-2 justify-end">
@@ -501,7 +501,7 @@ export function HomePage() {
 
                     {/* 우측: 리뷰 내용 + 좋아요/댓글 */}
                     <div className="flex-1 flex flex-col justify-between">
-                      <p className="text-body-medium leading-relaxed" style={{ color: 'var(--on-surface)' }}>
+                      <p className="text-body-medium leading-relaxed whitespace-pre-line" style={{ color: 'var(--on-surface)' }}>
                         {review.content}
                       </p>
                       <div className="flex items-center gap-4 mt-2 justify-end">
