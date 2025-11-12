@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface StarRatingProps {
   rating: number;
@@ -10,6 +10,7 @@ interface StarRatingProps {
 
 export function StarRating({ rating, onRatingChange, size = 'md', readonly = false }: StarRatingProps) {
   const [hoverRating, setHoverRating] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -21,6 +22,27 @@ export function StarRating({ rating, onRatingChange, size = 'md', readonly = fal
     if (!readonly && onRatingChange) {
       onRatingChange(value);
     }
+  };
+
+  const handleMouseDown = (value: number) => {
+    if (!readonly && onRatingChange) {
+      setIsDragging(true);
+      onRatingChange(value);
+    }
+  };
+
+  const handleMouseMove = (value: number) => {
+    if (!readonly) {
+      setHoverRating(value);
+      // 드래그 중이면 별점 변경
+      if (isDragging && onRatingChange) {
+        onRatingChange(value);
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const handleMouseEnter = (value: number) => {
@@ -35,8 +57,26 @@ export function StarRating({ rating, onRatingChange, size = 'md', readonly = fal
     }
   };
 
+  // 전역 마우스 up 이벤트 처리 (드래그가 컨테이너 밖에서 끝날 경우)
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mouseup', handleGlobalMouseUp);
+      return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+    }
+  }, [isDragging]);
+
   return (
-    <div className="flex gap-1">
+    <div
+      className="flex gap-1"
+      onMouseLeave={() => {
+        handleMouseLeave();
+        setIsDragging(false);
+      }}
+    >
       {[1, 2, 3, 4, 5].map((star) => {
         const filled = star <= (hoverRating || rating);
         return (
@@ -44,8 +84,10 @@ export function StarRating({ rating, onRatingChange, size = 'md', readonly = fal
             key={star}
             type="button"
             onClick={() => handleClick(star)}
+            onMouseDown={() => handleMouseDown(star)}
+            onMouseMove={() => handleMouseMove(star)}
+            onMouseUp={handleMouseUp}
             onMouseEnter={() => handleMouseEnter(star)}
-            onMouseLeave={handleMouseLeave}
             disabled={readonly}
             className={`${sizeClasses[size]} transition-colors ${
               readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'

@@ -93,7 +93,8 @@ export function WriteReviewPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleSubmit = async () => {
-    if (rating === 0 || !reviewText.trim()) {
+    // 별점만 필수 (content는 선택사항)
+    if (rating === 0) {
       return;
     }
 
@@ -104,7 +105,7 @@ export function WriteReviewPage() {
         const result = await updateReview(reviewId, {
           rating,
           title: title.trim() || undefined,
-          content: reviewText.trim(),
+          content: reviewText.trim() || undefined,
           type: UpdateReviewRequestTypeEnum.Album
         });
 
@@ -116,7 +117,7 @@ export function WriteReviewPage() {
         const result = await createReview({
           rating,
           title: title.trim() || undefined,
-          content: reviewText.trim(),
+          content: reviewText.trim() || undefined,
           type: CreateReviewRequestTypeEnum.Album,
           targetId: albumId,
           artistIds: album.artistIds
@@ -137,7 +138,7 @@ export function WriteReviewPage() {
     }
   };
 
-  const canSubmit = rating > 0 && reviewText.trim().length > 0 && !loading && !submitSuccess;
+  const canSubmit = rating > 0 && !loading && !submitSuccess;
 
   // 로딩 중일 때
   if (isEditMode && loadingReview) {
@@ -236,7 +237,9 @@ export function WriteReviewPage() {
           {/* Review Text */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold mb-2">리뷰 내용</h3>
+              <h3 className="font-semibold mb-2">
+                리뷰 내용 <span className="text-sm text-muted-foreground font-normal">(선택사항)</span>
+              </h3>
               <p className="text-sm text-muted-foreground mb-4">
                 이 앨범에 대한 당신의 생각을 자유롭게 작성해주세요
               </p>

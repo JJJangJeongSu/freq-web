@@ -36,8 +36,9 @@ export function RatedAlbumsPage() {
   // Server handles recent/old, client handles other sorts and filters
   const filteredAndSortedAlbums = useMemo(() => {
     let result = albums.filter(album => {
+      const artistString = album.artists.join(', ');
       const matchesSearch = album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           album.artist.toLowerCase().includes(searchQuery.toLowerCase());
+                           artistString.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesRating = filterRating === 'all' ||
                            (filterRating === '5' && album.rating === 5) ||
                            (filterRating === '4' && album.rating >= 4 && album.rating < 5) ||
@@ -56,7 +57,7 @@ export function RatedAlbumsPage() {
           case 'title':
             return a.title.localeCompare(b.title);
           case 'artist':
-            return a.artist.localeCompare(b.artist);
+            return a.artists.join(', ').localeCompare(b.artists.join(', '));
           default:
             return 0;
         }
@@ -197,15 +198,15 @@ export function RatedAlbumsPage() {
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
               {filteredAndSortedAlbums.map((album) => (
-                <div key={album.albumId} className="space-y-2">
+                <div key={album.id} className="space-y-2">
                   <MusicCard
-                    id={album.albumId}
+                    id={album.id}
                     title={album.title}
-                    artist={album.artist}
-                    imageUrl={album.coverUrl}
+                    artist={album.artists.join(', ')}
+                    imageUrl={album.imageUrl}
                     rating={album.rating}
                     type="album"
-                    onClick={() => navigate(`/albums/${album.albumId}`)}
+                    onClick={() => navigate(`/albums/${album.id}`)}
                   />
                   <div className="text-xs text-muted-foreground text-center">
                     {new Date(album.ratedDate).toLocaleDateString('ko-KR', {

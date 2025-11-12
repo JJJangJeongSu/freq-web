@@ -14,13 +14,14 @@ import type { PaginationInfo, ScrollMode } from '@/types/pagination';
 export type RatedAlbumSortBy = 'recent' | 'old';
 
 interface RatedAlbum {
-  albumId: number;
+  id: string;          // API 필드명과 타입에 맞춤
   title: string;
-  artist: string;
-  coverUrl?: string;
+  artists: string[];   // API는 배열로 전달
+  imageUrl?: string;
   rating: number;
   ratedDate: string;
   reviewId?: number;
+  content?: string;
 }
 
 interface UseRatedAlbumsPaginatedReturn {
