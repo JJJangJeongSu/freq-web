@@ -10,6 +10,7 @@ import { useUpdateBio } from "../hooks/useUpdateBio";
 import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
 import { useUpdateNickname } from "../hooks/useUpdateNickname";
 import { useCheckNickname } from "../hooks/useCheckNickname";
+import { containsProfanity } from "@/utils/profanityFilter";
 
 interface ProfileEditDialogProps {
   open: boolean;
@@ -105,6 +106,11 @@ export function ProfileEditDialog({
     }
     if (!/^[가-힣a-zA-Z0-9_]+$/.test(nickname)) {
       setNicknameError('닉네임은 한글, 영문, 숫자, 언더스코어만 사용 가능합니다.');
+      setNicknameAvailable(false);
+      return false;
+    }
+    if (containsProfanity(nickname)) {
+      setNicknameError('사용할 수 없는 닉네임입니다.');
       setNicknameAvailable(false);
       return false;
     }

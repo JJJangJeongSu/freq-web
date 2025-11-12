@@ -1,37 +1,38 @@
-1. K-pop
-2. K-indie
-3. K-rock
-4. K-hop
-5. J-pop
-6. J-rock
-7. Pop
-8. Indie Pop
-9. Dance Pop
-10. Electropop
-11. Synthpop
-12. Teen Pop
-13. Art Pop
-14. Chamber Pop
-15. Dream Pop
-16. Rock
-17. Alternative Rock
-18. Indie Rock
-19. Pop Rock
-20. Hard Rock
-21. Punk Rock
-22. Classic Rock
-23. Progressive Rock
-24. Psychedelic Rock
-25. Garage Rock
-26. Pop Punk
-27. Post-punk
-28. Post Rock
-29. Grunge
-30. Britpop
-31. Hip Hop
-32. Rap
-33. Trap Music
-34. Alternative Hip Hop
+1. k-pop
+2. k-indie
+3. k-rock
+4. k-hop
+5. k-ballad
+6. J-pop
+7. J-rock
+8. Pop
+9. Indie Pop
+10. Dance Pop
+11. Electropop
+12. Synthpop
+13. Teen Pop
+14. Art Pop
+15. Chamber Pop
+16. Dream Pop
+17. Rock
+18. Alternative Rock
+19. Indie Rock
+20. Pop Rock
+21. Hard Rock
+22. Punk Rock
+23. Classic Rock
+24. Progressive Rock
+25. Psychedelic Rock
+26. Garage Rock
+27. Pop Punk
+28. Post-punk
+29. Post Rock
+30. Grunge
+31. Britpop
+32. Hip Hop
+33. Rap
+34. Trap Music
+35. Alternative Hip Hop
 35. Underground Hip Hop
 36. East Coast Hip Hop
 37. West Coast Rap

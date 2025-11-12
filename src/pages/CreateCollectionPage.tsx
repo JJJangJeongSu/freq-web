@@ -14,10 +14,11 @@ import { useNavigate } from "react-router-dom";
 import { useSearch, SearchType } from "@/hooks/useSearch";
 import { SearchResult, CreateCollectionRequest, CollectionItemInput, CreateCollectionRequestIsPublicEnum } from "@/api/models";
 import { apiService } from "@/services/api.service";
+import { containsProfanity } from "@/utils/profanityFilter";
 
 // 장르 리스트 (genres.md에서 추출)
 const GENRE_LIST = [
-  "K-pop", "K-indie", "K-rock", "K-hop", "J-pop", "J-rock", "Pop", "Indie Pop", "Dance Pop", "Electropop",
+  "k-pop", "k-indie", "k-rock", "k-hop", "k-ballad", "J-pop", "J-rock", "Pop", "Indie Pop", "Dance Pop", "Electropop",
   "Synthpop", "Teen Pop", "Art Pop", "Chamber Pop", "Dream Pop", "Rock", "Alternative Rock", "Indie Rock",
   "Pop Rock", "Hard Rock", "Punk Rock", "Classic Rock", "Progressive Rock", "Psychedelic Rock", "Garage Rock",
   "Pop Punk", "Post-punk", "Post Rock", "Grunge", "Britpop", "Hip Hop", "Rap", "Trap Music", "Alternative Hip Hop",
@@ -36,6 +37,13 @@ const GENRE_LIST = [
   "Gospel", "Christian Rock", "Worship", "New Age", "World Music", "Afrobeat", "Flamenco", "Latin Jazz", "Grime",
   "UK Garage", "Breakbeat", "Jungle", "Glitch Hop", "Trip Hop", "Acid House", "Minimal Techno", "Industrial Techno",
   "Psytrance", "Chill-Out"
+];
+
+// 인기 장르 리스트
+const POPULAR_GENRES = [
+  "k-pop", "k-indie", "k-rock", "k-hop", "k-ballad",
+  "Pop", "Rock", "Hip Hop", "R&B",
+  "Jazz", "Electronic", "Indie Pop", "Metal"
 ];
 
 export function CreateCollectionPage() {
@@ -177,11 +185,11 @@ export function CreateCollectionPage() {
       setSelectedSuggestionIndex(prev => prev > 0 ? prev - 1 : -1);
     } else if (e.key === 'Enter') {
       e.preventDefault();
+      // 드롭다운에서 선택된 항목이 있을 때만 추가
       if (selectedSuggestionIndex >= 0 && filteredGenres[selectedSuggestionIndex]) {
         handleSelectGenre(filteredGenres[selectedSuggestionIndex]);
-      } else {
-        handleAddTag();
       }
+      // 직접 입력으로 추가는 불가능 (드롭다운에서만 선택 가능)
     } else if (e.key === 'Escape') {
       setShowGenreSuggestions(false);
       setSelectedSuggestionIndex(-1);
@@ -303,6 +311,11 @@ export function CreateCollectionPage() {
       return;
     }
 
+    if (containsProfanity(formData.title)) {
+      setSaveError('사용할 수 없는 제목입니다.');
+      return;
+    }
+
     if (tags.length === 0) {
       setSaveError('최소 1개 이상의 태그를 추가해야 합니다.');
       return;
@@ -376,18 +389,7 @@ export function CreateCollectionPage() {
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-semibold">새 컬렉션 만들기</h1>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleSave}
-          disabled={!formData.title.trim() || tags.length === 0 || isSaving}
-        >
-          {isSaving ? (
-            <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
-          ) : (
-            <Save className="w-4 h-4" />
-          )}
-        </Button>
+        <div className="w-10"></div> {/* Spacer for layout balance */}
       </header>
 
       {/* Main Content */}
@@ -551,66 +553,99 @@ export function CreateCollectionPage() {
               <Hash className="w-4 h-4" />
               태그 (최소 1개, 최대 5개) *
             </h3>
-            
-            {/* 태그 입력 */}
-            <div className="relative">
-              <div className="flex gap-2">
+
+            {/* 인기 장르 */}
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">인기 장르</Label>
+              <div className="flex flex-wrap gap-2">
+                {POPULAR_GENRES.map((genre) => {
+                  const isSelected = tags.includes(genre);
+                  const isDisabled = tags.length >= 5 && !isSelected;
+
+                  return (
+                    <Button
+                      key={genre}
+                      variant={isSelected ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => isSelected ? handleRemoveTag(genre) : handleAddTag(genre)}
+                      disabled={isDisabled}
+                      className="h-8"
+                    >
+                      {isSelected && <Check className="w-3 h-3 mr-1" />}
+                      {genre}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* 다른 장르 검색 */}
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">다른 장르 검색</Label>
+              <div className="relative">
                 <Input
                   ref={tagInputRef}
-                  placeholder="장르를 입력하세요 (예: K-pop, Rock, Jazz)"
+                  placeholder="장르를 검색하세요 (예: Indie Rock, Jazz Fusion)"
                   value={tagInput}
                   onChange={(e) => handleTagInputChange(e.target.value)}
                   onKeyDown={handleTagInputKeyDown}
                   onFocus={() => tagInput.trim().length > 0 && setShowGenreSuggestions(true)}
                   onBlur={() => setTimeout(() => setShowGenreSuggestions(false), 200)}
                   maxLength={50}
+                  disabled={tags.length >= 5}
                 />
-                <Button
-                  onClick={() => handleAddTag()}
-                  disabled={!tagInput.trim() || tags.length >= 5}
-                  size="sm"
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
-              </div>
 
-              {/* 자동완성 드롭다운 */}
-              {showGenreSuggestions && filteredGenres.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-popover border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
-                  {filteredGenres.map((genre, index) => (
-                    <button
-                      key={genre}
-                      type="button"
-                      className={`w-full px-4 py-2 text-left hover:bg-accent transition-colors flex items-center gap-2 ${
-                        index === selectedSuggestionIndex ? 'bg-accent' : ''
-                      }`}
-                      onClick={() => handleSelectGenre(genre)}
-                      onMouseEnter={() => setSelectedSuggestionIndex(index)}
-                    >
-                      <Hash className="w-3 h-3 text-muted-foreground" />
-                      <span className="text-sm">{genre}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+                {/* 자동완성 드롭다운 */}
+                {showGenreSuggestions && filteredGenres.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-popover border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                    {filteredGenres.map((genre, index) => {
+                      const isAlreadySelected = tags.includes(genre);
+
+                      return (
+                        <button
+                          key={genre}
+                          type="button"
+                          className={`w-full px-4 py-2 text-left transition-colors flex items-center gap-2 ${
+                            index === selectedSuggestionIndex ? 'bg-accent' : ''
+                          } ${isAlreadySelected ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent'}`}
+                          onClick={() => !isAlreadySelected && handleSelectGenre(genre)}
+                          onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                          disabled={isAlreadySelected}
+                        >
+                          <Hash className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-sm">{genre}</span>
+                          {isAlreadySelected && (
+                            <Check className="w-3 h-3 ml-auto text-green-500" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* 태그 목록 */}
+            {/* 선택된 태그 목록 */}
             {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="gap-1">
-                    #{tag}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-4 h-4 p-0 hover:bg-transparent"
-                      onClick={() => handleRemoveTag(tag)}
-                    >
-                      <X className="w-3 h-3" />
-                    </Button>
-                  </Badge>
-                ))}
+              <div className="space-y-2">
+                <Label className="text-sm text-muted-foreground">선택된 태그 ({tags.length}/5)</Label>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="gap-1 text-sm">
+                      #{tag}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-4 h-4 p-0 hover:bg-transparent"
+                        onClick={() => handleRemoveTag(tag)}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
               </div>
             )}
           </CardContent>

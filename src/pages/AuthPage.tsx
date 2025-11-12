@@ -7,6 +7,7 @@ import { Label } from "../components/ui/label";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useLogin, useSignup, useCheckEmail, useCheckNickname } from "../hooks/useAuth";
+import { containsProfanity } from "@/utils/profanityFilter";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -187,6 +188,9 @@ export function AuthPage() {
     } else if (value.trim().length < 2) {
       setIsNicknameValid(false);
       setNicknameValidationMessage("닉네임은 2자 이상이어야 합니다.");
+    } else if (containsProfanity(value)) {
+      setIsNicknameValid(false);
+      setNicknameValidationMessage("사용할 수 없는 닉네임입니다.");
     } else {
       setIsNicknameValid(true);
       setNicknameValidationMessage("");
