@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Filter, Plus, Music, MoreVertical, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Search, Filter, Plus, Music, MoreVertical, Trash2, Loader2, Pencil } from "lucide-react";
 import { EnhancedButton } from "../components/EnhancedButton";
 import { CollectionCard } from "../components/CollectionCard";
 import { Input } from "../components/ui/input";
@@ -52,6 +52,11 @@ export function MyCollectionsPage() {
 
   const handleCollectionClick = (collectionId: number) => {
     navigate(`/collections/${collectionId}`);
+  };
+
+  const handleEditClick = (collectionId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/collections/edit/${collectionId}`);
   };
 
   const handleDeleteClick = (collection: any, e: React.MouseEvent) => {
@@ -237,6 +242,12 @@ export function MyCollectionsPage() {
                       </EnhancedButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => handleEditClick(collection.collectionId, e)}
+                      >
+                        <Pencil className="size-4 mr-2" />
+                        수정하기
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-error focus:text-error focus:bg-error/10"
                         onClick={(e) => handleDeleteClick(collection, e)}

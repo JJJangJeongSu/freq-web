@@ -10,9 +10,9 @@ import { Switch } from "../components/ui/switch";
 import { Separator } from "../components/ui/separator";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSearch, SearchType } from "@/hooks/useSearch";
-import { SearchResult, CreateCollectionRequest, CollectionItemInput, CreateCollectionRequestIsPublicEnum } from "@/api/models";
+import { SearchResult, CreateCollectionRequest, CollectionItemInput, CreateCollectionRequestIsPublicEnum, CollectionDetail } from "@/api/models";
 import { apiService } from "@/services/api.service";
 import { containsProfanity } from "@/utils/profanityFilter";
 
@@ -48,6 +48,14 @@ const POPULAR_GENRES = [
 
 export function CreateCollectionPage() {
   const navigate = useNavigate();
+  const { collectionId } = useParams<{ collectionId: string }>();
+
+  // 수정 모드 여부 판단
+  const isEditMode = !!collectionId;
+
+  // 데이터 로딩 상태
+  const [isLoadingCollection, setIsLoadingCollection] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',

@@ -5,8 +5,6 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { clearAuthToken } from './api/client';
 import { AuthProvider } from './contexts/AuthContext';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import { Analytics } from '@vercel/analytics/react';
 
 // Pages
 import { AuthPage } from './pages/AuthPage';
@@ -120,6 +118,7 @@ export default function App() {
 
             {/* Action Pages - More specific routes first */}
             <Route path="/collections/new" element={<CreateCollectionPage />} />
+            <Route path="/collections/edit/:collectionId" element={<CreateCollectionPage />} />
             <Route path="/collections/:collectionId/comments" element={<CollectionCommentsPage />} />
             <Route path="/albums/:albumId/reviews" element={<AllReviewsPage />} />
             <Route path="/albums/:albumId/write-review/:reviewId?" element={<WriteReviewPage />} />
@@ -133,8 +132,6 @@ export default function App() {
       </Routes>
 
       <Toaster />
-      <SpeedInsights />
-      <Analytics />
       </AuthProvider>
     </BrowserRouter>
   );
