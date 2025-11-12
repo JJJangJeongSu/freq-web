@@ -134,7 +134,6 @@ export * from './track-detail-artists-inner';
 export * from './track-detail-rating';
 export * from './track-preview';
 export * from './update-bio-request';
-export * from './update-collection-request';
 export * from './update-comment200-response';
 export * from './update-comment200-response-all-of-data';
 export * from './update-comment-request';

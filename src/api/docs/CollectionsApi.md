@@ -24,11 +24,11 @@ All URIs are relative to *http://localhost*
 |[**getUserCollections_5**](#getusercollections_5) | **GET** /home | 홈 화면 조회|
 |[**getUserCollections_6**](#getusercollections_6) | **GET** /popular-albums | 인기 앨범 목록|
 |[**getUserCollections_7**](#getusercollections_7) | **GET** /popular-tracks | 인기 트랙 목록|
+|[**modifyCollection**](#modifycollection) | **PATCH** /collections/{collectionId} | 컬렉션 수정|
+|[**modifyCollection_0**](#modifycollection_0) | **PATCH** /collections/{collectionId} | 컬렉션 수정|
 |[**search**](#search) | **GET** /collections/search | 컬렉션 검색|
 |[**toggleCollectionLike**](#togglecollectionlike) | **POST** /collections/{collectionId}/likes/toggle | 컬렉션 좋아요 토글|
 |[**toggleCollectionLike_0**](#togglecollectionlike_0) | **POST** /collections/{collectionId}/likes/toggle | 컬렉션 좋아요 토글|
-|[**updateCollection**](#updatecollection) | **PATCH** /collections/{collectionId} | 컬렉션 수정|
-|[**updateCollection_0**](#updatecollection_0) | **PATCH** /collections/{collectionId} | 컬렉션 수정|
 
 # **collectionsByItemItemIdGet**
 > object collectionsByItemItemIdGet()
@@ -1116,6 +1116,122 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **modifyCollection**
+> CreateCollection200Response modifyCollection()
+
+기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    CreateCollectionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: number; // (default to undefined)
+let createCollectionRequest: CreateCollectionRequest; // (optional)
+
+const { status, data } = await apiInstance.modifyCollection(
+    collectionId,
+    createCollectionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createCollectionRequest** | **CreateCollectionRequest**|  | |
+| **collectionId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**CreateCollection200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 수정 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **modifyCollection_0**
+> CreateCollection200Response modifyCollection_0()
+
+기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+
+### Example
+
+```typescript
+import {
+    CollectionsApi,
+    Configuration,
+    CreateCollectionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CollectionsApi(configuration);
+
+let collectionId: number; // (default to undefined)
+let createCollectionRequest: CreateCollectionRequest; // (optional)
+
+const { status, data } = await apiInstance.modifyCollection_0(
+    collectionId,
+    createCollectionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createCollectionRequest** | **CreateCollectionRequest**|  | |
+| **collectionId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**CreateCollection200Response**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | 컬렉션 수정 성공 |  -  |
+|**400** | 잘못된 요청 |  -  |
+|**401** | 인증 실패 |  -  |
+|**500** | 서버 오류 |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **search**
 > Search200Response search()
 
@@ -1275,124 +1391,6 @@ No authorization required
 |-------------|-------------|------------------|
 |**200** | 좋아요 토글 성공 |  -  |
 |**401** | 인증 실패 |  -  |
-|**404** | 리소스를 찾을 수 없음 |  -  |
-|**500** | 서버 오류 |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **updateCollection**
-> GetCollectionDetail200Response updateCollection()
-
-자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-
-### Example
-
-```typescript
-import {
-    CollectionsApi,
-    Configuration,
-    UpdateCollectionRequest
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new CollectionsApi(configuration);
-
-let collectionId: string; //수정할 컬렉션 ID (default to undefined)
-let updateCollectionRequest: UpdateCollectionRequest; // (optional)
-
-const { status, data } = await apiInstance.updateCollection(
-    collectionId,
-    updateCollectionRequest
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **updateCollectionRequest** | **UpdateCollectionRequest**|  | |
-| **collectionId** | [**string**] | 수정할 컬렉션 ID | defaults to undefined|
-
-
-### Return type
-
-**GetCollectionDetail200Response**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | 컬렉션 수정 성공 |  -  |
-|**401** | 인증 실패 |  -  |
-|**403** | 권한 없음 |  -  |
-|**404** | 리소스를 찾을 수 없음 |  -  |
-|**500** | 서버 오류 |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **updateCollection_0**
-> GetCollectionDetail200Response updateCollection_0()
-
-자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-
-### Example
-
-```typescript
-import {
-    CollectionsApi,
-    Configuration,
-    UpdateCollectionRequest
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new CollectionsApi(configuration);
-
-let collectionId: string; //수정할 컬렉션 ID (default to undefined)
-let updateCollectionRequest: UpdateCollectionRequest; // (optional)
-
-const { status, data } = await apiInstance.updateCollection_0(
-    collectionId,
-    updateCollectionRequest
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **updateCollectionRequest** | **UpdateCollectionRequest**|  | |
-| **collectionId** | [**string**] | 수정할 컬렉션 ID | defaults to undefined|
-
-
-### Return type
-
-**GetCollectionDetail200Response**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | 컬렉션 수정 성공 |  -  |
-|**401** | 인증 실패 |  -  |
-|**403** | 권한 없음 |  -  |
 |**404** | 리소스를 찾을 수 없음 |  -  |
 |**500** | 서버 오류 |  -  |
 

@@ -703,15 +703,11 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
          * @summary 사용자 프로필 조회
-         * @param {number} userId 프로필을 조회할 사용자 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserProfile: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserProfile', 'userId', userId)
-            const localVarPath = `/users/{userId}/profile`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+        getUserProfile: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/me/profile`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -737,15 +733,11 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
          * @summary 사용자 프로필 조회
-         * @param {number} userId 프로필을 조회할 사용자 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserProfile_9: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserProfile_9', 'userId', userId)
-            const localVarPath = `/users/{userId}/profile`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+        getUserProfile_9: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/me/profile`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1223,12 +1215,11 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
          * @summary 사용자 프로필 조회
-         * @param {number} userId 프로필을 조회할 사용자 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserProfile(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserProfile200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(userId, options);
+        async getUserProfile(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserProfile200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserProfile']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1236,12 +1227,11 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
          * @summary 사용자 프로필 조회
-         * @param {number} userId 프로필을 조회할 사용자 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserProfile_9(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserProfile200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile_9(userId, options);
+        async getUserProfile_9(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserProfile200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile_9(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.getUserProfile_9']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1501,22 +1491,20 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
          * @summary 사용자 프로필 조회
-         * @param {number} userId 프로필을 조회할 사용자 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserProfile(userId: number, options?: RawAxiosRequestConfig): AxiosPromise<GetUserProfile200Response> {
-            return localVarFp.getUserProfile(userId, options).then((request) => request(axios, basePath));
+        getUserProfile(options?: RawAxiosRequestConfig): AxiosPromise<GetUserProfile200Response> {
+            return localVarFp.getUserProfile(options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
          * @summary 사용자 프로필 조회
-         * @param {number} userId 프로필을 조회할 사용자 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserProfile_9(userId: number, options?: RawAxiosRequestConfig): AxiosPromise<GetUserProfile200Response> {
-            return localVarFp.getUserProfile_9(userId, options).then((request) => request(axios, basePath));
+        getUserProfile_9(options?: RawAxiosRequestConfig): AxiosPromise<GetUserProfile200Response> {
+            return localVarFp.getUserProfile_9(options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 사용자가 평가한 모든 앨범의 목록을 조회합니다. 앨범 정보, 평점, 평가 날짜, 리뷰 내용을 포함합니다. 평가한 내용이 없어도 모든 평가를 불러옵니다
@@ -1793,25 +1781,23 @@ export class UsersApi extends BaseAPI {
     /**
      * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
      * @summary 사용자 프로필 조회
-     * @param {number} userId 프로필을 조회할 사용자 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserProfile(userId: number, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserProfile(userId, options).then((request) => request(this.axios, this.basePath));
+    public getUserProfile(options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserProfile(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 사용자의 프로필 사진과 소개글(bio)을 조회합니다. 
      * @summary 사용자 프로필 조회
-     * @param {number} userId 프로필을 조회할 사용자 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUserProfile_9(userId: number, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).getUserProfile_9(userId, options).then((request) => request(this.axios, this.basePath));
+    public getUserProfile_9(options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).getUserProfile_9(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

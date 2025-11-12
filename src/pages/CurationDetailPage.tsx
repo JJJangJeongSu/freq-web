@@ -234,10 +234,27 @@ export function CurationDetailPage() {
           <div className="absolute bottom-4 left-4 right-4 text-white">
             <h1 className="text-2xl font-bold mb-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{collection.title}</h1>
             <div className="flex items-center gap-2">
-              <Avatar className="w-6 h-6">
-                <AvatarImage src={collection.author.imageUrl} />
-                <AvatarFallback>{collection.author.username.charAt(0)}</AvatarFallback>
-              </Avatar>
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={`${collection.author.username} 프로필 보기`}
+                className="cursor-pointer hover:opacity-80 active:opacity-60 transition-all"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/users/${collection.author.id}`);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/users/${collection.author.id}`);
+                  }
+                }}
+              >
+                <Avatar className="w-6 h-6">
+                  <AvatarImage src={collection.author.imageUrl} />
+                  <AvatarFallback>{collection.author.username.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </div>
               <span className="text-sm" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{collection.author.username}</span>
             </div>
           </div>

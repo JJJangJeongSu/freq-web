@@ -20,8 +20,8 @@ All URIs are relative to *http://localhost*
 |[**getUserCollections_0**](#getusercollections_0) | **GET** /users/me/active-badge | 활성화된 칭호 확인|
 |[**getUserCollections_1**](#getusercollections_1) | **PATCH** /users/me/active-badge | 칭호 설정|
 |[**getUserCollections_2**](#getusercollections_2) | **GET** /users/{userId}/badges | 타인의 칭호 목록 조회|
-|[**getUserProfile**](#getuserprofile) | **GET** /users/{userId}/profile | 사용자 프로필 조회|
-|[**getUserProfile_0**](#getuserprofile_0) | **GET** /users/{userId}/profile | 사용자 프로필 조회|
+|[**getUserProfile**](#getuserprofile) | **GET** /users/me/profile | 사용자 프로필 조회|
+|[**getUserProfile_0**](#getuserprofile_0) | **GET** /users/me/profile | 사용자 프로필 조회|
 |[**getUserRatedAlbums**](#getuserratedalbums) | **GET** /users/{userId}/rated-albums | 평가한 앨범 페이지|
 |[**getUserRatedAlbums_0**](#getuserratedalbums_0) | **GET** /users/{userId}/rated-albums | 평가한 앨범 페이지|
 |[**getUserRatedTracks**](#getuserratedtracks) | **GET** /users/{userId}/rated-tracks | 평가한 트랙 페이지|
@@ -918,18 +918,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: number; //프로필을 조회할 사용자 ID (default to undefined)
-
-const { status, data } = await apiInstance.getUserProfile(
-    userId
-);
+const { status, data } = await apiInstance.getUserProfile();
 ```
 
 ### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **userId** | [**number**] | 프로필을 조회할 사용자 ID | defaults to undefined|
+This endpoint does not have any parameters.
 
 
 ### Return type
@@ -972,18 +965,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userId: number; //프로필을 조회할 사용자 ID (default to undefined)
-
-const { status, data } = await apiInstance.getUserProfile_0(
-    userId
-);
+const { status, data } = await apiInstance.getUserProfile_0();
 ```
 
 ### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **userId** | [**number**] | 프로필을 조회할 사용자 ID | defaults to undefined|
+This endpoint does not have any parameters.
 
 
 ### Return type

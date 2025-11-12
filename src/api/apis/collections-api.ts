@@ -59,8 +59,6 @@ import type { Search200Response } from '../models';
 import type { SuccessResponse } from '../models';
 // @ts-ignore
 import type { ToggleCollectionLike200Response } from '../models';
-// @ts-ignore
-import type { UpdateCollectionRequest } from '../models';
 /**
  * CollectionsApi - axios parameter creator
  * @export
@@ -847,6 +845,90 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * @summary 컬렉션 수정
+         * @param {number} collectionId 
+         * @param {CreateCollectionRequest} [createCollectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        modifyCollection: async (collectionId: number, createCollectionRequest?: CreateCollectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'collectionId' is not null or undefined
+            assertParamExists('modifyCollection', 'collectionId', collectionId)
+            const localVarPath = `/collections/{collectionId}`
+                .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createCollectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * @summary 컬렉션 수정
+         * @param {number} collectionId 
+         * @param {CreateCollectionRequest} [createCollectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        modifyCollection_15: async (collectionId: number, createCollectionRequest?: CreateCollectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'collectionId' is not null or undefined
+            assertParamExists('modifyCollection_15', 'collectionId', collectionId)
+            const localVarPath = `/collections/{collectionId}`
+                .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createCollectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
@@ -931,9 +1013,9 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleCollectionLike_15: async (collectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        toggleCollectionLike_16: async (collectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'collectionId' is not null or undefined
-            assertParamExists('toggleCollectionLike_15', 'collectionId', collectionId)
+            assertParamExists('toggleCollectionLike_16', 'collectionId', collectionId)
             const localVarPath = `/collections/{collectionId}/likes/toggle`
                 .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -952,90 +1034,6 @@ export const CollectionsApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-         * @summary 컬렉션 수정
-         * @param {string} collectionId 수정할 컬렉션 ID
-         * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateCollection: async (collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'collectionId' is not null or undefined
-            assertParamExists('updateCollection', 'collectionId', collectionId)
-            const localVarPath = `/collections/{collectionId}`
-                .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateCollectionRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-         * @summary 컬렉션 수정
-         * @param {string} collectionId 수정할 컬렉션 ID
-         * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateCollection_16: async (collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'collectionId' is not null or undefined
-            assertParamExists('updateCollection_16', 'collectionId', collectionId)
-            const localVarPath = `/collections/{collectionId}`
-                .replace(`{${"collectionId"}}`, encodeURIComponent(String(collectionId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateCollectionRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1326,6 +1324,34 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * @summary 컬렉션 수정
+         * @param {number} collectionId 
+         * @param {CreateCollectionRequest} [createCollectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async modifyCollection(collectionId: number, createCollectionRequest?: CreateCollectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCollection200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.modifyCollection(collectionId, createCollectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.modifyCollection']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * @summary 컬렉션 수정
+         * @param {number} collectionId 
+         * @param {CreateCollectionRequest} [createCollectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async modifyCollection_15(collectionId: number, createCollectionRequest?: CreateCollectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCollection200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.modifyCollection_15(collectionId, createCollectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.modifyCollection_15']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
@@ -1359,38 +1385,10 @@ export const CollectionsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async toggleCollectionLike_15(collectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleCollectionLike200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleCollectionLike_15(collectionId, options);
+        async toggleCollectionLike_16(collectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleCollectionLike200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleCollectionLike_16(collectionId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.toggleCollectionLike_15']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-         * @summary 컬렉션 수정
-         * @param {string} collectionId 수정할 컬렉션 ID
-         * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async updateCollection(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCollectionDetail200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCollection(collectionId, updateCollectionRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.updateCollection']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-         * @summary 컬렉션 수정
-         * @param {string} collectionId 수정할 컬렉션 ID
-         * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async updateCollection_16(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCollectionDetail200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCollection_16(collectionId, updateCollectionRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.updateCollection_16']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollectionsApi.toggleCollectionLike_16']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1617,6 +1615,28 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
             return localVarFp.getUserCollections_14(options).then((request) => request(axios, basePath));
         },
         /**
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * @summary 컬렉션 수정
+         * @param {number} collectionId 
+         * @param {CreateCollectionRequest} [createCollectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        modifyCollection(collectionId: number, createCollectionRequest?: CreateCollectionRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreateCollection200Response> {
+            return localVarFp.modifyCollection(collectionId, createCollectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+         * @summary 컬렉션 수정
+         * @param {number} collectionId 
+         * @param {CreateCollectionRequest} [createCollectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        modifyCollection_15(collectionId: number, createCollectionRequest?: CreateCollectionRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreateCollection200Response> {
+            return localVarFp.modifyCollection_15(collectionId, createCollectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
          * @summary 컬렉션 검색
          * @param {string} [q] 이름 
@@ -1644,30 +1664,8 @@ export const CollectionsApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleCollectionLike_15(collectionId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleCollectionLike200Response> {
-            return localVarFp.toggleCollectionLike_15(collectionId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-         * @summary 컬렉션 수정
-         * @param {string} collectionId 수정할 컬렉션 ID
-         * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateCollection(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetCollectionDetail200Response> {
-            return localVarFp.updateCollection(collectionId, updateCollectionRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-         * @summary 컬렉션 수정
-         * @param {string} collectionId 수정할 컬렉션 ID
-         * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateCollection_16(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig): AxiosPromise<GetCollectionDetail200Response> {
-            return localVarFp.updateCollection_16(collectionId, updateCollectionRequest, options).then((request) => request(axios, basePath));
+        toggleCollectionLike_16(collectionId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleCollectionLike200Response> {
+            return localVarFp.toggleCollectionLike_16(collectionId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1933,6 +1931,32 @@ export class CollectionsApi extends BaseAPI {
     }
 
     /**
+     * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+     * @summary 컬렉션 수정
+     * @param {number} collectionId 
+     * @param {CreateCollectionRequest} [createCollectionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CollectionsApi
+     */
+    public modifyCollection(collectionId: number, createCollectionRequest?: CreateCollectionRequest, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).modifyCollection(collectionId, createCollectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 기존 컬렉션을 수정합니다. 기존 정보는 프론트쪽에서 컬렉션 상세 조회를 통해 채워 넣습니다
+     * @summary 컬렉션 수정
+     * @param {number} collectionId 
+     * @param {CreateCollectionRequest} [createCollectionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CollectionsApi
+     */
+    public modifyCollection_15(collectionId: number, createCollectionRequest?: CreateCollectionRequest, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).modifyCollection_15(collectionId, createCollectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 컬렉션 전체 검색 기능 이름과 정렬기준을 제공합니다 
      * @summary 컬렉션 검색
      * @param {string} [q] 이름 
@@ -1965,34 +1989,8 @@ export class CollectionsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CollectionsApi
      */
-    public toggleCollectionLike_15(collectionId: string, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).toggleCollectionLike_15(collectionId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-     * @summary 컬렉션 수정
-     * @param {string} collectionId 수정할 컬렉션 ID
-     * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CollectionsApi
-     */
-    public updateCollection(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).updateCollection(collectionId, updateCollectionRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 자신이 생성한 컬렉션의 정보를 수정합니다. 제목, 설명, 공개 범위, 커버 이미지, 태그 등을 변경할 수 있습니다. 다른 사용자의 컬렉션을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
-     * @summary 컬렉션 수정
-     * @param {string} collectionId 수정할 컬렉션 ID
-     * @param {UpdateCollectionRequest} [updateCollectionRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CollectionsApi
-     */
-    public updateCollection_16(collectionId: string, updateCollectionRequest?: UpdateCollectionRequest, options?: RawAxiosRequestConfig) {
-        return CollectionsApiFp(this.configuration).updateCollection_16(collectionId, updateCollectionRequest, options).then((request) => request(this.axios, this.basePath));
+    public toggleCollectionLike_16(collectionId: string, options?: RawAxiosRequestConfig) {
+        return CollectionsApiFp(this.configuration).toggleCollectionLike_16(collectionId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

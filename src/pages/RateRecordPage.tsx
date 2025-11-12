@@ -175,7 +175,7 @@ export function RateRecordPage() {
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-8 mt-8">
           <div className="flex items-center justify-between mb-5 px-6">
             <h2 className="text-xl font-semibold">내 별점 분포</h2>
             <Tabs value={ratingType} onValueChange={(value) => setRatingType(value as 'album' | 'track')}>
@@ -356,15 +356,15 @@ export function RateRecordPage() {
         </div>
 
         {/* 장르 키워드 맵 */}
-        <div className="mb-8">
+        <div className="mb-8 mt-8">
           <div className="flex items-center justify-between mb-5 px-6">
             <h2 className="text-xl font-semibold">내가 좋아하는 장르</h2>
           </div>
           <div className="px-6">
             {data.genreKeywords.length > 0 ? (
               <>
-                <div className="flex flex-wrap gap-3">
-                  {data.genreKeywords.map((genre) => (
+                <div className="flex flex-wrap gap-4">
+                  {data.genreKeywords.slice(0, 6).map((genre) => (
                     <Badge
                       key={genre.name}
                       variant="secondary"
@@ -396,7 +396,7 @@ export function RateRecordPage() {
         </div>
 
         {/* Recent Reviews */}
-        <div className="pt-4">
+        <div className="pt-8">
           <HorizontalMusicSection
             title="평가한 앨범"
             items={data.recentAlbums}

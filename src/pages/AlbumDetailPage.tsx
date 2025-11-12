@@ -13,6 +13,7 @@ import { useAlbumDetail } from "../hooks/useAlbumDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { useUpdateReview } from "../hooks/useUpdateReview";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useToggleReviewLike } from "../hooks/useToggleReviewLike";
 import { CreateReviewRequestTypeEnum } from "../api/models";
 
 export function AlbumDetailPage() {
@@ -24,11 +25,15 @@ export function AlbumDetailPage() {
   const { createReview, loading: createLoading, error: createError } = useCreateReview();
   const { updateReview, loading: updateLoading, error: updateError } = useUpdateReview();
   const { user } = useCurrentUser();
+  const { toggleLike } = useToggleReviewLike();
 
   const [userRating, setUserRating] = useState(0);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [trackListExpanded, setTrackListExpanded] = useState(false);
   const [reviewId, setReviewId] = useState<string | null>(null); // ⭐ 로컬 reviewId 상태
+
+  // Optimistic UI를 위한 리뷰 로컬 상태
+  const [localReviews, setLocalReviews] = useState<any[]>([]);
 
   // 로딩과 에러를 통합
   const reviewLoading = createLoading || updateLoading;
@@ -41,6 +46,13 @@ export function AlbumDetailPage() {
     }
     if (album && (album as any).reviewId) {
       setReviewId((album as any).reviewId);
+    }
+  }, [album]);
+
+  // 앨범 리뷰 데이터가 로드되면 로컬 상태 초기화
+  useEffect(() => {
+    if (album && (album as any).reviews) {
+      setLocalReviews((album as any).reviews);
     }
   }, [album]);
 
@@ -97,6 +109,48 @@ export function AlbumDetailPage() {
       setTimeout(() => setSubmitSuccess(false), 3000);
     } catch (err: any) {
       console.error('❌ Review submission failed:', err);
+    }
+  };
+
+  // 리뷰 좋아요 토글 핸들러 (인증 체크 + Optimistic UI)
+  const handleLikeClick = async (reviewId: number) => {
+    // 인증 확인
+    if (!user) {
+      console.log('🔒 User not authenticated, redirecting to /auth');
+      navigate('/auth');
+      return;
+    }
+
+    // 해당 리뷰 찾기
+    const reviewIndex = localReviews.findIndex(r => r.reviewId === reviewId);
+    if (reviewIndex === -1) return;
+
+    const review = localReviews[reviewIndex];
+    const currentIsLiked = review.isLiked ?? false;
+    const currentLikeCount = review.likeCount ?? 0;
+
+    // Optimistic UI: 즉시 로컬 상태 업데이트
+    const updatedReviews = [...localReviews];
+    updatedReviews[reviewIndex] = {
+      ...review,
+      isLiked: !currentIsLiked,
+      likeCount: currentIsLiked ? currentLikeCount - 1 : currentLikeCount + 1,
+    };
+    setLocalReviews(updatedReviews);
+
+    // API 호출 (백그라운드)
+    const result = await toggleLike(reviewId, currentIsLiked, currentLikeCount);
+
+    // 에러 발생 시 롤백
+    if (result.error) {
+      console.error('⚠️ Like toggle failed, rolling back');
+      const rollbackReviews = [...localReviews];
+      rollbackReviews[reviewIndex] = {
+        ...review,
+        isLiked: currentIsLiked,
+        likeCount: currentLikeCount,
+      };
+      setLocalReviews(rollbackReviews);
     }
   };
 
@@ -419,9 +473,9 @@ export function AlbumDetailPage() {
               <h3 className="text-lg font-semibold">리뷰</h3>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
-                  총 {((album as any).reviewCount ?? (album as any).reviews?.length ?? 0)}개
+                  총 {((album as any).reviewCount ?? localReviews.length ?? 0)}개
                 </span>
-                {((album as any).reviewCount ?? (album as any).reviews?.length ?? 0) > 0 && (
+                {((album as any).reviewCount ?? localReviews.length ?? 0) > 0 && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -433,16 +487,16 @@ export function AlbumDetailPage() {
                 )}
               </div>
             </div>
-            {(album as any).reviews && (album as any).reviews.length > 0 ? (
+            {localReviews && localReviews.length > 0 ? (
               <div className="space-y-3">
-                {(album as any).reviews.map((review: any) => (
+                {localReviews.map((review: any) => (
                   <ReviewCard
                     key={review.reviewId}
                     review={{
                       reviewId: review.reviewId,
                       userId: review.userId,
                       username: review.username,
-                      userProfileImage: review.userProfileImage,
+                      userProfileImage: review.userImageUrl,
                       rating: review.rating,
                       content: review.content,
                       likeCount: review.likeCount ?? 0,
@@ -452,10 +506,7 @@ export function AlbumDetailPage() {
                     }}
                     onReviewClick={(id) => navigate(`/reviews/${id}`)}
                     onUserClick={(id) => navigate(`/users/${id}`)}
-                    onLikeClick={(id) => {
-                      console.log('Like review:', id);
-                      // TODO: Implement like functionality
-                    }}
+                    onLikeClick={handleLikeClick}
                     onReplyClick={(id) => navigate(`/reviews/${id}`)}
                   />
                 ))}

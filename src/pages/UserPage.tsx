@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, Palette, Info, LogOut } from "lucide-react";
+import { ArrowLeft, Shield, Palette, Info, LogOut, Send } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
 import { Separator } from "../components/ui/separator";
@@ -7,10 +7,19 @@ import { useTheme } from "../components/theme-provider";
 import { useUserProfile } from "../hooks/useUserProfile";
 import { clearAuthToken } from "../api/client";
 import { userCache } from "../utils/userCache";
+import { Textarea } from "../components/ui/textarea";
+import { Label } from "../components/ui/label";
+import { useState } from "react";
+import { sendFeedback } from "../services/feedback";
+import { useToast } from "../hooks/use-toast";
 
 export function UserPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
+
+  const [feedback, setFeedback] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   // 현재 로그인한 사용자의 ID 가져오기
   const userId = localStorage.getItem('userId') || '';
@@ -143,6 +152,84 @@ export function UserPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <Separator />
+
+            {/* Feedback - 개선된 디자인 */}
+            <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 p-6 shadow-sm">
+              {/* 배경 장식 */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full blur-3xl -z-10" />
+
+              <div className="space-y-4">
+                {/* 헤더 */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10">
+                    <Send className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">피드백 보내기</h3>
+                    <p className="text-sm text-muted-foreground">앱에 대한 의견을 들려주세요</p>
+                  </div>
+                </div>
+
+                {/* 입력 영역 */}
+                <div className="space-y-2">
+                  <Textarea
+                    id="feedback-message"
+                    placeholder="불편한 점, 개선 아이디어 등을 자유롭게 적어주세요."
+                    value={feedback}
+                    maxLength={1000}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    className="min-h-[120px] resize-none bg-background/80 backdrop-blur-sm border-primary/20 focus-visible:ring-primary/30"
+                  />
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground">
+                      최소 5자 이상 입력해주세요
+                    </p>
+                    <div className="text-xs text-muted-foreground">
+                      {feedback.length}/1000
+                    </div>
+                  </div>
+                </div>
+
+                {/* 전송 버튼 */}
+                <Button
+                  className="w-full h-11 font-semibold shadow-md shadow-primary/20"
+                  disabled={submitting || feedback.trim().length < 5}
+                  onClick={async () => {
+                    try {
+                      setSubmitting(true);
+                      await sendFeedback({ message: feedback.trim() });
+                      setFeedback("");
+                      toast({
+                        title: "감사합니다!",
+                        description: "소중한 의견이 전달되었습니다."
+                      });
+                    } catch (err: any) {
+                      toast({
+                        title: "전송 실패",
+                        description: err?.message || "잠시 후 다시 시도해주세요.",
+                        variant: "destructive"
+                      });
+                    } finally {
+                      setSubmitting(false);
+                    }
+                  }}
+                >
+                  {submitting ? (
+                    <span className="inline-flex items-center">
+                      <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      전송 중...
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center">
+                      <Send className="w-4 h-4 mr-2" />
+                      피드백 전송하기
+                    </span>
+                  )}
+                </Button>
               </div>
             </div>
           </div>

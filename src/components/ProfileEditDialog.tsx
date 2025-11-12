@@ -11,6 +11,7 @@ import { useUpdateProfileImage } from "../hooks/useUpdateProfileImage";
 import { useUpdateNickname } from "../hooks/useUpdateNickname";
 import { useCheckNickname } from "../hooks/useCheckNickname";
 import { containsProfanity } from "@/utils/profanityFilter";
+import { validateNickname as validateNicknameInput, NICKNAME_MAX_LENGTH, NICKNAME_GUIDE_MESSAGE } from "@/constants/validation";
 
 interface ProfileEditDialogProps {
   open: boolean;
@@ -94,26 +95,22 @@ export function ProfileEditDialog({
 
   // 닉네임 validation
   const validateNickname = (nickname: string) => {
-    if (nickname.length < 2) {
-      setNicknameError('닉네임은 2자 이상이어야 합니다.');
+    // 새로운 검증 함수 사용
+    const validationResult = validateNicknameInput(nickname);
+
+    if (!validationResult.isValid) {
+      setNicknameError(validationResult.errorMessage);
       setNicknameAvailable(false);
       return false;
     }
-    if (nickname.length > 20) {
-      setNicknameError('닉네임은 20자 이하여야 합니다.');
-      setNicknameAvailable(false);
-      return false;
-    }
-    if (!/^[가-힣a-zA-Z0-9_]+$/.test(nickname)) {
-      setNicknameError('닉네임은 한글, 영문, 숫자, 언더스코어만 사용 가능합니다.');
-      setNicknameAvailable(false);
-      return false;
-    }
+
+    // 욕설 필터 추가 검증
     if (containsProfanity(nickname)) {
       setNicknameError('사용할 수 없는 닉네임입니다.');
       setNicknameAvailable(false);
       return false;
     }
+
     setNicknameError(null);
     return true;
   };
@@ -249,6 +246,7 @@ export function ProfileEditDialog({
                 value={editedNickname}
                 onChange={handleNicknameChange}
                 placeholder="닉네임을 입력하세요"
+                maxLength={NICKNAME_MAX_LENGTH}
                 disabled={bioLoading || imageLoading}
                 className={
                   nicknameError
@@ -271,6 +269,10 @@ export function ProfileEditDialog({
                 </div>
               )}
             </div>
+            {/* 글자수 카운터 */}
+            <p className="text-xs text-muted-foreground text-right">
+              {editedNickname.length} / {NICKNAME_MAX_LENGTH}
+            </p>
             {/* 닉네임 가이드/에러 메시지 */}
             {nicknameError ? (
               <div className="flex items-center gap-1.5 text-xs text-destructive">
@@ -284,7 +286,7 @@ export function ProfileEditDialog({
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                2-20자의 한글, 영문, 숫자, 언더스코어(_)만 사용 가능합니다.
+                {NICKNAME_GUIDE_MESSAGE}
               </p>
             )}
           </div>

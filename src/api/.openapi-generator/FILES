@@ -170,7 +170,6 @@ docs/TrackDetailArtistsInner.md
 docs/TrackDetailRating.md
 docs/TrackPreview.md
 docs/UpdateBioRequest.md
-docs/UpdateCollectionRequest.md
 docs/UpdateComment200Response.md
 docs/UpdateComment200ResponseAllOfData.md
 docs/UpdateCommentRequest.md
@@ -323,7 +322,6 @@ models/track-detail-rating.ts
 models/track-detail.ts
 models/track-preview.ts
 models/update-bio-request.ts
-models/update-collection-request.ts
 models/update-comment-request.ts
 models/update-comment200-response-all-of-data.ts
 models/update-comment200-response.ts

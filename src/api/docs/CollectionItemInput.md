@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**type** | **number** | 아이템 타입 | [default to undefined]
+**type** | **string** | 아이템 타입 | [default to undefined]
 **id** | **string** | 아이템 ID (Spotify ID) | [default to undefined]
 **title** | **string** | 아이템에 대한 제목 | [default to undefined]
 **description** | **string** | 아이템에 대한 설명 (선택사항) | [optional] [default to undefined]

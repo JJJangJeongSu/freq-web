@@ -14,19 +14,16 @@ interface NotificationItemProps {
 }
 
 const getIconForType = (type: NotificationTypeEnum) => {
-  const typeStr = type as string;
-
-  // LIKE 관련 알림들 (API는 REVIEW_LIKE, 코드는 REVIEW_LIKED 형태)
-  if (typeStr.includes('LIKE')) {
-    return <Heart className="w-5 h-5 text-red-500" />;
-  }
-
   switch (type) {
-    case NotificationTypeEnum.UserFollowedYou:
-    case 'USER_FOLLOW' as any: // API 호환성
+    case NotificationTypeEnum.Follow:
       return <UserPlus className="w-5 h-5 text-blue-500" />;
-    case NotificationTypeEnum.ReviewCreated:
-    case 'REVIEW_CREATE' as any: // API 호환성
+    case NotificationTypeEnum.CollectionLike:
+    case NotificationTypeEnum.ReviewLike:
+      return <Heart className="w-5 h-5 text-red-500" />;
+    case NotificationTypeEnum.FollowingReviewCreated:
+    case NotificationTypeEnum.CollectionComment:
+    case NotificationTypeEnum.ReviewComment:
+    case NotificationTypeEnum.ReviewReply:
       return <MessageSquare className="w-5 h-5 text-green-500" />;
     default:
       return <Star className="w-5 h-5 text-yellow-500" />;
@@ -46,6 +43,8 @@ const getEntityPath = (
       return `/albums/${entity.id}`;
     case "USER":
       return `/users/${entity.id}`;
+    case "COMMENT":
+      return `/comments/${entity.id}`;
     default:
       return null;
   }
@@ -53,42 +52,31 @@ const getEntityPath = (
 
 /**
  * 알림 타입에 따른 메시지 생성
- * Entity 제목 없이도 명확한 메시지를 생성
- * API 응답 값과 enum 정의 불일치를 모두 처리
  */
 const getNotificationMessage = (
   type: NotificationTypeEnum,
   actor: NotificationActor
 ): string => {
   const actorName = `<strong>${actor.username}</strong>`;
-  const typeStr = type as string;
 
-  // REVIEW_LIKE 또는 REVIEW_LIKED
-  if (typeStr.includes('REVIEW') && typeStr.includes('LIKE')) {
-    return `${actorName}님이 회원님의 리뷰를 좋아합니다`;
+  switch (type) {
+    case NotificationTypeEnum.FollowingReviewCreated:
+      return `${actorName}님이 새 리뷰를 작성했습니다`;
+    case NotificationTypeEnum.Follow:
+      return `${actorName}님이 회원님을 팔로우했습니다`;
+    case NotificationTypeEnum.CollectionLike:
+      return `${actorName}님이 회원님의 컬렉션을 좋아합니다`;
+    case NotificationTypeEnum.ReviewLike:
+      return `${actorName}님이 회원님의 리뷰를 좋아합니다`;
+    case NotificationTypeEnum.CollectionComment:
+      return `${actorName}님이 회원님의 컬렉션에 댓글을 남겼습니다`;
+    case NotificationTypeEnum.ReviewComment:
+      return `${actorName}님이 회원님의 리뷰에 댓글을 남겼습니다`;
+    case NotificationTypeEnum.ReviewReply:
+      return `${actorName}님이 회원님의 댓글에 답글을 남겼습니다`;
+    default:
+      return `${actorName}님의 새로운 활동이 있습니다`;
   }
-
-  // COLLECTION_LIKE 또는 COLLECTION_LIKED
-  if (typeStr.includes('COLLECTION') && typeStr.includes('LIKE')) {
-    return `${actorName}님이 회원님의 컬렉션을 좋아합니다`;
-  }
-
-  // ALBUM_LIKE 또는 ALBUM_LIKED
-  if (typeStr.includes('ALBUM') && typeStr.includes('LIKE')) {
-    return `${actorName}님도 이 앨범을 좋아합니다`;
-  }
-
-  // USER_FOLLOW 또는 USER_FOLLOWED_YOU
-  if (typeStr.includes('USER') && typeStr.includes('FOLLOW')) {
-    return `${actorName}님이 회원님을 팔로우했습니다`;
-  }
-
-  // REVIEW_CREATE 또는 REVIEW_CREATED
-  if (typeStr.includes('REVIEW') && typeStr.includes('CREATE')) {
-    return `${actorName}님이 새 리뷰를 작성했습니다`;
-  }
-
-  return `${actorName}님의 새로운 활동이 있습니다`;
 };
 
 export function NotificationItem({

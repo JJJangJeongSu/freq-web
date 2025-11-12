@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useLogin, useSignup, useCheckEmail, useCheckNickname } from "../hooks/useAuth";
 import { containsProfanity } from "@/utils/profanityFilter";
+import { validateNickname as validateNicknameInput, NICKNAME_MAX_LENGTH, NICKNAME_GUIDE_MESSAGE } from "@/constants/validation";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -42,10 +43,7 @@ export function AuthPage() {
     return emailRegex.test(email);
   };
 
-  // 닉네임 검증 함수
-  const validateNickname = (nickname: string): boolean => {
-    return nickname.trim().length >= 2;
-  };
+  // 닉네임 검증 함수 (더 이상 사용하지 않음 - validateNicknameInput 사용)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,15 +183,20 @@ export function AuthPage() {
     if (value.length === 0) {
       setIsNicknameValid(false);
       setNicknameValidationMessage("");
-    } else if (value.trim().length < 2) {
-      setIsNicknameValid(false);
-      setNicknameValidationMessage("닉네임은 2자 이상이어야 합니다.");
-    } else if (containsProfanity(value)) {
-      setIsNicknameValid(false);
-      setNicknameValidationMessage("사용할 수 없는 닉네임입니다.");
     } else {
-      setIsNicknameValid(true);
-      setNicknameValidationMessage("");
+      // 새로운 검증 함수 사용
+      const validationResult = validateNicknameInput(value);
+
+      if (!validationResult.isValid) {
+        setIsNicknameValid(false);
+        setNicknameValidationMessage(validationResult.errorMessage || "");
+      } else if (containsProfanity(value)) {
+        setIsNicknameValid(false);
+        setNicknameValidationMessage("사용할 수 없는 닉네임입니다.");
+      } else {
+        setIsNicknameValid(true);
+        setNicknameValidationMessage("");
+      }
     }
 
     if (error === "이미 사용 중인 닉네임입니다." || error === "닉네임 중복 검사를 완료해주세요.") {
@@ -328,6 +331,7 @@ export function AuthPage() {
                         placeholder="닉네임을 입력하세요"
                         value={nickname}
                         onChange={(e) => handleNicknameChange(e.target.value)}
+                        maxLength={NICKNAME_MAX_LENGTH}
                         className={`pl-10 ${
                           nicknameCheckResult === "available"
                             ? "border-green-500"
@@ -354,11 +358,20 @@ export function AuthPage() {
                       {isCheckingNickname ? "확인 중..." : "중복 검사"}
                     </Button>
                   </div>
+                  {/* 글자수 카운터 */}
+                  <p className="text-xs text-muted-foreground text-right">
+                    {nickname.length} / {NICKNAME_MAX_LENGTH}
+                  </p>
+                  {/* 검증 메시지 */}
                   {nicknameValidationMessage && (
                     <p className="text-sm text-red-600">{nicknameValidationMessage}</p>
                   )}
                   {nicknameCheckResult === "available" && (
                     <p className="text-sm text-green-600">사용 가능한 닉네임입니다.</p>
+                  )}
+                  {/* 가이드 메시지 (입력 없을 때만) */}
+                  {!nickname && !nicknameValidationMessage && (
+                    <p className="text-xs text-muted-foreground">{NICKNAME_GUIDE_MESSAGE}</p>
                   )}
                 </div>
 

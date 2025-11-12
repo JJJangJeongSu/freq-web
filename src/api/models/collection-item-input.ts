@@ -22,10 +22,10 @@
 export interface CollectionItemInput {
     /**
      * 아이템 타입
-     * @type {number}
+     * @type {string}
      * @memberof CollectionItemInput
      */
-    'type': number;
+    'type': string;
     /**
      * 아이템 ID (Spotify ID)
      * @type {string}
