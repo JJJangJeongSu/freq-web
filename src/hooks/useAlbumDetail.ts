@@ -43,8 +43,23 @@ export const useAlbumDetail = (albumId: string): UseAlbumDetailReturn => {
       const responseData = response.data;
 
       if (responseData.success && responseData.data) {
-        // Trust API as source of truth; extend to include reviews fields
-        setData(responseData.data as unknown as AlbumDetailWithReviews);
+        // myReviewId를 reviewId로 매핑
+        const albumData = responseData.data as any;
+        const mappedData: AlbumDetailWithReviews = {
+          ...albumData,
+          reviewId: albumData.myReviewId !== null ? String(albumData.myReviewId) : undefined
+        } as unknown as AlbumDetailWithReviews;
+
+        console.log('📦 Album detail API response:', {
+          success: responseData.success,
+          hasData: !!responseData.data,
+          myReviewId: albumData.myReviewId,
+          reviewId: mappedData.reviewId,
+          userRating: albumData.userRating,
+          isRated: albumData.isRated,
+        });
+
+        setData(mappedData);
       } else {
         throw new Error('Failed to fetch album detail');
       }
