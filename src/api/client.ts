@@ -86,8 +86,9 @@ apiClient.interceptors.request.use(
     // Store request timestamp for duration calculation
     (config as any).metadata = { startTime: new Date() };
 
-    // Rich request logging in development
-    if (import.meta.env.DEV) {
+    // Rich request logging in development (can be disabled with VITE_API_LOGGING=false)
+    const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+    if (import.meta.env.DEV && apiLoggingEnabled) {
       const timestamp = new Date().toISOString();
       const method = config.method?.toUpperCase() || 'GET';
       const url = config.url || '';
@@ -161,8 +162,9 @@ apiClient.interceptors.response.use(
       ? new Date().getTime() - config.metadata.startTime.getTime()
       : 0;
 
-    // Rich response logging in development
-    if (import.meta.env.DEV) {
+    // Rich response logging in development (can be disabled with VITE_API_LOGGING=false)
+    const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+    if (import.meta.env.DEV && apiLoggingEnabled) {
       const method = response.config.method?.toUpperCase() || 'GET';
       const url = response.config.url || '';
       const status = response.status;
@@ -203,7 +205,7 @@ apiClient.interceptors.response.use(
       }
 
       console.groupEnd();
-    }
+
       // Upload Image endpoint focused log
       if ((response.config.url || '').includes('/upload-image')) {
         try {
@@ -225,6 +227,7 @@ apiClient.interceptors.response.use(
           console.warn('Upload log (response) skipped:', e);
         }
       }
+    }
 
     return response;
   },
@@ -235,10 +238,13 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       // Avoid refresh loop for /auth/reissue endpoint
       if (originalRequest.url?.includes('/auth/reissue')) {
-        console.groupCollapsed('%c❌401 RefreshToken Invalid', 'color: #ef4444; font-weight: bold');
-        console.error('Refresh token is invalid or expired');
-        console.log('Action: Clearing localStorage and redirecting to login');
-        console.groupEnd();
+        const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+        if (import.meta.env.DEV && apiLoggingEnabled) {
+          console.groupCollapsed('%c❌401 RefreshToken Invalid', 'color: #ef4444; font-weight: bold');
+          console.error('Refresh token is invalid or expired');
+          console.log('Action: Clearing localStorage and redirecting to login');
+          console.groupEnd();
+        }
 
         localStorage.clear();
         window.dispatchEvent(new CustomEvent('auth:unauthorized'));
@@ -247,17 +253,23 @@ apiClient.interceptors.response.use(
 
       // If already refreshing, add to queue
       if (isRefreshing) {
-        console.log(
-          '%c⏳Token Refresh In Progress',
-          'color: #f59e0b; font-weight: bold',
-          `Adding request to queue (${failedQueue.length + 1} requests waiting)`
-        );
+        const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+        if (import.meta.env.DEV && apiLoggingEnabled) {
+          console.log(
+            '%c⏳Token Refresh In Progress',
+            'color: #f59e0b; font-weight: bold',
+            `Adding request to queue (${failedQueue.length + 1} requests waiting)`
+          );
+        }
 
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            console.log('%c▶️Request Resumed', 'color: #10b981; font-weight: bold', originalRequest.url);
+            const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+            if (import.meta.env.DEV && apiLoggingEnabled) {
+              console.log('%c▶️Request Resumed', 'color: #10b981; font-weight: bold', originalRequest.url);
+            }
             if (originalRequest.headers) {
               originalRequest.headers['Authorization'] = `Bearer ${token}`;
             }
@@ -273,26 +285,31 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        console.groupCollapsed(
-          '%c🔄 Token Refresh Started',
-          'color: #3b82f6; font-weight: bold; font-size: 14px'
-        );
-        console.log('Reason: 401 Unauthorized on', originalRequest.url);
-        console.log('Queue size:', failedQueue.length);
-        console.time('Token Refresh Duration');
+        const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+        if (import.meta.env.DEV && apiLoggingEnabled) {
+          console.groupCollapsed(
+            '%c🔄 Token Refresh Started',
+            'color: #3b82f6; font-weight: bold; font-size: 14px'
+          );
+          console.log('Reason: 401 Unauthorized on', originalRequest.url);
+          console.log('Queue size:', failedQueue.length);
+          console.time('Token Refresh Duration');
+        }
 
         const newToken = await refreshAccessToken();
 
-        console.timeEnd('Token Refresh Duration');
-        console.log('%c✅New Token Acquired', 'color: #10b981; font-weight: bold');
-        console.log('Token (first 30 chars):', newToken.substring(0, 30) + '...');
-        console.groupEnd();
+        if (import.meta.env.DEV && apiLoggingEnabled) {
+          console.timeEnd('Token Refresh Duration');
+          console.log('%c✅New Token Acquired', 'color: #10b981; font-weight: bold');
+          console.log('Token (first 30 chars):', newToken.substring(0, 30) + '...');
+          console.groupEnd();
 
-        // Process queued requests
-        console.log(
-          `%c📦 Processing ${failedQueue.length} Queued Requests`,
-          'color: #8b5cf6; font-weight: bold'
-        );
+          // Process queued requests
+          console.log(
+            `%c📦 Processing ${failedQueue.length} Queued Requests`,
+            'color: #8b5cf6; font-weight: bold'
+          );
+        }
         processQueue(null, newToken);
 
         // Retry original request with new token
@@ -301,11 +318,14 @@ apiClient.interceptors.response.use(
         }
         return apiClient(originalRequest);
       } catch (refreshError) {
-        console.groupCollapsed('%c❌Token Refresh Failed', 'color: #ef4444; font-weight: bold');
-        console.error('Refresh Error:', refreshError);
-        console.log('Clearing all auth data');
-        console.log('Rejecting', failedQueue.length, 'queued requests');
-        console.groupEnd();
+        const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+        if (import.meta.env.DEV && apiLoggingEnabled) {
+          console.groupCollapsed('%c❌Token Refresh Failed', 'color: #ef4444; font-weight: bold');
+          console.error('Refresh Error:', refreshError);
+          console.log('Clearing all auth data');
+          console.log('Rejecting', failedQueue.length, 'queued requests');
+          console.groupEnd();
+        }
 
         processQueue(refreshError as Error, null);
 
@@ -325,129 +345,132 @@ apiClient.interceptors.response.use(
       ? new Date().getTime() - config.metadata.startTime.getTime()
       : null;
 
-    // Handle other errors with rich logging
-    if (error.response) {
-      const { status, data, statusText } = error.response;
-      const method = error.config?.method?.toUpperCase() || 'GET';
-      const url = error.config?.url || 'unknown';
+    // Handle other errors with rich logging (can be disabled with VITE_API_LOGGING=false)
+    const apiLoggingEnabled = import.meta.env.VITE_API_LOGGING !== 'false';
+    if (import.meta.env.DEV && apiLoggingEnabled) {
+      if (error.response) {
+        const { status, data, statusText } = error.response;
+        const method = error.config?.method?.toUpperCase() || 'GET';
+        const url = error.config?.url || 'unknown';
 
-      // Determine error icon and color
-      let errorIcon = '❌';
-      let errorColor = '#ef4444';
+        // Determine error icon and color
+        let errorIcon = '❌';
+        let errorColor = '#ef4444';
 
-      if (status === 403) {
-        errorIcon = '🔒';
-        errorColor = '#f59e0b';
-      } else if (status === 404) {
-        errorIcon = '🔍';
-        errorColor = '#f59e0b';
-      } else if (status >= 500) {
-        errorIcon = '💥';
-        errorColor = '#dc2626';
-      }
-
-      console.groupCollapsed(
-        `%c${errorIcon} ${status} ${statusText} %c${method} %c${url}%c${duration ? ` (${duration}ms)` : ''}`,
-        `color: ${errorColor}; font-weight: bold`,
-        'color: #3b82f6; font-weight: bold',
-        'color: #6b7280; font-weight: normal',
-        'color: #9ca3af; font-weight: normal'
-      );
-
-      console.error('%cStatus:', 'color: #ef4444; font-weight: bold', status, statusText);
-
-      if (duration) {
-        console.log('%cDuration:', 'color: #8b5cf6; font-weight: bold', `${duration}ms`);
-      }
-
-      console.log('%cURL:', 'color: #6366f1; font-weight: bold', `${error.config?.baseURL}${url}`);
-
-      // Log error response data
-      if (data) {
-        console.error('%cError Response:', 'color: #ec4899; font-weight: bold', data);
-
-        // Extract error message if available
-        const errorMessage =
-          data.error?.message || data.message || data.detail || 'No error message';
-        const errorCode = data.error?.code || data.code || 'UNKNOWN';
-
-        console.error('%cError Message:', 'color: #f59e0b; font-weight: bold', errorMessage);
-        console.error('%cError Code:', 'color: #f59e0b; font-weight: bold', errorCode);
-      }
-
-      // Log request details for debugging
-      if (error.config?.data) {
-        console.log('%cRequest Body:', 'color: #6b7280; font-weight: bold', error.config.data);
-      }
-
-      if (error.config?.params) {
-        console.log('%cQuery Params:', 'color: #6b7280; font-weight: bold', error.config.params);
-      }
-
-      // Handle specific status codes
-      switch (status) {
-        case 400:
-          console.warn('%cBad Request:', 'color: #f59e0b', 'Check your request parameters');
-          break;
-        case 403:
-          console.warn('%cForbidden:', 'color: #f59e0b', 'You do not have permission to access this resource');
-          break;
-        case 404:
-          console.warn('%cNot Found:', 'color: #f59e0b', 'The requested resource does not exist');
-          break;
-        case 422:
-          console.warn('%cValidation Error:', 'color: #f59e0b', 'Request validation failed');
-          break;
-        case 429:
-          console.warn('%cRate Limited:', 'color: #f59e0b', 'Too many requests, please slow down');
-          break;
-        case 500:
-          console.error('%cServer Error:', 'color: #ef4444', 'Internal server error occurred');
-          break;
-        case 502:
-          console.error('%cBad Gateway:', 'color: #ef4444', 'Server received invalid response');
-          break;
-        case 503:
-          console.error('%cService Unavailable:', 'color: #ef4444', 'Server is temporarily unavailable');
-          break;
-        case 504:
-          console.error('%cGateway Timeout:', 'color: #ef4444', 'Server did not respond in time');
-          break;
-      }
-
-      if ((url || '').includes('/upload-image')) {
-        try {
-          console.groupCollapsed(
-            '%c[Upload] Image API %cError',
-            'color: #ef4444; font-weight: bold',
-            'color: #6b7280; font-weight: normal'
-          );
-          console.error('%cStatus:', 'color: #ef4444; font-weight: bold', status, statusText);
-          if (data) {
-            const emsg = (data as any)?.error?.message || (data as any)?.message || 'No message';
-            const ecode = (data as any)?.error?.code || (data as any)?.code || 'UNKNOWN';
-            console.error('%cError Message:', 'color: #f59e0b; font-weight: bold', emsg);
-            console.error('%cError Code:', 'color: #f59e0b; font-weight: bold', ecode);
-          }
-          console.groupEnd();
-        } catch (e) {
-          console.warn('Upload log (error) skipped:', e);
+        if (status === 403) {
+          errorIcon = '🔒';
+          errorColor = '#f59e0b';
+        } else if (status === 404) {
+          errorIcon = '🔍';
+          errorColor = '#f59e0b';
+        } else if (status >= 500) {
+          errorIcon = '💥';
+          errorColor = '#dc2626';
         }
+
+        console.groupCollapsed(
+          `%c${errorIcon} ${status} ${statusText} %c${method} %c${url}%c${duration ? ` (${duration}ms)` : ''}`,
+          `color: ${errorColor}; font-weight: bold`,
+          'color: #3b82f6; font-weight: bold',
+          'color: #6b7280; font-weight: normal',
+          'color: #9ca3af; font-weight: normal'
+        );
+
+        console.error('%cStatus:', 'color: #ef4444; font-weight: bold', status, statusText);
+
+        if (duration) {
+          console.log('%cDuration:', 'color: #8b5cf6; font-weight: bold', `${duration}ms`);
+        }
+
+        console.log('%cURL:', 'color: #6366f1; font-weight: bold', `${error.config?.baseURL}${url}`);
+
+        // Log error response data
+        if (data) {
+          console.error('%cError Response:', 'color: #ec4899; font-weight: bold', data);
+
+          // Extract error message if available
+          const errorMessage =
+            data.error?.message || data.message || data.detail || 'No error message';
+          const errorCode = data.error?.code || data.code || 'UNKNOWN';
+
+          console.error('%cError Message:', 'color: #f59e0b; font-weight: bold', errorMessage);
+          console.error('%cError Code:', 'color: #f59e0b; font-weight: bold', errorCode);
+        }
+
+        // Log request details for debugging
+        if (error.config?.data) {
+          console.log('%cRequest Body:', 'color: #6b7280; font-weight: bold', error.config.data);
+        }
+
+        if (error.config?.params) {
+          console.log('%cQuery Params:', 'color: #6b7280; font-weight: bold', error.config.params);
+        }
+
+        // Handle specific status codes
+        switch (status) {
+          case 400:
+            console.warn('%cBad Request:', 'color: #f59e0b', 'Check your request parameters');
+            break;
+          case 403:
+            console.warn('%cForbidden:', 'color: #f59e0b', 'You do not have permission to access this resource');
+            break;
+          case 404:
+            console.warn('%cNot Found:', 'color: #f59e0b', 'The requested resource does not exist');
+            break;
+          case 422:
+            console.warn('%cValidation Error:', 'color: #f59e0b', 'Request validation failed');
+            break;
+          case 429:
+            console.warn('%cRate Limited:', 'color: #f59e0b', 'Too many requests, please slow down');
+            break;
+          case 500:
+            console.error('%cServer Error:', 'color: #ef4444', 'Internal server error occurred');
+            break;
+          case 502:
+            console.error('%cBad Gateway:', 'color: #ef4444', 'Server received invalid response');
+            break;
+          case 503:
+            console.error('%cService Unavailable:', 'color: #ef4444', 'Server is temporarily unavailable');
+            break;
+          case 504:
+            console.error('%cGateway Timeout:', 'color: #ef4444', 'Server did not respond in time');
+            break;
+        }
+
+        if ((url || '').includes('/upload-image')) {
+          try {
+            console.groupCollapsed(
+              '%c[Upload] Image API %cError',
+              'color: #ef4444; font-weight: bold',
+              'color: #6b7280; font-weight: normal'
+            );
+            console.error('%cStatus:', 'color: #ef4444; font-weight: bold', status, statusText);
+            if (data) {
+              const emsg = (data as any)?.error?.message || (data as any)?.message || 'No message';
+              const ecode = (data as any)?.error?.code || (data as any)?.code || 'UNKNOWN';
+              console.error('%cError Message:', 'color: #f59e0b; font-weight: bold', emsg);
+              console.error('%cError Code:', 'color: #f59e0b; font-weight: bold', ecode);
+            }
+            console.groupEnd();
+          } catch (e) {
+            console.warn('Upload log (error) skipped:', e);
+          }
+        }
+        console.groupEnd();
+      } else if (error.request) {
+        // Request was made but no response received
+        console.groupCollapsed('%c🌐 No Response from Server', 'color: #ef4444; font-weight: bold');
+        console.error('Request was sent but no response received');
+        console.error('This could be a network error or CORS issue');
+        console.log('%cRequest Config:', 'color: #6b7280', error.config);
+        console.groupEnd();
+      } else {
+        // Something happened in setting up the request
+        console.groupCollapsed('%c⚠️ Request Setup Error', 'color: #ef4444; font-weight: bold');
+        console.error('Error:', error.message);
+        console.log('This error occurred before the request was sent');
+        console.groupEnd();
       }
-      console.groupEnd();
-    } else if (error.request) {
-      // Request was made but no response received
-      console.groupCollapsed('%c🌐 No Response from Server', 'color: #ef4444; font-weight: bold');
-      console.error('Request was sent but no response received');
-      console.error('This could be a network error or CORS issue');
-      console.log('%cRequest Config:', 'color: #6b7280', error.config);
-      console.groupEnd();
-    } else {
-      // Something happened in setting up the request
-      console.groupCollapsed('%c⚠️ Request Setup Error', 'color: #ef4444; font-weight: bold');
-      console.error('Error:', error.message);
-      console.log('This error occurred before the request was sent');
-      console.groupEnd();
     }
 
     return Promise.reject(error);
