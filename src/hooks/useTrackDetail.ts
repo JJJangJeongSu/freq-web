@@ -45,14 +45,21 @@ export const useTrackDetail = (trackId: string): UseTrackDetailReturn => {
       console.log('📦 Track detail API response:', {
         success: responseData.success,
         hasData: !!responseData.data,
-        reviewId: responseData.data?.reviewId,
+        myReviewId: responseData.data?.myReviewId,
         userRating: responseData.data?.userRating,
         isRated: responseData.data?.isRated,
         fullData: responseData.data
       });
 
       if (responseData.success && responseData.data) {
-        setData(responseData.data as unknown as TrackDetailWithReviewId);
+        // myReviewId를 reviewId로 매핑
+        const trackData = responseData.data;
+        const mappedData: TrackDetailWithReviewId = {
+          ...trackData,
+          reviewId: trackData.myReviewId !== null ? String(trackData.myReviewId) : undefined
+        };
+
+        setData(mappedData);
       } else {
         throw new Error('Failed to fetch track detail');
       }
