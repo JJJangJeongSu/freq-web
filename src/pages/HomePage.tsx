@@ -178,9 +178,9 @@ export function HomePage() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-24">
-        <div className="space-y-4">
+        <div className="space-y-8">
           {/* Hero Section with Primary Actions */}
-          <div className="px-4 md:px-6 pt-4 space-y-6">
+          <div className="px-4 md:px-6 pt-6 space-y-6">
             {/* Main Search - Minimal Border Style */}
             <div 
               className="w-full h-16 rounded-xl flex items-center px-6 cursor-pointer transition-all border"
@@ -198,9 +198,9 @@ export function HomePage() {
           </div>
 
           {/* Material 3 컬렉션 섹션 */}
-          <div className="space-y-6">
+          <div className="space-y-6 pb-4">
             <div className="flex items-center justify-between px-4 md:px-6">
-              <h2 className="text-headline-small" style={{ color: 'var(--on-surface)' }}>추천 컬렉션</h2>
+              <h2 className="text-xl font-semibold" style={{ color: 'var(--on-surface)' }}>추천 컬렉션</h2>
               <div className="flex items-center gap-2 md:gap-3">
                 <Button
                   variant="outline"

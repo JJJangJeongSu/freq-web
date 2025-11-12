@@ -61,28 +61,6 @@ export function AlbumDetailPage() {
     setSubmitSuccess(false);
   };
 
-  // 평점만 수정 (reviewId 필요)
-  const handleUpdateRatingOnly = async () => {
-    if (!reviewId || userRating === 0) return;
-
-    try {
-      console.log('⭐ Updating rating only:', { reviewId, rating: userRating });
-
-      await updateReview(reviewId, {
-        rating: userRating,
-        type: UpdateReviewRequestTypeEnum.Album
-      });
-
-      console.log('✅ Rating updated');
-      setSubmitSuccess(true);
-      refetch(); // 앨범 정보 새로고침
-
-      setTimeout(() => setSubmitSuccess(false), 3000);
-    } catch (err: any) {
-      console.error('❌ Rating update failed:', err);
-    }
-  };
-
   // 새 리뷰 생성 (reviewId 없을 때만)
   const handleSubmitRating = async () => {
     if (!album || userRating === 0 || !albumId) return;
@@ -258,7 +236,11 @@ export function AlbumDetailPage() {
           <div className="bg-accent/30 rounded-xl p-6 space-y-4">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-2">이 앨범을 평가해보세요</h3>
-              <p className="text-sm text-muted-foreground mb-4">별점을 터치하여 평가할 수 있습니다</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                {(album as any).isRated === true
+                  ? '이미 평가한 앨범입니다'
+                  : '별점을 터치하여 평가할 수 있습니다'}
+              </p>
             </div>
             
             <div className="flex justify-center">
@@ -266,6 +248,7 @@ export function AlbumDetailPage() {
                 rating={userRating}
                 onRatingChange={handleRatingChange}
                 size="lg"
+                readonly={(album as any).isRated === true}
               />
             </div>
             
@@ -296,33 +279,16 @@ export function AlbumDetailPage() {
                   </div>
                 )}
 
-                {/* 옵션 2: 이미 리뷰가 있는 경우 */}
-                {reviewId ? (
-                  <div className="space-y-3">
-                    <div className="p-3 bg-accent/30 rounded-lg">
-                      <p className="text-sm font-medium mb-1">이미 리뷰를 작성하셨습니다</p>
-                      <p className="text-xs text-muted-foreground">
-                        평점만 수정하거나 전체 리뷰를 수정할 수 있습니다
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={handleUpdateRatingOnly}
-                        variant="outline"
-                        className="flex-1 h-12"
-                        disabled={reviewLoading || submitSuccess || (album as any).userRating === userRating}
-                      >
-                        {updateLoading ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            수정 중...
-                          </>
-                        ) : (album as any).userRating === userRating ? (
-                          '기존 평점과 동일합니다'
-                        ) : (
-                          '평점만 수정하기'
-                        )}
-                      </Button>
+                {/* 이미 평가한 경우 */}
+                {(album as any).isRated === true ? (
+                  reviewId ? (
+                    <div className="space-y-3">
+                      <div className="p-3 bg-accent/30 rounded-lg">
+                        <p className="text-sm font-medium mb-1">이미 리뷰를 작성하셨습니다</p>
+                        <p className="text-xs text-muted-foreground">
+                          리뷰 수정 페이지에서 평점과 코멘트를 수정할 수 있습니다
+                        </p>
+                      </div>
                       <Button
                         onClick={() => {
                           try {
@@ -338,13 +304,19 @@ export function AlbumDetailPage() {
                           } catch {}
                           navigate(`/albums/${albumId}/write-review/${reviewId}`);
                         }}
-                        className="flex-1 h-12"
+                        className="w-full h-12"
                       >
                         <Edit3 className="w-4 h-4 mr-2" />
-                        리뷰 전체 수정하기
+                        수정하기
                       </Button>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                      <p className="text-sm text-destructive">
+                        리뷰 정보를 불러올 수 없습니다. 페이지를 새로고침해주세요.
+                      </p>
+                    </div>
+                  )
                 ) : (
                   /* 새 리뷰 작성 */
                   <div className="flex gap-2">
