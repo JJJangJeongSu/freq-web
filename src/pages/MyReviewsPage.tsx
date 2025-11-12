@@ -42,11 +42,11 @@ export function MyReviewsPage() {
     if (!reviewToDelete) return;
 
     try {
-      await deleteReview(String(reviewToDelete.reviewId));
+      await deleteReview(String(reviewToDelete.id));
       setDeleteDialogOpen(false);
       setReviewToDelete(null);
       refetch();
-      console.log('✅ 리뷰 삭제 성공:', reviewToDelete.reviewId);
+      console.log('✅ 리뷰 삭제 성공:', reviewToDelete.id);
     } catch (error: any) {
       console.error('❌ 리뷰 삭제 실패:', error);
     }
@@ -58,9 +58,9 @@ export function MyReviewsPage() {
     // sessionStorage에 앨범 정보 저장 (WriteReviewPage에서 사용)
     if (review.album) {
       sessionStorage.setItem('review:albumMeta', JSON.stringify({
-        id: review.album.albumId,
+        id: review.album.id,
         title: review.album.title,
-        artist: review.album.artists?.join(', ') || '',
+        artist: review.album.artist,
         imageUrl: review.album.imageUrl,
         artistIds: review.album.artistIds || [],
         rating: review.rating
@@ -68,8 +68,8 @@ export function MyReviewsPage() {
     }
 
     // 리뷰 수정 페이지로 이동
-    navigate(`/albums/${review.album.albumId}/write-review/${review.reviewId}`);
-    console.log('✅ 리뷰 수정 페이지로 이동:', review.reviewId);
+    navigate(`/albums/${review.album.id}/write-review/${review.id}`);
+    console.log('✅ 리뷰 수정 페이지로 이동:', review.id);
   };
 
   // Loading 상태

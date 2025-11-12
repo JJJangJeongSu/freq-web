@@ -64,22 +64,34 @@ export function useMyReviews() {
       }
 
       // 데이터 변환
-      const transformedReviews: MyReview[] = apiData.reviews.map((review: any) => ({
-        id: String(review.reviewId),
-        album: {
-          id: review.album.id,
-          title: review.album.title,
-          artist: Array.isArray(review.album.artist)
-            ? review.album.artist.join(', ')
-            : review.album.artist,
-          imageUrl: review.album.imageUrl
-        },
-        rating: review.rating,
-        content: review.content,
-        createdAt: new Date(review.createdAt).toLocaleDateString('ko-KR'),
-        likes: review.likeCount,
-        comments: review.commentCount
-      }));
+      console.log('🔍 Raw reviews data:', apiData.reviews);
+      console.log('🔍 First review sample:', apiData.reviews[0]);
+
+      const transformedReviews: MyReview[] = apiData.reviews.map((review: any) => {
+        console.log('🔍 Transforming review:', {
+          reviewId: review.reviewId,
+          id: review.id,
+          albumId: review.album?.id,
+          albumAlbumId: review.album?.albumId
+        });
+
+        return {
+          id: String(review.reviewId || review.id),
+          album: {
+            id: review.album.albumId || review.album.id,
+            title: review.album.title,
+            artist: Array.isArray(review.album.artist)
+              ? review.album.artist.join(', ')
+              : review.album.artist,
+            imageUrl: review.album.imageUrl
+          },
+          rating: review.rating,
+          content: review.content,
+          createdAt: new Date(review.createdAt).toLocaleDateString('ko-KR'),
+          likes: review.likeCount,
+          comments: review.commentCount
+        };
+      });
 
       console.log('✅ Transformed Reviews:', transformedReviews);
       setReviews(transformedReviews);

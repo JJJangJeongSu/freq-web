@@ -60,7 +60,7 @@ export function CreateCollectionPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    type: 'albums' as 'albums' | 'tracks' | 'mixed',
+    type: 'mixed' as 'albums' | 'tracks' | 'mixed',
     isPublic: true
   });
 
