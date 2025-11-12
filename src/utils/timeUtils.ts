@@ -1,6 +1,7 @@
 /**
  * 상대 시간 표시 유틸리티
  * "방금 전", "5분 전", "2시간 전", "3일 전" 형식으로 변환
+ * 30일 이상인 경우 "YYYY.MM.DD" 형식으로 표시
  */
 export function getRelativeTime(dateString: string): string {
   const now = new Date();
@@ -14,7 +15,13 @@ export function getRelativeTime(dateString: string): string {
   if (diffMins < 1) return '방금 전';
   if (diffMins < 60) return `${diffMins}분 전`;
   if (diffHours < 24) return `${diffHours}시간 전`;
-  return `${diffDays}일 전`;
+  if (diffDays < 30) return `${diffDays}일 전`;
+
+  // 30일 이상인 경우 날짜 표시
+  const year = past.getFullYear();
+  const month = String(past.getMonth() + 1).padStart(2, '0');
+  const day = String(past.getDate()).padStart(2, '0');
+  return `${year}.${month}.${day}`;
 }
 
 /**

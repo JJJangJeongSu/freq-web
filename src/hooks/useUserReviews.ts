@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-// import { apiService } from '@/services/api.service';
+import { apiClient } from '@/api/client';
 import type { UserReviewData } from '@/components/UserReviewCard';
 
 interface UseUserReviewsParams {
   userId: string;
+  sortBy?: 'popularity' | 'recent' | 'old';
   page?: number;
   limit?: number;
 }
@@ -20,13 +21,13 @@ interface UseUserReviewsReturn {
 /**
  * 특정 사용자의 리뷰 목록을 가져오는 훅
  *
- * TODO: API 엔드포인트가 준비되면 실제 API 호출로 교체
- * 예상 엔드포인트: GET /users/{userId}/reviews?page={page}&limit={limit}
+ * API 엔드포인트: GET /users/{userId}/review-list
  */
 export function useUserReviews({
   userId,
+  sortBy = 'recent',
   page = 1,
-  limit = 10
+  limit = 20
 }: UseUserReviewsParams): UseUserReviewsReturn {
   const [reviews, setReviews] = useState<UserReviewData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,25 +36,48 @@ export function useUserReviews({
   const [totalCount, setTotalCount] = useState(0);
 
   const fetchReviews = async () => {
+    if (!userId) {
+      console.warn('⚠️ useUserReviews: No userId provided');
+      setLoading(false);
+      return;
+    }
+
     try {
-      console.log('🔍 Fetching user reviews for userId:', userId, 'page:', page);
+      console.log('🔍 Fetching user reviews for userId:', userId, 'sortBy:', sortBy, 'page:', page);
       setLoading(true);
       setError(null);
 
-      // TODO: API 호출 구현
-      // const response = await apiService.users.getUserReviews(userId, page, limit);
+      // API 호출
+      const response = await apiClient.get(`/users/${userId}/review-list`, {
+        params: {
+          sortBy,
+          page,
+          limit
+        }
+      });
 
-      // 임시 더미 데이터 (API 준비 전까지 사용)
-      // API가 준비되면 아래 더미 데이터를 제거하고 실제 API 응답으로 교체
-      const dummyReviews: UserReviewData[] = [];
+      console.log('✅ User reviews response:', response.data);
 
-      setReviews(dummyReviews);
-      setTotalCount(0);
-      setHasMore(false);
+      // API 응답 구조: { success: true, data: { reviews: [...], pagination: {...} }, count: number }
+      if (response.data.success && response.data.data) {
+        const { reviews: reviewsData, pagination } = response.data.data;
 
-      console.log('✅ User reviews fetched:', dummyReviews.length);
+        setReviews(reviewsData);
+        setTotalCount(response.data.count || pagination.totalItems);
+        setHasMore(pagination.hasNext);
+
+        console.log('✅ User reviews fetched:', reviewsData.length, 'total:', response.data.count);
+      } else {
+        throw new Error('Invalid response structure');
+      }
     } catch (err: any) {
       console.error('❌ Error fetching user reviews:', err);
+      console.error('📍 Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
+
       const errorMessage = err.response?.data?.error?.message
         || err.message
         || 'Unknown error occurred';
@@ -67,7 +91,7 @@ export function useUserReviews({
     if (userId) {
       fetchReviews();
     }
-  }, [userId, page, limit]);
+  }, [userId, sortBy, page, limit]);
 
   return {
     reviews,

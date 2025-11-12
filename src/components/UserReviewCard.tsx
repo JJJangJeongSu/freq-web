@@ -1,19 +1,21 @@
 import { Star, Heart, MessageCircle } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { getRelativeTime } from "../utils/timeUtils";
 
 export interface UserReviewData {
-  id: number;
+  reviewId: number;
   rating: number;
+  title?: string | null;
   content: string;
-  likes: number;
-  comments: number;
+  likeCount: number;
+  commentCount: number;
   createdAt: string;
-  isLiked?: boolean;
+  isLiked: boolean;
   album: {
     id: string;
     title: string;
-    artist: string;
+    artist: string[];
     imageUrl: string;
   };
 }
@@ -47,7 +49,7 @@ export function UserReviewCard({ review, onClick }: UserReviewCardProps) {
                   {review.album.title}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {review.album.artist}
+                  {review.album.artist.join(', ')}
                 </p>
               </div>
               <div className="flex items-center gap-1 ml-2">
@@ -73,14 +75,14 @@ export function UserReviewCard({ review, onClick }: UserReviewCardProps) {
 
             {/* Meta Info */}
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <span>{review.createdAt}</span>
+              <span>{getRelativeTime(review.createdAt)}</span>
               <div className="flex items-center gap-1">
                 <Heart className={`w-4 h-4 ${review.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                <span>{review.likes}</span>
+                <span>{review.likeCount}</span>
               </div>
               <div className="flex items-center gap-1">
                 <MessageCircle className="w-4 h-4" />
-                <span>{review.comments}</span>
+                <span>{review.commentCount}</span>
               </div>
             </div>
           </div>
