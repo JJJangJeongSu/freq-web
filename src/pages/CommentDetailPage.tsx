@@ -285,7 +285,7 @@ export function CommentDetailPage() {
                   <h2 className="font-semibold mb-2">{review.title}</h2>
                 )}
                 {review.content && (
-                  <p className="text-sm leading-relaxed mb-4">{review.content}</p>
+                  <p className="text-sm leading-relaxed mb-4 whitespace-pre-line">{review.content}</p>
                 )}
 
                 {/* Review Actions */}
@@ -388,7 +388,7 @@ export function CommentDetailPage() {
                         </span>
                         
                       </div>
-                      <p className="text-sm leading-relaxed mb-2">{comment.content}</p>
+                      <p className="text-sm leading-relaxed mb-2 whitespace-pre-line">{comment.content}</p>
 
                       {/* Comment Actions */}
                       <div className="flex items-center gap-3">

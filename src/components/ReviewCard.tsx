@@ -62,7 +62,7 @@ export function ReviewCard({
             <StarRating rating={review.rating} readonly size="sm" />
           </div>
           <p
-            className="text-sm leading-relaxed text-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
+            className="text-sm leading-relaxed text-foreground mb-3 cursor-pointer hover:text-primary transition-colors whitespace-pre-line"
             onClick={() => onReviewClick?.(review.reviewId)}
           >
             {review.content}

@@ -174,7 +174,7 @@ export function CollectionCommentsPage() {
                         {getRelativeTime(comment.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm leading-relaxed mb-3">{comment.content}</p>
+                    <p className="text-sm leading-relaxed mb-3 whitespace-pre-line">{comment.content}</p>
                     <Button
                       variant="ghost"
                       size="sm"

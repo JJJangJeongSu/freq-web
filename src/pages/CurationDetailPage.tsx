@@ -376,7 +376,7 @@ export function CurationDetailPage() {
                           {getRelativeTime(comment.createdAt)}
                         </span>
                       </div>
-                      <p className="text-sm leading-relaxed mb-2">{comment.content}</p>
+                      <p className="text-sm leading-relaxed mb-2 whitespace-pre-line">{comment.content}</p>
                       <Button
                         variant="ghost"
                         size="sm"
