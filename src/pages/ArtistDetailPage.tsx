@@ -164,14 +164,11 @@ export function ArtistDetailPage() {
         <div className="space-y-6">
           {/* Albums Section */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between px-4">
+            <div className="px-4">
               <h2 className="font-semibold flex items-center gap-2">
                 <Disc className="w-5 h-5" />
                 발매 앨범
               </h2>
-              <Button variant="ghost" size="sm">
-                전체보기
-              </Button>
             </div>
             
             <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide">
@@ -205,14 +202,11 @@ export function ArtistDetailPage() {
 
           {/* Popular Tracks Section */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between px-4">
+            <div className="px-4">
               <h2 className="font-semibold flex items-center gap-2">
                 <Music className="w-5 h-5" />
                 인기 트랙
               </h2>
-              <Button variant="ghost" size="sm">
-                전체보기
-              </Button>
             </div>
             
             <div className="px-4 space-y-2">

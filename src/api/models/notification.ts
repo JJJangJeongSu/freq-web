@@ -71,11 +71,13 @@ export interface Notification {
 }
 
 export const NotificationTypeEnum = {
-    ReviewCreated: 'REVIEW_CREATED',
-    UserFollowedYou: 'USER_FOLLOWED_YOU',
-    CollectionLiked: 'COLLECTION_LIKED',
-    ReviewLiked: 'REVIEW_LIKED',
-    AlbumLiked: 'ALBUM_LIKED'
+    FollowingReviewCreated: 'FOLLOWING_REVIEW_CREATED',
+    Follow: 'FOLLOW',
+    CollectionLike: 'COLLECTION_LIKE',
+    ReviewLike: 'REVIEW_LIKE',
+    CollectionComment: 'COLLECTION_COMMENT',
+    ReviewComment: 'REVIEW_COMMENT',
+    ReviewReply: 'REVIEW_REPLY'
 } as const;
 
 export type NotificationTypeEnum = typeof NotificationTypeEnum[keyof typeof NotificationTypeEnum];

@@ -263,7 +263,7 @@ export function CurationDetailPage() {
         <div className="p-4 space-y-6">
           {/* Description & Tags */}
           <div className="space-y-3">
-            <p className="text-sm leading-relaxed">{collection.description}</p>
+            <p className="text-sm leading-relaxed whitespace-pre-line">{collection.description}</p>
             {collection.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {collection.tags.map((tag) => (
@@ -329,7 +329,7 @@ export function CurationDetailPage() {
                       </span>
                     </div>
                     {item.description && (
-                      <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+                      <p className="text-xs text-muted-foreground leading-relaxed mt-2 whitespace-pre-line">
                         {item.description}
                       </p>
                     )}

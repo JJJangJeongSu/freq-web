@@ -248,7 +248,7 @@ export function AuthPage() {
               />
             </div>
             <h1 className="text-7xl md:text-7xl" style={{ fontFamily: "'Poppins','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif", fontWeight: 700, fontStyle: 'italic', letterSpacing: '-0.02em', color: 'var(--on-surface)' }}>freq</h1>
-            <p className="text-m md:text-base">당신의 음악 취향을 기록하세요</p>
+            <p className="text-m md:text-base">음악을 즐기는 새로운 방법</p>
           </div>
 
           {/* Auth Tabs */}
