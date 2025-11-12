@@ -275,6 +275,16 @@ export function UserProfilePage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5 px-6">
             <h2 className="text-xl font-semibold">만든 콜렉션</h2>
+            {data.myCollections.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(`/users/${userId}/collections`)}
+                className="text-primary"
+              >
+                전체보기
+              </Button>
+            )}
           </div>
           <div className="px-6 space-y-4">
             {data.myCollections.length > 0 ? (
@@ -317,6 +327,16 @@ export function UserProfilePage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5 px-6">
             <h2 className="text-xl font-semibold">좋아요한 콜렉션</h2>
+            {data.likedCollections.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(`/users/${userId}/liked-collections`)}
+                className="text-primary"
+              >
+                전체보기
+              </Button>
+            )}
           </div>
           <div className="px-6 space-y-4">
             {data.likedCollections.length > 0 ? (

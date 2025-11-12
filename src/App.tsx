@@ -38,6 +38,8 @@ import { FollowingPage } from './pages/FollowingPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { UserRatedAlbumsPage } from './pages/UserRatedAlbumsPage';
 import { UserRatedTracksPage } from './pages/UserRatedTracksPage';
+import { UserCollectionsPage } from './pages/UserCollectionsPage';
+import { UserLikedCollectionsPage } from './pages/UserLikedCollectionsPage';
 
 /**
  * UnauthorizedListener Component
@@ -98,6 +100,8 @@ export default function App() {
             <Route path="/users/:userId" element={<UserProfilePage />} />
             <Route path="/users/:userId/rated-albums" element={<UserRatedAlbumsPage />} />
             <Route path="/users/:userId/rated-tracks" element={<UserRatedTracksPage />} />
+            <Route path="/users/:userId/collections" element={<UserCollectionsPage />} />
+            <Route path="/users/:userId/liked-collections" element={<UserLikedCollectionsPage />} />
 
             {/* List Pages */}
             <Route path="/rated-albums" element={<RatedAlbumsPage />} />
