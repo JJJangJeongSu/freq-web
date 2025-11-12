@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, Palette, Info, LogOut, Send } from "lucide-react";
+import { ArrowLeft, Shield, Palette, Info, LogOut, Send, Check } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
 import { Separator } from "../components/ui/separator";
@@ -11,15 +11,14 @@ import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { useState } from "react";
 import { sendFeedback } from "../services/feedback";
-import { useToast } from "../hooks/use-toast";
 
 export function UserPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { toast } = useToast();
 
   const [feedback, setFeedback] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // 현재 로그인한 사용자의 ID 가져오기
   const userId = localStorage.getItem('userId') || '';
@@ -201,24 +200,29 @@ export function UserPage() {
                   onClick={async () => {
                     try {
                       setSubmitting(true);
+                      setSubmitSuccess(false);
                       await sendFeedback({ message: feedback.trim() });
                       setFeedback("");
-                      toast({
-                        title: "감사합니다!",
-                        description: "소중한 의견이 전달되었습니다."
-                      });
+                      setSubmitSuccess(true);
+
+                      // 3초 후 성공 상태 리셋
+                      setTimeout(() => {
+                        setSubmitSuccess(false);
+                      }, 3000);
                     } catch (err: any) {
-                      toast({
-                        title: "전송 실패",
-                        description: err?.message || "잠시 후 다시 시도해주세요.",
-                        variant: "destructive"
-                      });
+                      // 에러 발생 시에만 처리 (silent failure)
+                      console.error('Feedback submission failed:', err);
                     } finally {
                       setSubmitting(false);
                     }
                   }}
                 >
-                  {submitting ? (
+                  {submitSuccess ? (
+                    <span className="inline-flex items-center text-green-600 dark:text-green-400">
+                      <Check className="w-4 h-4 mr-2" />
+                      전송 완료!
+                    </span>
+                  ) : submitting ? (
                     <span className="inline-flex items-center">
                       <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
                       전송 중...

@@ -5,6 +5,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { clearAuthToken } from './api/client';
 import { AuthProvider } from './contexts/AuthContext';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 
 // Pages
 import { AuthPage } from './pages/AuthPage';
@@ -131,6 +133,8 @@ export default function App() {
       </Routes>
 
       <Toaster />
+      <SpeedInsights />
+      <Analytics />
       </AuthProvider>
     </BrowserRouter>
   );
