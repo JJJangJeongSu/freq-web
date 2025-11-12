@@ -1,4 +1,4 @@
-# GetRatedAlbums200ResponseAllOfDataReviewsInner
+# GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
 
 
 ## Properties
@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **title** | **string** | 리뷰 제목 | [optional] [default to undefined]
 **content** | **string** | 리뷰 내용 미리보기 | [default to undefined]
 **likeCount** | **number** | 좋아요 개수 | [default to undefined]
+**isLiked** | **boolean** |  | [default to undefined]
 **commentCount** | **number** | 댓글 개수 | [default to undefined]
 **createdAt** | **string** | 작성일시 | [default to undefined]
 **album** | [**GetOtherRatedAlbums200ResponseAllOfDataReviewsInnerAlbum**](GetOtherRatedAlbums200ResponseAllOfDataReviewsInnerAlbum.md) |  | [default to undefined]
@@ -17,14 +18,15 @@ Name | Type | Description | Notes
 ## Example
 
 ```typescript
-import { GetRatedAlbums200ResponseAllOfDataReviewsInner } from './api';
+import { GetOtherRatedAlbums200ResponseAllOfDataReviewsInner } from './api';
 
-const instance: GetRatedAlbums200ResponseAllOfDataReviewsInner = {
+const instance: GetOtherRatedAlbums200ResponseAllOfDataReviewsInner = {
     reviewId,
     rating,
     title,
     content,
     likeCount,
+    isLiked,
     commentCount,
     createdAt,
     album,

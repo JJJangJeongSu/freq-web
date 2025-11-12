@@ -426,7 +426,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CommentsApi(configuration);
 
-let commentId: string; //수정할 댓글 ID (default to undefined)
+let commentId: number; //수정할 댓글 ID (default to undefined)
 let updateCommentRequest: UpdateCommentRequest; // (optional)
 
 const { status, data } = await apiInstance.updateComment(
@@ -440,7 +440,7 @@ const { status, data } = await apiInstance.updateComment(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **updateCommentRequest** | **UpdateCommentRequest**|  | |
-| **commentId** | [**string**] | 수정할 댓글 ID | defaults to undefined|
+| **commentId** | [**number**] | 수정할 댓글 ID | defaults to undefined|
 
 
 ### Return type
@@ -485,7 +485,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CommentsApi(configuration);
 
-let commentId: string; //수정할 댓글 ID (default to undefined)
+let commentId: number; //수정할 댓글 ID (default to undefined)
 let updateCommentRequest: UpdateCommentRequest; // (optional)
 
 const { status, data } = await apiInstance.updateComment_0(
@@ -499,7 +499,7 @@ const { status, data } = await apiInstance.updateComment_0(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **updateCommentRequest** | **UpdateCommentRequest**|  | |
-| **commentId** | [**string**] | 수정할 댓글 ID | defaults to undefined|
+| **commentId** | [**number**] | 수정할 댓글 ID | defaults to undefined|
 
 
 ### Return type

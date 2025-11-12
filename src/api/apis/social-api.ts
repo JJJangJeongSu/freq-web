@@ -28,6 +28,8 @@ import type { GetLikedArtists200Response } from '../models';
 // @ts-ignore
 import type { GetMyCollections200Response1 } from '../models';
 // @ts-ignore
+import type { GetOtherRatedAlbums200Response } from '../models';
+// @ts-ignore
 import type { GetOthersActivity200Response } from '../models';
 /**
  * SocialApi - axios parameter creator
@@ -134,6 +136,112 @@ export const SocialApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
+         * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+         * @summary 타인의 앨범 리뷰 (있는 것) 목록
+         * @param {number} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOtherRatedAlbums: async (userId: number, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getOtherRatedAlbums', 'userId', userId)
+            const localVarPath = `/users/{userId}/review-list`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+         * @summary 타인의 앨범 리뷰 (있는 것) 목록
+         * @param {number} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOtherRatedAlbums_1: async (userId: number, sortBy?: string, page?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getOtherRatedAlbums_1', 'userId', userId)
+            const localVarPath = `/users/{userId}/review-list`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (sortBy !== undefined) {
+                localVarQueryParameter['sortBy'] = sortBy;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
          * @summary 타인 활동 페이지 조회
          * @param {string} userId 
@@ -210,6 +318,38 @@ export const SocialApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+         * @summary 타인의 앨범 리뷰 (있는 것) 목록
+         * @param {number} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOtherRatedAlbums(userId: number, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetOtherRatedAlbums200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOtherRatedAlbums(userId, sortBy, page, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialApi.getOtherRatedAlbums']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+         * @summary 타인의 앨범 리뷰 (있는 것) 목록
+         * @param {number} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOtherRatedAlbums_1(userId: number, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetOtherRatedAlbums200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOtherRatedAlbums_1(userId, sortBy, page, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialApi.getOtherRatedAlbums_1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
          * @summary 타인 활동 페이지 조회
          * @param {string} userId 
@@ -259,6 +399,32 @@ export const SocialApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.getMyCollections(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
         },
         /**
+         * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+         * @summary 타인의 앨범 리뷰 (있는 것) 목록
+         * @param {number} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOtherRatedAlbums(userId: number, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetOtherRatedAlbums200Response> {
+            return localVarFp.getOtherRatedAlbums(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+         * @summary 타인의 앨범 리뷰 (있는 것) 목록
+         * @param {number} userId 
+         * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+         * @param {number} [page] 페이지 번호 (1부터 시작)
+         * @param {number} [limit] 페이지당 항목 수(기본 20)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOtherRatedAlbums_1(userId: number, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig): AxiosPromise<GetOtherRatedAlbums200Response> {
+            return localVarFp.getOtherRatedAlbums_1(userId, sortBy, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 특정 사용자의 활동 페이지를 조회합니다. 사용자의 기본 프로필 정보, 리뷰 통계, 최근에 평가한 앨범/트랙 목록, 그리고 생성하거나 좋아요한 컬렉션 목록 등을 포함합니다. 
          * @summary 타인 활동 페이지 조회
          * @param {string} userId 
@@ -306,6 +472,36 @@ export class SocialApi extends BaseAPI {
      */
     public getMyCollections(userId: string, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
         return SocialApiFp(this.configuration).getMyCollections(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+     * @summary 타인의 앨범 리뷰 (있는 것) 목록
+     * @param {number} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SocialApi
+     */
+    public getOtherRatedAlbums(userId: number, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return SocialApiFp(this.configuration).getOtherRatedAlbums(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 별점 + 내용도 있는 앨범 리뷰 전체 목록 조회
+     * @summary 타인의 앨범 리뷰 (있는 것) 목록
+     * @param {number} userId 
+     * @param {string} [sortBy] 정렬 기준 (popularity: 인기도순, recent: 최신순, old: 오래된순)
+     * @param {number} [page] 페이지 번호 (1부터 시작)
+     * @param {number} [limit] 페이지당 항목 수(기본 20)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SocialApi
+     */
+    public getOtherRatedAlbums_1(userId: number, sortBy?: string, page?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return SocialApiFp(this.configuration).getOtherRatedAlbums_1(userId, sortBy, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

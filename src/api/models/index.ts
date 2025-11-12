@@ -53,6 +53,10 @@ export * from './get-my-follwers200-response';
 export * from './get-my-follwers200-response-all-of-data';
 export * from './get-notifications200-response';
 export * from './get-notifications200-response-all-of-data';
+export * from './get-other-rated-albums200-response';
+export * from './get-other-rated-albums200-response-all-of-data';
+export * from './get-other-rated-albums200-response-all-of-data-reviews-inner';
+export * from './get-other-rated-albums200-response-all-of-data-reviews-inner-album';
 export * from './get-others-activity200-response';
 export * from './get-others-activity200-response-all-of-data';
 export * from './get-others-activity200-response-all-of-data-follow-info';
@@ -60,7 +64,6 @@ export * from './get-others-activity200-response-all-of-data-rate-distributions'
 export * from './get-rated-albums200-response';
 export * from './get-rated-albums200-response-all-of-data';
 export * from './get-rated-albums200-response-all-of-data-reviews-inner';
-export * from './get-rated-albums200-response-all-of-data-reviews-inner-album';
 export * from './get-review-detail200-response';
 export * from './get-reviews200-response';
 export * from './get-reviews200-response-all-of-data';

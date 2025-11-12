@@ -84,6 +84,10 @@ docs/GetMyFollwers200Response.md
 docs/GetMyFollwers200ResponseAllOfData.md
 docs/GetNotifications200Response.md
 docs/GetNotifications200ResponseAllOfData.md
+docs/GetOtherRatedAlbums200Response.md
+docs/GetOtherRatedAlbums200ResponseAllOfData.md
+docs/GetOtherRatedAlbums200ResponseAllOfDataReviewsInner.md
+docs/GetOtherRatedAlbums200ResponseAllOfDataReviewsInnerAlbum.md
 docs/GetOthersActivity200Response.md
 docs/GetOthersActivity200ResponseAllOfData.md
 docs/GetOthersActivity200ResponseAllOfDataFollowInfo.md
@@ -91,7 +95,6 @@ docs/GetOthersActivity200ResponseAllOfDataRateDistributions.md
 docs/GetRatedAlbums200Response.md
 docs/GetRatedAlbums200ResponseAllOfData.md
 docs/GetRatedAlbums200ResponseAllOfDataReviewsInner.md
-docs/GetRatedAlbums200ResponseAllOfDataReviewsInnerAlbum.md
 docs/GetReviewDetail200Response.md
 docs/GetReviews200Response.md
 docs/GetReviews200ResponseAllOfData.md
@@ -240,11 +243,14 @@ models/get-my-follwers200-response-all-of-data.ts
 models/get-my-follwers200-response.ts
 models/get-notifications200-response-all-of-data.ts
 models/get-notifications200-response.ts
+models/get-other-rated-albums200-response-all-of-data-reviews-inner-album.ts
+models/get-other-rated-albums200-response-all-of-data-reviews-inner.ts
+models/get-other-rated-albums200-response-all-of-data.ts
+models/get-other-rated-albums200-response.ts
 models/get-others-activity200-response-all-of-data-follow-info.ts
 models/get-others-activity200-response-all-of-data-rate-distributions.ts
 models/get-others-activity200-response-all-of-data.ts
 models/get-others-activity200-response.ts
-models/get-rated-albums200-response-all-of-data-reviews-inner-album.ts
 models/get-rated-albums200-response-all-of-data-reviews-inner.ts
 models/get-rated-albums200-response-all-of-data.ts
 models/get-rated-albums200-response.ts

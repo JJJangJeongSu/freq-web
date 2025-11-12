@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **commentCount** | **number** | 댓글 개수 | [default to undefined]
 **createdAt** | **string** | 작성일시 | [default to undefined]
 **album** | [**AlbumPreview**](AlbumPreview.md) |  | [default to undefined]
+**isLiked** | **boolean** | 사용자의 좋아요 여부 | [default to undefined]
 
 ## Example
 
@@ -32,6 +33,7 @@ const instance: GetAlbumDetail200ResponseAllOfDataReviewsInner = {
     commentCount,
     createdAt,
     album,
+    isLiked,
 };
 ```
 

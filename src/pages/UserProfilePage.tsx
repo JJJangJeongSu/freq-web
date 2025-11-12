@@ -8,6 +8,8 @@ import { Badge } from "../components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserActivity } from "../hooks/useUserActivity";
+import { useUserReviews } from "../hooks/useUserReviews";
+import { UserReviewCard } from "../components/UserReviewCard";
 import { apiService } from "../services/api.service";
 
 export function UserProfilePage() {
@@ -16,6 +18,14 @@ export function UserProfilePage() {
 
   // API 데이터 가져오기
   const { data, loading, error, refetch } = useUserActivity(userId);
+
+  // 사용자 리뷰 목록 가져오기
+  const {
+    reviews: userReviews,
+    loading: reviewsLoading,
+    error: reviewsError,
+    totalCount: reviewsTotalCount
+  } = useUserReviews({ userId: userId || '', limit: 5 });
 
   // 별점 분포 토글 상태
   const [ratingType, setRatingType] = useState<'album' | 'track'>('album');
@@ -417,6 +427,53 @@ export function UserProfilePage() {
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">
                   장르 분석 데이터가 없습니다
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 작성한 리뷰 */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-5 px-6">
+            <h2 className="text-xl font-semibold">작성한 리뷰</h2>
+            {reviewsTotalCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(`/users/${userId}/reviews`)}
+                className="text-primary"
+              >
+                전체보기
+              </Button>
+            )}
+          </div>
+          <div className="px-6 space-y-4">
+            {reviewsLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : reviewsError ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  리뷰를 불러올 수 없습니다
+                </p>
+              </div>
+            ) : userReviews.length > 0 ? (
+              userReviews.map((review) => (
+                <UserReviewCard
+                  key={review.id}
+                  review={review}
+                  onClick={() => navigate(`/reviews/${review.id}`)}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                  <MessageSquare className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  작성한 리뷰가 없습니다
                 </p>
               </div>
             )}

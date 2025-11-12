@@ -83,5 +83,11 @@ export interface GetAlbumDetail200ResponseAllOfDataReviewsInner {
      * @memberof GetAlbumDetail200ResponseAllOfDataReviewsInner
      */
     'album': AlbumPreview;
+    /**
+     * 사용자의 좋아요 여부
+     * @type {boolean}
+     * @memberof GetAlbumDetail200ResponseAllOfDataReviewsInner
+     */
+    'isLiked': boolean;
 }
 

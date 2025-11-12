@@ -304,12 +304,12 @@ export const CommentsApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 댓글 수정
-         * @param {string} commentId 수정할 댓글 ID
+         * @param {number} commentId 수정할 댓글 ID
          * @param {UpdateCommentRequest} [updateCommentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateComment: async (commentId: string, updateCommentRequest?: UpdateCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateComment: async (commentId: number, updateCommentRequest?: UpdateCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'commentId' is not null or undefined
             assertParamExists('updateComment', 'commentId', commentId)
             const localVarPath = `/comments/{commentId}`
@@ -342,12 +342,12 @@ export const CommentsApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 댓글 수정
-         * @param {string} commentId 수정할 댓글 ID
+         * @param {number} commentId 수정할 댓글 ID
          * @param {UpdateCommentRequest} [updateCommentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateComment_4: async (commentId: string, updateCommentRequest?: UpdateCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateComment_4: async (commentId: number, updateCommentRequest?: UpdateCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'commentId' is not null or undefined
             assertParamExists('updateComment_4', 'commentId', commentId)
             const localVarPath = `/comments/{commentId}`
@@ -485,12 +485,12 @@ export const CommentsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 댓글 수정
-         * @param {string} commentId 수정할 댓글 ID
+         * @param {number} commentId 수정할 댓글 ID
          * @param {UpdateCommentRequest} [updateCommentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateComment(commentId: string, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateComment200Response>> {
+        async updateComment(commentId: number, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateComment200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateComment(commentId, updateCommentRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CommentsApi.updateComment']?.[localVarOperationServerIndex]?.url;
@@ -499,12 +499,12 @@ export const CommentsApiFp = function(configuration?: Configuration) {
         /**
          * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 댓글 수정
-         * @param {string} commentId 수정할 댓글 ID
+         * @param {number} commentId 수정할 댓글 ID
          * @param {UpdateCommentRequest} [updateCommentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateComment_4(commentId: string, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateComment200Response>> {
+        async updateComment_4(commentId: number, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateComment200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateComment_4(commentId, updateCommentRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CommentsApi.updateComment_4']?.[localVarOperationServerIndex]?.url;
@@ -597,23 +597,23 @@ export const CommentsApiFactory = function (configuration?: Configuration, baseP
         /**
          * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 댓글 수정
-         * @param {string} commentId 수정할 댓글 ID
+         * @param {number} commentId 수정할 댓글 ID
          * @param {UpdateCommentRequest} [updateCommentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateComment(commentId: string, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateComment200Response> {
+        updateComment(commentId: number, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateComment200Response> {
             return localVarFp.updateComment(commentId, updateCommentRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
          * @summary 댓글 수정
-         * @param {string} commentId 수정할 댓글 ID
+         * @param {number} commentId 수정할 댓글 ID
          * @param {UpdateCommentRequest} [updateCommentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateComment_4(commentId: string, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateComment200Response> {
+        updateComment_4(commentId: number, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<UpdateComment200Response> {
             return localVarFp.updateComment_4(commentId, updateCommentRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -717,26 +717,26 @@ export class CommentsApi extends BaseAPI {
     /**
      * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 댓글 수정
-     * @param {string} commentId 수정할 댓글 ID
+     * @param {number} commentId 수정할 댓글 ID
      * @param {UpdateCommentRequest} [updateCommentRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CommentsApi
      */
-    public updateComment(commentId: string, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig) {
+    public updateComment(commentId: number, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig) {
         return CommentsApiFp(this.configuration).updateComment(commentId, updateCommentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 자신이 작성한 댓글의 내용을 수정합니다. 다른 사용자의 댓글을 수정하려고 할 경우 403 Forbidden 에러가 발생합니다.
      * @summary 댓글 수정
-     * @param {string} commentId 수정할 댓글 ID
+     * @param {number} commentId 수정할 댓글 ID
      * @param {UpdateCommentRequest} [updateCommentRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CommentsApi
      */
-    public updateComment_4(commentId: string, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig) {
+    public updateComment_4(commentId: number, updateCommentRequest?: UpdateCommentRequest, options?: RawAxiosRequestConfig) {
         return CommentsApiFp(this.configuration).updateComment_4(commentId, updateCommentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }

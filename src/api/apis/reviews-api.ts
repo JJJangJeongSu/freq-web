@@ -430,11 +430,11 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
          * @summary 리뷰 좋아요 토글
-         * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+         * @param {number} reviewId 좋아요를 토글할 리뷰 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleReviewLike: async (reviewId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        toggleReviewLike: async (reviewId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
             assertParamExists('toggleReviewLike', 'reviewId', reviewId)
             const localVarPath = `/reviews/{reviewId}/likes/toggle`
@@ -464,11 +464,11 @@ export const ReviewsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
          * @summary 리뷰 좋아요 토글
-         * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+         * @param {number} reviewId 좋아요를 토글할 리뷰 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleReviewLike_6: async (reviewId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        toggleReviewLike_6: async (reviewId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
             assertParamExists('toggleReviewLike_6', 'reviewId', reviewId)
             const localVarPath = `/reviews/{reviewId}/likes/toggle`
@@ -720,11 +720,11 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
          * @summary 리뷰 좋아요 토글
-         * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+         * @param {number} reviewId 좋아요를 토글할 리뷰 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async toggleReviewLike(reviewId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleReviewLike200Response>> {
+        async toggleReviewLike(reviewId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleReviewLike200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.toggleReviewLike(reviewId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.toggleReviewLike']?.[localVarOperationServerIndex]?.url;
@@ -733,11 +733,11 @@ export const ReviewsApiFp = function(configuration?: Configuration) {
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
          * @summary 리뷰 좋아요 토글
-         * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+         * @param {number} reviewId 좋아요를 토글할 리뷰 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async toggleReviewLike_6(reviewId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleReviewLike200Response>> {
+        async toggleReviewLike_6(reviewId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ToggleReviewLike200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.toggleReviewLike_6(reviewId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReviewsApi.toggleReviewLike_6']?.[localVarOperationServerIndex]?.url;
@@ -890,21 +890,21 @@ export const ReviewsApiFactory = function (configuration?: Configuration, basePa
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
          * @summary 리뷰 좋아요 토글
-         * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+         * @param {number} reviewId 좋아요를 토글할 리뷰 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleReviewLike(reviewId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleReviewLike200Response> {
+        toggleReviewLike(reviewId: number, options?: RawAxiosRequestConfig): AxiosPromise<ToggleReviewLike200Response> {
             return localVarFp.toggleReviewLike(reviewId, options).then((request) => request(axios, basePath));
         },
         /**
          * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
          * @summary 리뷰 좋아요 토글
-         * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+         * @param {number} reviewId 좋아요를 토글할 리뷰 ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        toggleReviewLike_6(reviewId: string, options?: RawAxiosRequestConfig): AxiosPromise<ToggleReviewLike200Response> {
+        toggleReviewLike_6(reviewId: number, options?: RawAxiosRequestConfig): AxiosPromise<ToggleReviewLike200Response> {
             return localVarFp.toggleReviewLike_6(reviewId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1068,24 +1068,24 @@ export class ReviewsApi extends BaseAPI {
     /**
      * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
      * @summary 리뷰 좋아요 토글
-     * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+     * @param {number} reviewId 좋아요를 토글할 리뷰 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public toggleReviewLike(reviewId: string, options?: RawAxiosRequestConfig) {
+    public toggleReviewLike(reviewId: number, options?: RawAxiosRequestConfig) {
         return ReviewsApiFp(this.configuration).toggleReviewLike(reviewId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 특정 리뷰에 대한 \'좋아요\' 상태를 변경(토글)합니다. 사용자가 해당 리뷰에 좋아요를 누르지 않은 상태이면 좋아요를 추가하고, 이미 누른 상태이면 좋아요를 취소합니다. 요청 성공 시, 현재의 좋아요 상태(`liked`)를 boolean 값으로 반환합니다.
      * @summary 리뷰 좋아요 토글
-     * @param {string} reviewId 좋아요를 토글할 리뷰 ID
+     * @param {number} reviewId 좋아요를 토글할 리뷰 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApi
      */
-    public toggleReviewLike_6(reviewId: string, options?: RawAxiosRequestConfig) {
+    public toggleReviewLike_6(reviewId: number, options?: RawAxiosRequestConfig) {
         return ReviewsApiFp(this.configuration).toggleReviewLike_6(reviewId, options).then((request) => request(this.axios, this.basePath));
     }
 

@@ -28,7 +28,6 @@ export function AlbumDetailPage() {
   const { toggleLike } = useToggleReviewLike();
 
   const [userRating, setUserRating] = useState(0);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [trackListExpanded, setTrackListExpanded] = useState(false);
   const [reviewId, setReviewId] = useState<string | null>(null); // ⭐ 로컬 reviewId 상태
 
@@ -58,7 +57,6 @@ export function AlbumDetailPage() {
 
   const handleRatingChange = (rating: number) => {
     setUserRating(rating);
-    setSubmitSuccess(false);
   };
 
   // 새 리뷰 생성 (reviewId 없을 때만)
@@ -80,11 +78,7 @@ export function AlbumDetailPage() {
       setReviewId(result.reviewId);
       console.log('✅ Review created, reviewId:', result.reviewId);
 
-      setSubmitSuccess(true);
       refetch(); // 앨범 정보 새로고침
-
-      // 3초 후 성공 메시지 숨기기
-      setTimeout(() => setSubmitSuccess(false), 3000);
     } catch (err: any) {
       console.error('❌ Review submission failed:', err);
     }
@@ -270,15 +264,6 @@ export function AlbumDetailPage() {
                   </div>
                 )}
 
-                {/* 성공 메시지 */}
-                {submitSuccess && (
-                  <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                    <p className="text-sm text-green-600">
-                      ✓ 평가가 {reviewId ? '수정' : '등록'}되었습니다!
-                    </p>
-                  </div>
-                )}
-
                 {/* 이미 평가한 경우 */}
                 {(album as any).isRated === true ? (
                   reviewId ? (
@@ -324,7 +309,7 @@ export function AlbumDetailPage() {
                       onClick={handleSubmitRating}
                       variant="outline"
                       className="flex-1 h-12"
-                      disabled={reviewLoading || submitSuccess}
+                      disabled={reviewLoading}
                     >
                       {createLoading ? (
                         <>

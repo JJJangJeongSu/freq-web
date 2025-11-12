@@ -40,6 +40,7 @@ import { UserRatedAlbumsPage } from './pages/UserRatedAlbumsPage';
 import { UserRatedTracksPage } from './pages/UserRatedTracksPage';
 import { UserCollectionsPage } from './pages/UserCollectionsPage';
 import { UserLikedCollectionsPage } from './pages/UserLikedCollectionsPage';
+import { UserReviewsPage } from './pages/UserReviewsPage';
 
 /**
  * UnauthorizedListener Component
@@ -102,6 +103,7 @@ export default function App() {
             <Route path="/users/:userId/rated-tracks" element={<UserRatedTracksPage />} />
             <Route path="/users/:userId/collections" element={<UserCollectionsPage />} />
             <Route path="/users/:userId/liked-collections" element={<UserLikedCollectionsPage />} />
+            <Route path="/users/:userId/reviews" element={<UserReviewsPage />} />
 
             {/* List Pages */}
             <Route path="/rated-albums" element={<RatedAlbumsPage />} />

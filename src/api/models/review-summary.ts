@@ -83,5 +83,11 @@ export interface ReviewSummary {
      * @memberof ReviewSummary
      */
     'album': AlbumPreview;
+    /**
+     * 사용자의 좋아요 여부
+     * @type {boolean}
+     * @memberof ReviewSummary
+     */
+    'isLiked': boolean;
 }
 

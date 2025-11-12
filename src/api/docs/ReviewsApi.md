@@ -595,7 +595,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //좋아요를 토글할 리뷰 ID (default to undefined)
+let reviewId: number; //좋아요를 토글할 리뷰 ID (default to undefined)
 
 const { status, data } = await apiInstance.toggleReviewLike(
     reviewId
@@ -606,7 +606,7 @@ const { status, data } = await apiInstance.toggleReviewLike(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reviewId** | [**string**] | 좋아요를 토글할 리뷰 ID | defaults to undefined|
+| **reviewId** | [**number**] | 좋아요를 토글할 리뷰 ID | defaults to undefined|
 
 
 ### Return type
@@ -649,7 +649,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ReviewsApi(configuration);
 
-let reviewId: string; //좋아요를 토글할 리뷰 ID (default to undefined)
+let reviewId: number; //좋아요를 토글할 리뷰 ID (default to undefined)
 
 const { status, data } = await apiInstance.toggleReviewLike_0(
     reviewId
@@ -660,7 +660,7 @@ const { status, data } = await apiInstance.toggleReviewLike_0(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reviewId** | [**string**] | 좋아요를 토글할 리뷰 ID | defaults to undefined|
+| **reviewId** | [**number**] | 좋아요를 토글할 리뷰 ID | defaults to undefined|
 
 
 ### Return type

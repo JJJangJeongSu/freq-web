@@ -20,55 +20,61 @@ import type { GetOtherRatedAlbums200ResponseAllOfDataReviewsInnerAlbum } from '.
 /**
  * 
  * @export
- * @interface GetRatedAlbums200ResponseAllOfDataReviewsInner
+ * @interface GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
  */
-export interface GetRatedAlbums200ResponseAllOfDataReviewsInner {
+export interface GetOtherRatedAlbums200ResponseAllOfDataReviewsInner {
     /**
      * 리뷰 ID
      * @type {number}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'reviewId': number;
     /**
      * 별점 (0.5 ~ 5.0)
      * @type {number}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'rating': number;
     /**
      * 리뷰 제목
      * @type {string}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
-    'title'?: string;
+    'title'?: string | null;
     /**
      * 리뷰 내용 미리보기
      * @type {string}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'content': string;
     /**
      * 좋아요 개수
      * @type {number}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'likeCount': number;
     /**
+     * 
+     * @type {boolean}
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
+     */
+    'isLiked': boolean;
+    /**
      * 댓글 개수
      * @type {number}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'commentCount': number;
     /**
      * 작성일시
      * @type {string}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'createdAt': string;
     /**
      * 
      * @type {GetOtherRatedAlbums200ResponseAllOfDataReviewsInnerAlbum}
-     * @memberof GetRatedAlbums200ResponseAllOfDataReviewsInner
+     * @memberof GetOtherRatedAlbums200ResponseAllOfDataReviewsInner
      */
     'album': GetOtherRatedAlbums200ResponseAllOfDataReviewsInnerAlbum;
 }
