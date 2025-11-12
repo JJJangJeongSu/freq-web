@@ -16,7 +16,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTrackDetail } from "../hooks/useTrackDetail";
 import { useCreateReview } from "../hooks/useCreateReview";
 import { useUpdateReview } from "../hooks/useUpdateReview";
-import { CreateReviewRequestTypeEnum } from "../api/models";
+import { CreateReviewRequestTypeEnum, UpdateReviewRequestTypeEnum } from "../api/models";
 
 export function TrackDetailPage() {
   const { trackId } = useParams();
@@ -77,7 +77,7 @@ export function TrackDetailPage() {
 
         await updateReview(reviewId, {
           rating: userRating,
-          type: CreateReviewRequestTypeEnum.Track
+          type: UpdateReviewRequestTypeEnum.Track
         });
 
         console.log('✅ Review updated');

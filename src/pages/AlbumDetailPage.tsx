@@ -14,7 +14,7 @@ import { useCreateReview } from "../hooks/useCreateReview";
 import { useUpdateReview } from "../hooks/useUpdateReview";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useToggleReviewLike } from "../hooks/useToggleReviewLike";
-import { CreateReviewRequestTypeEnum } from "../api/models";
+import { CreateReviewRequestTypeEnum, UpdateReviewRequestTypeEnum } from "../api/models";
 
 export function AlbumDetailPage() {
   const { albumId } = useParams();
@@ -70,7 +70,7 @@ export function AlbumDetailPage() {
 
       await updateReview(reviewId, {
         rating: userRating,
-        type: CreateReviewRequestTypeEnum.Album
+        type: UpdateReviewRequestTypeEnum.Album
       });
 
       console.log('✅ Rating updated');
